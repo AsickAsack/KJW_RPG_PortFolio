@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface BattleSystem
+{
+    public bool OnDamage(int index);
+}
+
 public class Player : MonoBehaviour
 {
     private Rigidbody _myRigid;

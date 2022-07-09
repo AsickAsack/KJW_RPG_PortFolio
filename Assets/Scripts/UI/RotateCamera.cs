@@ -5,10 +5,12 @@ using UnityEngine.EventSystems;
 
 public class RotateCamera : MonoBehaviour ,IDragHandler
 {
+    public GameObject MyCam;
     public Transform Pivot;
     public float RotSpeed = 10.0f;
     public Vector2 LimitRotX = Vector2.zero;
     Vector3 RotPivot = Vector3.zero;
+
 
     public void OnDrag(PointerEventData eventData)
     {
@@ -20,12 +22,6 @@ public class RotateCamera : MonoBehaviour ,IDragHandler
 
         Pivot.rotation = Quaternion.Slerp(Pivot.rotation, Quaternion.Euler(RotPivot), Time.deltaTime * 20.0f);
 
-        
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
