@@ -1,23 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Soldier : Player , BattleSystem
+public abstract class Soldier : Player , BattleSystem
 {
     public AutoDetect Detect;
     public GameObject Sword;
     public GameObject BackSword;
     public GameObject LandEffect;
     public LayerMask LandLayer;
-    Vector3 Dir = Vector3.zero;
-    bool Move = false;
-    Collider[] myCol;
+    protected Vector3 Dir = Vector3.zero;
+    protected bool Move = false;
+    protected Collider[] myCol;
+    protected Coroutine AttackDelay;
+    protected Coroutine StunCo;
+    public float HitTime = 0.0f;
+    public Button Killbtn;
 
+
+    public abstract void ChangeState(S_State s);
+
+    //몬스터의 상태
     public enum S_State
     {
-        Patrol, Battle, Death ,OnAir
+        Patrol, Battle, Death ,OnAir,Stun
     }
 
+    //패트롤로 시작
     public S_State myState = S_State.Patrol;
 
     private void Update()
@@ -25,90 +35,154 @@ public class Soldier : Player , BattleSystem
         StateProcess();
     }
 
-    public void ChangeState(S_State s)
+
+
+    protected IEnumerator GoBattle(float time)
     {
-        if (myState.Equals(s)) return;
-
-        myState = s;
-
-        switch (myState)
-        {
-            case S_State.Patrol:
-                myAnim.SetTrigger("GoIdle");
-                break;
-
-            case S_State.Battle:
-                myAnim.SetTrigger("GoBattle");
-                StartCoroutine(DelayBattle());
-                break;
-            case S_State.OnAir:
-                Time.timeScale = 0.5f;
-                break;
-            case S_State.Death:
-                break;
-
-        }
-
-    }
-
-    IEnumerator DelayBattle()
-    {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(time);
+        Move = true;
         myAnim.SetBool("IsWalk", true);
     }
+
+    //아이들 상태로 갈때
+    public void HideSword()
+    {
+        Sword.SetActive(false);
+        BackSword.SetActive(true);
+
+    }
+
+    //배틀 상태로 
+    public void GetSword()
+    {
+        Sword.SetActive(true);
+        BackSword.SetActive(false);
+       
+    }
+
+
 
     void StateProcess()
     {
         switch (myState)
         {
             case S_State.Patrol:
-                if (Detect.Enemy.Count != 0)
+                if(Detect.Enemy.Count > 0)
+                {
                     ChangeState(S_State.Battle);
+                }
+     
                 break;
-
             case S_State.Battle:
-                if(myAnim.GetBool("IsWalk"))
-                FollowPlayer();
+                if (Detect.Enemy.Count.Equals(0))
+                {
+                    ChangeState(S_State.Patrol);
+                }
+
+                if(myAnim.GetBool("IsHit"))
+                {
+                    HitTime = 0.5f;
+                    if (AttackDelay != null)
+                    { 
+                        StopCoroutine(AttackDelay);
+                        AttackDelay = null;
+                    }
+                }
+                else
+                {
+                    if(HitTime > 0.0f)
+                    HitTime -=Time.deltaTime;
+                }
+
+                if(HitTime < 0.1f)
+                BattleState();
+
                 break;
             case S_State.OnAir:
-       
+                break;
 
+            case S_State.Stun:
 
                 break;
+
+
+
             case S_State.Death:
                 break;
         }
     }
 
-    private void FixedUpdate()
-    {   if (Move && !myAnim.GetBool("IsAttack"))
-            myRigid.MovePosition(this.transform.position +Dir.normalized * Time.deltaTime * 3.0f);
-    }
-
-    void FollowPlayer()
+    protected IEnumerator Stun(float time)
     {
-        if (Detect.Enemy.Count == 0)
-            ChangeState(S_State.Patrol);
-        else
+        Killbtn.gameObject.SetActive(true);
+        Killbtn.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 0.1f, 0));
+        
+        myAnim.SetTrigger("Stun");
+        myAnim.SetBool("IsStun", true);
+
+        yield return new WaitForSeconds(time);
+       
+
+        if (myState != S_State.Death)
         {
+            myAnim.SetBool("IsStun", false);
 
-
-            if (Vector3.Distance(this.transform.position, Detect.Enemy[0].transform.position) < 2.0f)
+            if (Detect.Enemy.Count > 0)
             {
-                Move = false;
-                myAnim.SetTrigger("Attack");
+                ChangeState(S_State.Battle);
             }
             else
-            { 
-                if (!myAnim.GetBool("IsAttack"))
-                { 
-                    Dir = Detect.Enemy[0].transform.position - this.transform.position;
-                    Move = true;
-                    this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(Dir), Time.deltaTime * 10.0f);
-                }
+            {
+                ChangeState(S_State.Patrol);
             }
         }
+
+         Killbtn.gameObject.SetActive(false);
     }
+
+
+    public void BattleState()
+    {
+        
+        //거리가 2.0f보다 크다면
+        if (Vector3.Distance(this.transform.position, Detect.Enemy[0].transform.position) > 2.0f)
+        {
+            Dir = Detect.Enemy[0].transform.position - this.transform.position;
+            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(Dir), Time.deltaTime * 20.0f);
+            Move = true;
+            myAnim.SetBool("IsWalk", true);
+            
+        }
+        ////거리가 2.0f보다 작다면
+        else
+        {
+            Move = false;
+            myAnim.SetBool("IsWalk", false);
+            if (AttackDelay == null)
+            {
+                AttackDelay = StartCoroutine(AtkDelay(3.0f));
+            }
+        
+        }
+    }
+
+    IEnumerator AtkDelay(float time)
+    {
+        myAnim.SetTrigger("Attack");
+
+        yield return new WaitForSeconds(time);
+
+        AttackDelay = null;
+    }
+
+
+    private void FixedUpdate()
+    { 
+        if(Move && HitTime < 0.1f && myState != S_State.Stun)
+        myRigid.MovePosition(this.transform.position +Dir.normalized * Time.deltaTime * 3.0f);
+    }
+
+
 
     public void CheckFloor()
     {
@@ -134,36 +208,34 @@ public class Soldier : Player , BattleSystem
         LandEffect.SetActive(false);
     }
 
+ 
+
     public void offLandEffect()
     {
         LandEffect.SetActive(false);
     }
 
-    public void HideSword()
-    {
-        Sword.SetActive(false);
-        BackSword.SetActive(true);
-        
-    }
+    
 
-    public void GetSword()
+    public void OnAttack(int index)
     {
-        Sword.SetActive(true);
-        BackSword.SetActive(false);
-    }
-
-    public void OnAttack()
-    {
-        myCol = Physics.OverlapSphere(Sword.transform.position, 1.0f, 1 << LayerMask.NameToLayer("Player"));
+        myCol = Physics.OverlapSphere(Sword.transform.position, 1.5f, 1 << LayerMask.NameToLayer("Player"));
         if (myCol != null)
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0);
+                //널체크
+                if(myCol[i].GetComponent<BattleSystem>() != null)
+               if(!myCol[i].GetComponent<BattleSystem>().OnDamage(index))
+                {
+                    ChangeState(S_State.Stun);
+                    
+                }
             }
         }
         myCol = null;
     }
+
 
     //20퍼 확률로 쉴드 
     public bool OnDamage(int index)
@@ -189,6 +261,9 @@ public class Soldier : Player , BattleSystem
                 break;
             case 3:
                 myAnim.SetTrigger("Upper");
+                break;
+            case 4:
+                myAnim.SetTrigger("OneShot");
                 break;
         }
 

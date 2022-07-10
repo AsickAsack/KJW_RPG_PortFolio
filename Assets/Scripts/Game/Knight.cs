@@ -40,6 +40,7 @@ public class Knight : Player, BattleSystem
     Coroutine WeightChange;
     public LayerMask JumpMask;
     Vector3 ClimbDir;
+    bool IsBlock = false;
 
     #region 유한상태기계
 
@@ -108,7 +109,7 @@ public class Knight : Player, BattleSystem
     // 회전로직
     void KnighteRotate()
     {
-        if (myJoystic.MoveOn && myJoystic.Dir != Vector3.zero && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange"))
+        if (myJoystic.MoveOn && myJoystic.Dir != Vector3.zero && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block"))
         {
             MyCamRot = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
             myDirecTion = MyCamRot * new Vector3(myJoystic.Dir.x, 0.0f, myJoystic.Dir.z);
@@ -130,7 +131,7 @@ public class Knight : Player, BattleSystem
         switch (myState)
         {
             case State.Relax:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block"))
                 {
                     myAnim.SetBool("IsRWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * 4.0f);
@@ -141,7 +142,7 @@ public class Knight : Player, BattleSystem
 
                 break;
             case State.Battle:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block"))
                 {
                     myAnim.SetBool("IsWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * 4.0f);
@@ -158,6 +159,38 @@ public class Knight : Player, BattleSystem
 
 
     #region 애니메이션 함수들
+
+    //손이 떼어지는 애니메이션일때
+    public void SetWeight(int index)
+    {
+        if (WeightChange != null)
+        { 
+            StopCoroutine(WeightChange);
+            WeightChange = StartCoroutine(ChangeIK(index));
+        }
+        else
+            WeightChange = StartCoroutine(ChangeIK(index));
+    }
+
+    IEnumerator ChangeIK(int index)
+    {
+        if(index.Equals(0))
+        { 
+            while(AnimationRig.weight != index)
+            {
+                AnimationRig.weight = index;
+                yield return null;
+            }
+        }
+        else
+        {
+            while (AnimationRig.weight != index)
+            {
+                AnimationRig.weight += Time.deltaTime *2.0f;
+                yield return null;
+            }
+        }
+    }
 
     //애니메이션 타이밍에 맞춰 점프함
     void Jump()
@@ -339,6 +372,8 @@ public class Knight : Player, BattleSystem
         myCol = null;
     }
 
+    
+
     //오른쪽 펀치 공격할때
     public void RPunchAttack()
     {
@@ -369,7 +404,58 @@ public class Knight : Player, BattleSystem
     //맞았을때
     public bool OnDamage(int index)
     {
-        myAnim.SetTrigger("GetHit");
+
+        if(myAnim.GetBool("IsBlock"))
+        {
+            int rand = Random.Range(1, 11);
+
+            switch (index)
+            {
+                //오른쪽 맞았을때
+                case 0:
+                    myAnim.SetTrigger("BlockHitR");
+                    break;
+
+                //왼쪽 맞았을때
+                case 1:
+                    myAnim.SetTrigger("BlockHitL");
+                    break;
+                        
+
+            }
+
+            if(rand < 9)
+            {
+                return false;
+            }
+            
+
+        }
+        else
+        {
+            switch (index)
+            {
+                //오른쪽 맞았을때
+                case 0:
+                    myAnim.SetTrigger("GetHitR");
+                    break;
+
+                //왼쪽 맞았을때
+                case 1:
+                    myAnim.SetTrigger("GetHitL");
+                    break;
+
+
+            }
+        }
+        
         return true;
+    }
+
+    public void BlockBtn()
+    {
+      
+        IsBlock = !IsBlock;
+        myAnim.SetBool("Block", IsBlock);
     }
 }

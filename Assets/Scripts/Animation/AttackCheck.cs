@@ -9,6 +9,7 @@ public class AttackCheck : StateMachineBehaviour
     {
         animator.SetBool("IsAttack", false);
         animator.SetBool("IsPunch", false);
+        animator.SetBool("IsBlock", false);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
