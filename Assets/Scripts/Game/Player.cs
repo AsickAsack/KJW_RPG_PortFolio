@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface BattleSystem
 {
-    public bool OnDamage(int index);
+    public bool OnDamage(int index,float Damage);
 }
 
 public class Player : MonoBehaviour
@@ -27,6 +27,16 @@ public class Player : MonoBehaviour
         {
             _myAnim = GetComponent<Animator>();
             return _myAnim;
+        }
+    }
+
+    private AudioSource _myAudio;
+    public AudioSource myAudio
+    {
+        get
+        {
+            _myAudio = GetComponent<AudioSource>();
+            return _myAudio;
         }
     }
 

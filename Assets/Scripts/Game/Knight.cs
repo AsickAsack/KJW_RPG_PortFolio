@@ -12,9 +12,8 @@ public class Knight : Player, BattleSystem
 
     }
 
-
-
     [Header("[조이스틱 움직임]")]
+
     public JoySticPanel myJoystic;
     Vector3 Dir = Vector3.zero;
     public GameObject MyChar = null;
@@ -29,16 +28,18 @@ public class Knight : Player, BattleSystem
     public Transform LeftHand;
     public Transform AttackSpot;
     public Transform Foot;
-    public Transform MyRayPoint;
-    public Transform MyHand;
     public GameObject HitEffect;
+    public Animator Uianim;
+    public State myState = State.Relax;
+    public Rig AnimationRig;
+    public LayerMask JumpMask;
+    float DamageT;
+
+
+    Coroutine WeightChange;
     Collider[] myCol;
     Quaternion MyCamRot = Quaternion.identity;
     Vector3 myDirecTion;
-    public State myState = State.Relax;
-    public Rig AnimationRig;
-    Coroutine WeightChange;
-    public LayerMask JumpMask;
     Vector3 ClimbDir;
     bool IsBlock = false;
 
@@ -106,6 +107,7 @@ public class Knight : Player, BattleSystem
 
 
     #endregion
+
     // 회전로직
     void KnighteRotate()
     {
@@ -160,31 +162,31 @@ public class Knight : Player, BattleSystem
 
     #region 애니메이션 함수들
 
-    //손이 떼어지는 애니메이션일때
-    public void SetWeight(int index)
+    //손이 떼어지는 애니메이션일때 IK Weight 설정
+    public void SetWeight(int Value)
     {
         if (WeightChange != null)
         { 
             StopCoroutine(WeightChange);
-            WeightChange = StartCoroutine(ChangeIK(index));
+            WeightChange = StartCoroutine(ChangeIK(Value));
         }
         else
-            WeightChange = StartCoroutine(ChangeIK(index));
+            WeightChange = StartCoroutine(ChangeIK(Value));
     }
 
-    IEnumerator ChangeIK(int index)
+    IEnumerator ChangeIK(int Value)
     {
-        if(index.Equals(0))
+        if(Value.Equals(0))
         { 
-            while(AnimationRig.weight != index)
+            while(AnimationRig.weight != Value)
             {
-                AnimationRig.weight = index;
+                AnimationRig.weight = Value;
                 yield return null;
             }
         }
         else
         {
-            while (AnimationRig.weight != index)
+            while (AnimationRig.weight != Value)
             {
                 AnimationRig.weight += Time.deltaTime *2.0f;
                 yield return null;
@@ -198,7 +200,6 @@ public class Knight : Player, BattleSystem
         LandEffect.SetActive(false);
         myRigid.AddForce(this.transform.up * 7.0f, ForceMode.Impulse);
     }
-
 
     //점프버튼
     public void JumpButton()
@@ -234,12 +235,14 @@ public class Knight : Player, BattleSystem
                 break;
             case State.Battle:
                 
-                    myAnim.SetTrigger("Attack");
+                myAnim.SetTrigger("Attack");
                 break;
         }
 
     }
 
+    //무기 바꿀때
+    //오디오 나중에 다른거 넣기!!
     public void WPChange_Btn()
     {
         if (!myAnim.GetBool("IsChange"))
@@ -248,10 +251,11 @@ public class Knight : Player, BattleSystem
             {
                 case State.Relax:
                     ChangeState(State.Battle);
-
+            
                     break;
                 case State.Battle:
                     ChangeState(State.Relax);
+          
                     if (WeightChange != null)
                     {
                         StopCoroutine(WeightChange);
@@ -264,74 +268,6 @@ public class Knight : Player, BattleSystem
     }
 
 
-    public void HitCheck()
-    {
-        
-    }
-
-    //어퍼 어택 했을때 루틴
-    public void UpperHitCheck()
-    {
-        //HitEffect.gameObject.SetActive(true);
-        myCol = Physics.OverlapSphere(AttackSpot.position, 1.0f,1<<LayerMask.NameToLayer("Monster"));
-        if(myCol.Length != 0)
-        { 
-            for(int i=0;i<myCol.Length;i++)
-            {
-                if (myCol[i].GetComponent<BattleSystem>().OnDamage(3))
-                {
-                    myCol[i].GetComponent<Rigidbody>().AddForce(this.transform.up * 12.5f, ForceMode.VelocityChange);
-                    Soldier Temp = myCol[i].GetComponent<Soldier>();
-                    Temp.myAnim.SetBool("OnAir", true);
-                    StartCoroutine(CheckDelay(Temp));                   
-                }
-                else
-                    return;
-            }
-            myAnim.SetBool("IsHit", true);
-            myAnim.SetTrigger("Attack");
-        }
-
-        myCol = null;
-    }
-
-    IEnumerator CheckDelay(Soldier Temp)
-    {
-        yield return new WaitForSeconds(1.0f);
-        Temp.CheckFloor();
-    }
-
-    //어퍼로 올리고 점프할때
-    public void JumpAttack()
-    {
-        myRigid.AddForce(this.transform.up * 10.0f, ForceMode.VelocityChange);
-        myAnim.SetBool("IsHit", false);
-        Time.timeScale = 0.5f;
-
-    }
-    
-    // 내려찍을때
-    public void JumpAttackCheck()
-    {
-        //HitEffect.gameObject.SetActive(true);
-        myCol = Physics.OverlapSphere(AttackSpot.position, 1.0f, 1 << LayerMask.NameToLayer("Monster"));
-        if (myCol != null)
-        {
-            for (int i = 0; i < myCol.Length; i++)
-            {
-                myCol[i].GetComponent<Rigidbody>().AddForce((myDirecTion + (-this.transform.up)).normalized * 10.0f, ForceMode.VelocityChange);
-            }
-        }
-        myCol = null;
-        //HitEffect.gameObject.SetActive(false);
-        Time.timeScale = 1.0f;
-    }
-    
-
-    public void FootSound()
-    {
-
-    }
 
     //착지할때 이펙트켜줌
     public void Landing()
@@ -361,18 +297,21 @@ public class Knight : Player, BattleSystem
     //오른쪽으로 후리면 0 , 왼쪽은 1 , 가운데는 2
     public void SwordAttack(int index)
     {
-        myCol = Physics.OverlapSphere(AttackSpot.position, 1.0f, 1 << LayerMask.NameToLayer("Monster"));
+        myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[Random.Range(6, 8)]);
+        myCol = Physics.OverlapSphere(AttackSpot.position, 2.0f, 1 << LayerMask.NameToLayer("Monster"));
         if (myCol != null)
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5));
+                myAnim.SetBool("Block", false);
             }
         }
         myCol = null;
     }
 
-    
+
+
 
     //오른쪽 펀치 공격할때
     public void RPunchAttack()
@@ -382,7 +321,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(GameData.Instance.playerdata.ATK-5, GameData.Instance.playerdata.ATK+5));
             }
         }
         myCol = null;
@@ -395,20 +334,23 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5));
             }
         }
         myCol = null;
     }
 
     //맞았을때
-    public bool OnDamage(int index)
+    public bool OnDamage(int index, float damage)
     {
+        Uianim.SetTrigger("HPhit");
+        
 
-        if(myAnim.GetBool("IsBlock"))
+        //방패로 막고있다면
+        if (myAnim.GetBool("IsBlock"))
         {
             int rand = Random.Range(1, 11);
-
+            myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[3]);
             switch (index)
             {
                 //오른쪽 맞았을때
@@ -419,20 +361,24 @@ public class Knight : Player, BattleSystem
                 //왼쪽 맞았을때
                 case 1:
                     myAnim.SetTrigger("BlockHitL");
-                    break;
-                        
-
+                    break;        
             }
 
-            if(rand < 9)
+            DamageT = (int)((damage - GameData.Instance.playerdata.DEF) * 0.5f);
+            GameObject obj = ObjectPool.Instance.ObjectManager[4].Get();
+            obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), 1);
+            GameData.Instance.playerdata.CurHP -= DamageT;
+            UIManager.Instance.SetHP();
+
+            //일정 확률로 리턴을 하여 스턴시킴
+            if (rand < 9)
             {
                 return false;
             }
-            
-
         }
         else
         {
+            myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
             switch (index)
             {
                 //오른쪽 맞았을때
@@ -444,11 +390,13 @@ public class Knight : Player, BattleSystem
                 case 1:
                     myAnim.SetTrigger("GetHitL");
                     break;
-
-
             }
+            DamageT = (int)(damage - GameData.Instance.playerdata.DEF);
+            GameObject obj = ObjectPool.Instance.ObjectManager[4].Get();
+            obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), 2);
+            GameData.Instance.playerdata.CurHP -= DamageT;
+            UIManager.Instance.SetHP();
         }
-        
         return true;
     }
 

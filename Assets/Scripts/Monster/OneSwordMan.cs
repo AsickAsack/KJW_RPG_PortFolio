@@ -19,7 +19,7 @@ public class OneSwordMan : Soldier
 
             case S_State.Battle:
                 myAnim.SetTrigger("GoBattle");
-                StartCoroutine(GoBattle(3.0f));
+                StartCoroutine(GoBattle(1.7f));
                 break;
             case S_State.OnAir:
                 Time.timeScale = 0.5f;
@@ -38,6 +38,7 @@ public class OneSwordMan : Soldier
                 break;
             case S_State.Death:
                 Move = false;
+                Death();
                 break;
 
         }

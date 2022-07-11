@@ -63,7 +63,7 @@ public class GameData : MonoBehaviour
         }
 
         public Difficulty difficulty = Difficulty.Normal;
-       // public List<Item> myItems = new List<Item>();
+        public List<Item> myItems = new List<Item>();
 
 
         #region 플레이어 스텟
@@ -90,7 +90,7 @@ public class GameData : MonoBehaviour
         }
         public int StatPoint = 0;
         public int SkillPoint = 1;
-        private int _ATK = 10;
+        private int _ATK = 50;
         public int ATK
         {
             get

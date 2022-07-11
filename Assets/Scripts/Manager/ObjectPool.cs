@@ -8,45 +8,29 @@ public class ObjectPool : MonoBehaviour
 
     public static ObjectPool Instance;
 
-    public ObjectPool<GameObject>[] ObjectManager = new ObjectPool<GameObject>[10];
-    public GameObject BulletPf;
-    public GameObject SkillBulletPf;
-    public GameObject CoinPf;
-    public GameObject SlimePf;
-    public GameObject SlimeEtcPf;
-    public GameObject TurtleShellPf;
-    public GameObject TurtleShellEtcPf;
-    public GameObject MolePf;
-    public GameObject MoleEtcPf;
-    public GameObject DamageTextPf;
+    public ObjectPool<GameObject>[] ObjectManager = new ObjectPool<GameObject>[5];
+    public ItemData[] itemDatas;
+    public GameObject DropItem;
+    public GameObject SwordMan;
+    public GameObject SpearMan;
+    public GameObject S_SwordMan;
+    public GameObject Damage_text;
 
     public Transform[] folder;
-    public Queue<GameObject> RedBullet = new Queue<GameObject>();
+
 
     private void Awake()
     {
 
         Instance = this;
 
-        for(int i=0;i<5;i++)
-        {
-            GameObject obj = Instantiate(BulletPf,Vector3.zero,Quaternion.identity, folder[0]);
-            RedBullet.Enqueue(obj);
-            obj.SetActive(false);
-        }
+        Init(0, DropItem);
+        Init(1, SwordMan);
+        Init(2, SpearMan);
+        Init(3, S_SwordMan);
+        Init(4, Damage_text);
 
 
-        Init(0, BulletPf);
-        Init(1, SkillBulletPf);
-        Init(2, CoinPf);
-        Init(3, SlimePf);
-        Init(4, SlimeEtcPf);
-        Init(5, TurtleShellPf);
-        Init(6, TurtleShellEtcPf);
-        Init(7, MolePf);
-        Init(8, MoleEtcPf);
-        Init(9, DamageTextPf);
- 
     }
 
     void Init(int index ,GameObject prefab)
@@ -66,9 +50,6 @@ public class ObjectPool : MonoBehaviour
         // 다시 가지고 올때
         actionOnRelease: (Obj) =>
         {  
-
-            
-
             Obj.gameObject.SetActive(false);
         },
         //타겟 오브젝트에게 적용할 함수
@@ -78,53 +59,22 @@ public class ObjectPool : MonoBehaviour
         }, maxSize: 5);
     }
 
-
-    public void DropItem(int index,int index2,Vector3 pos)
+    public GameObject GetItem(int index,Transform tr)
     {
-        
-     
-        GameObject DropTem = ObjectPool.Instance.ObjectManager[index].Get();
-        DropTem.transform.position = pos;
+        GameObject obj = ObjectManager[0].Get();
+        obj.transform.position = tr.transform.position;
+        obj.transform.rotation = tr.transform.rotation;
+        DropItem temp = obj.GetComponent<DropItem>();
+        temp.itemData = itemDatas[index];
 
-        GameObject DropTem2 = ObjectPool.Instance.ObjectManager[index2].Get();
-        DropTem2.transform.position = pos;
-
-        int RandomNum = Random.Range(0, 2);
-        Vector3 RandomVector = RandomNum <= 0 ? Vector3.left : Vector3.right;
-
-        DropTem.GetComponent<Rigidbody>().AddForce(Vector3.up * 200 + RandomVector * 100);
-        DropTem2.GetComponent<Rigidbody>().AddForce(Vector3.up * 200 + RandomVector * 100);
+        return obj;
 
     }
 
-    public GameObject GetBullet()
-    {
-        Debug.Log(RedBullet.Count);
-
-        if(RedBullet.Count > 0)
-        {
-            GameObject obj = RedBullet.Dequeue();
-            obj.GetComponent<TrailRenderer>().Clear();
-            obj.transform.SetParent(null);
-            
-            return obj;
-        }
-        else
-        {
-            return Instantiate(BulletPf, Vector3.zero, Quaternion.identity, folder[0]);
-
-        }
-    }
 
 
-    public void ReturnBullet(GameObject obj)
-    {
-        obj.transform.position = Vector3.zero;
-        obj.SetActive(false);
-        obj.transform.SetParent(folder[0]);
-        RedBullet.Enqueue(obj);
 
-    }
+    
 }
 
 

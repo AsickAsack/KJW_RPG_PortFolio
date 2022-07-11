@@ -23,21 +23,51 @@ SpriteAtlas:
     platformSettings: []
     packingSettings:
       serializedVersion: 2
-      padding: 4
+      padding: 8
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
-      enableTightPacking: 1
+      enableRotation: 0
+      enableTightPacking: 0
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
     variantMultiplier: 1
-    packables: []
+    packables:
+    - {fileID: 2800000, guid: 70baccf79cbc25949a54b6fbea114e6e, type: 3}
+    - {fileID: 2800000, guid: 853c626822ec975439df9413571c69ca, type: 3}
+    - {fileID: 2800000, guid: 02be0b564d6c5014c966c2c1c4d705b3, type: 3}
+    - {fileID: 2800000, guid: 4d1ed8092eb73594393aaf70c956700e, type: 3}
+    - {fileID: 21300000, guid: d9d9d7a334eaf4d7d96c3a4e1a109181, type: 3}
+    - {fileID: 21300000, guid: 9a30b28dc9fba4e12a839773a1f10288, type: 3}
+    - {fileID: 21300000, guid: 19fc09e12aad74e8dbde74e7956fdb4d, type: 3}
+    - {fileID: 21300000, guid: be560d80c4ca6416a9114a4ad8e0a6a4, type: 3}
+    - {fileID: 21300000, guid: 80aef1228d61741ee8d79e5f7edbdd0a, type: 3}
+    - {fileID: 21300000, guid: 99ad9f32eed8c418fb0be27b889278ee, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
-  m_PackedSprites: []
-  m_PackedSpriteNamesToIndex: []
+  m_PackedSprites:
+  - {fileID: 21300000, guid: be560d80c4ca6416a9114a4ad8e0a6a4, type: 3}
+  - {fileID: 21300000, guid: 19fc09e12aad74e8dbde74e7956fdb4d, type: 3}
+  - {fileID: 21300000, guid: 80aef1228d61741ee8d79e5f7edbdd0a, type: 3}
+  - {fileID: 21300000, guid: 99ad9f32eed8c418fb0be27b889278ee, type: 3}
+  - {fileID: 21300000, guid: d9d9d7a334eaf4d7d96c3a4e1a109181, type: 3}
+  - {fileID: 21300000, guid: 02be0b564d6c5014c966c2c1c4d705b3, type: 3}
+  - {fileID: 21300000, guid: 70baccf79cbc25949a54b6fbea114e6e, type: 3}
+  - {fileID: 21300000, guid: 853c626822ec975439df9413571c69ca, type: 3}
+  - {fileID: 21300000, guid: 4d1ed8092eb73594393aaf70c956700e, type: 3}
+  - {fileID: 21300000, guid: 9a30b28dc9fba4e12a839773a1f10288, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Slider10_Frame
+  - CardCharacter_l_Dim_Dark_Sample01
+  - Slider07_Fill_Red
+  - Slider09_Fill_Orange
+  - Joystick_Skill_Frame_04
+  - arrow-133-512
+  - sword (1)
+  - shield
+  - exchange
+  - CardFrame02,03_BackFrame_n_Blue
   m_RenderDataMap: {}
   m_Tag: SaveMyMemory
   m_IsVariant: 0

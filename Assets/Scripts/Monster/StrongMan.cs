@@ -19,7 +19,7 @@ public class StrongMan : Soldier
 
             case S_State.Battle:
                 myAnim.SetTrigger("GoBattle");
-                StartCoroutine(GoBattle(3.0f));
+                StartCoroutine(GoBattle(1.7f));
                 break;
             case S_State.OnAir:
                 Time.timeScale = 0.5f;

@@ -45,5 +45,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myBgmClip: []
-  myEffectClip: []
+  myEffectClip:
+  - {fileID: 8300000, guid: d201b8260386c8a41bfc0206c2003469, type: 3}
+  - {fileID: 8300000, guid: fbcafc71369287e4faa19c97665a531a, type: 3}
+  - {fileID: 8300000, guid: 69241beee4f2de245b6021f0e973dce3, type: 3}
+  - {fileID: 8300000, guid: 103934a73ec5f7e4bad8d578f36e5406, type: 3}
+  - {fileID: 8300000, guid: 814531f26d486284988e921276820a9d, type: 3}
+  - {fileID: 8300000, guid: ad803ce0fa7b0614ca30270419d55361, type: 3}
+  - {fileID: 8300000, guid: 83c4dc20746f44742a7656e70e5718ec, type: 3}
+  - {fileID: 8300000, guid: 38d14ba9e1378f44490bf3a009f7200d, type: 3}
+  - {fileID: 8300000, guid: 34e50e3e426642344ad68a8c48027681, type: 3}
+  - {fileID: 8300000, guid: fffac9a50cb2abe41adcb76757547ed7, type: 3}
   EffectSource: []

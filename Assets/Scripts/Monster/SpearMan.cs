@@ -14,12 +14,15 @@ public class SpearMan : Soldier
         switch (myState)
         {
             case S_State.Patrol:
+                myAnim.SetBool("IsBattle", false);
                 myAnim.SetTrigger("GoIdle");
                 break;
 
             case S_State.Battle:
+                myAnim.SetBool("IsBattle", true);
                 myAnim.SetTrigger("GoBattle");
-                StartCoroutine(GoBattle(3.0f));
+                
+                StartCoroutine(GoBattle(1.7f));
                 break;
             case S_State.OnAir:
                 Time.timeScale = 0.5f;
@@ -37,6 +40,7 @@ public class SpearMan : Soldier
 
                 break;
             case S_State.Death:
+                Death();
                 Move = false;
                 break;
 
