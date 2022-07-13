@@ -31,7 +31,8 @@ public struct Stat
 
 public abstract class Soldier : MonoBehaviour, BattleSystem
 {
-
+    #region 오디오소스,리지드바디,애니메이터 프로퍼티
+    
     private AudioSource _myAudio;
     public AudioSource myAudio
     {
@@ -63,7 +64,11 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         }
     }
 
+    #endregion
 
+    #region 변수들, 추상함수들
+
+    protected SkinnedMeshRenderer myRenderer;
     [SerializeField]
     protected SoldierData myData;
     [SerializeField]
@@ -83,18 +88,25 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     protected Coroutine StunCo;
     public float HitTime = 0.0f;
     public Button Killbtn;
+
+    //많이쓰는 변수 멤버변수로 선언
     int Rand;
-    bool IsBattle;
+    int ItemRand;
     float DamageT;
 
-    public abstract void ChangeState(S_State s);
+    //추상함수
+    public abstract void Death();
 
+    #endregion
+
+    #region 어웨이크,스타트,업데이트
 
     // 로딩중 스텟 적용
     private void Awake()
     {
         myStat = new Stat();
         myStat.InitStat(myData.SoldierName, myData.MaxHP, myData.HP, myData.ATK, myData.DEF, myData.Speed, myData.AttackDelay, myData.EXP);
+        myRenderer = this.GetComponentInChildren<SkinnedMeshRenderer>();
     }
 
     private void Start()
@@ -102,47 +114,25 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         SoundManager.Instance.AddEffectSource(this.GetComponent<AudioSource>());
     }
 
-
-
-    //몬스터의 상태
-    public enum S_State
-    {
-        Patrol, Battle, Death, OnAir, Stun
-    }
-
-    //패트롤로 시작
-    public S_State myState = S_State.Patrol;
-
     private void Update()
     {
         HpCanvas.transform.rotation = Camera.main.transform.rotation;
         StateProcess();
     }
 
+    #endregion
 
-
-    protected IEnumerator GoBattle(float time)
+    //몬스터의 상태
+    public enum S_State
     {
-        yield return new WaitForSeconds(time);
-        IsBattle = true;
-        myAnim.SetBool("IsWalk", true);
+        Patrol, Battle, Death, Stun
     }
 
-    //아이들 상태로 갈때
-    public void HideSword()
-    {
-        Sword.SetActive(false);
-        BackSword.SetActive(true);
+    //패트롤로 시작
+    public S_State myState = S_State.Patrol;
 
-    }
 
-    //배틀 상태로 
-    public void GetSword()
-    {
-        Sword.SetActive(true);
-        BackSword.SetActive(false);
 
-    }
 
     public void FootR()
     {
@@ -154,6 +144,55 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[8]);
     }
 
+    public void ChangeState(S_State s)
+    {
+        if (myState.Equals(s)) return;
+
+        myState = s;
+
+        switch (myState)
+        {
+            case S_State.Patrol:
+                myAnim.SetBool("IsWalk", false);
+                break;
+
+            case S_State.Battle:
+                myAnim.SetBool("IsWalk", true);
+                break;
+            case S_State.Stun:
+
+                Move = false;
+                if (StunCo == null)
+                    StunCo = StartCoroutine(Stun(3.0f));
+                else
+                {
+                    StopCoroutine(StunCo);
+                    StunCo = StartCoroutine(Stun(3.0f));
+                }
+
+                break;
+            case S_State.Death:
+                Death();
+                Move = false;
+                HpCanvas.gameObject.SetActive(false);
+                StartCoroutine(DeathAfter(2.0f));
+                break;
+
+        }
+    }
+
+    IEnumerator DeathAfter(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        while(this.transform.position.y > -10.0f)
+        {
+            this.transform.position += Vector3.down * Time.deltaTime*0.5f;
+            yield return null;
+        }
+
+        this.transform.gameObject.SetActive(false);
+    }
 
     void StateProcess()
     {
@@ -167,43 +206,40 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         switch (myState)
         {
             case S_State.Patrol:
-                if (Detect.Enemy.Count > 0)
-                {
-                    ChangeState(S_State.Battle);
-                }
-
+                
+                Patrol();
                 break;
             case S_State.Battle:
                 BattleState();
 
                 break;
-            case S_State.OnAir:
-                break;
-
             case S_State.Stun:
 
                 break;
 
 
             case S_State.Death:
-              
+          
                 break;
         }
     }
 
-    public void SetHp()
+    public void Patrol()
     {
-        HPSlider.value = myStat.HP / myStat.MaxHP;
+        if (Detect.Enemy.Count > 0)
+        {
+            ChangeState(S_State.Battle);
+        }
+
     }
 
-
-    //죽었을때
-    protected void Death()
+    //리지드바디 이동
+    private void FixedUpdate()
     {
-        myAnim.SetTrigger("Death");
-        SoundManager.Instance.DeleteEffectSource(this.GetComponent<AudioSource>());
-        ObjectPool.Instance.GetItem(0, this.transform);
+        if (Move && HitTime < 0.1f && myState != S_State.Stun && !myAnim.GetBool("IsAttack") && myState != S_State.Patrol)
+            myRigid.MovePosition(this.transform.position + Dir.normalized * Time.deltaTime * myStat.Speed);
     }
+
 
     //스턴 걸렸을때
     protected IEnumerator Stun(float time)
@@ -261,7 +297,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
         //힛타임이 없어지면 공격 루틴
 
-        if (HitTime < 0.1f && IsBattle)
+        if (HitTime < 0.1f && Detect.Enemy.Count != 0)
         {
             //거리가 2.0f보다 크다면
             if (Vector3.Distance(this.transform.position, Detect.Enemy[0].transform.position) > 2.0f)
@@ -296,14 +332,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         AttackDelay = null;
     }
 
-    //리지드바디 이동
-    private void FixedUpdate()
-    { 
-        if(Move && HitTime < 0.1f && myState != S_State.Stun && !myAnim.GetBool("IsAttack"))
-        myRigid.MovePosition(this.transform.position +Dir.normalized * Time.deltaTime * myStat.Speed);
-    }
-
-
     //때렸을때
     public void OnAttack(int index)
     {
@@ -328,6 +356,8 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     //데미지 입었을때의 로직
     public bool OnDamage(int index,float damage)
     {
+        StartCoroutine(HitColor(myRenderer.material));
+
         //방패로 막힘
         Rand = Random.Range(1, 11);
         if(Rand < 3)
@@ -335,16 +365,11 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[3]);
             myAnim.SetTrigger("GetHitS");
 
-            DamageT = (int)((damage - myStat.DEF) * 0.5f);
-            GameObject obj = ObjectPool.Instance.ObjectManager[4].Get();
-            obj.GetComponent<DamageText>()?.SetText(this.transform, DamageT.ToString(), 1);
-            myStat.HP -= DamageT;
-            SetHp();
-
+            DamageRoutine((int)((damage - myStat.DEF) * 0.5f), 1);
             return false;
         }
 
-        //주먹으로 쳤을때
+        //주먹으로 쳤을때 소리 넣기
         myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
 
         switch (index)
@@ -363,19 +388,51 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 break;
             case 4:
                 myAnim.SetTrigger("OneShot");
-                ChangeState(S_State.Death);
-                break;
+                DamageRoutine(myStat.HP, 0);
+                return true;
         }
-        DamageT = damage - myStat.DEF;
-        GameObject obj1 = ObjectPool.Instance.ObjectManager[4].Get();
-        obj1.GetComponent<DamageText>()?.SetText(this.transform, DamageT.ToString(), 0);
-        myStat.HP -= DamageT;
-        SetHp();
+
+        DamageRoutine((int)(damage - myStat.DEF), 0);
 
         return true;
     }
 
-   
+    //데미지 텍스트 오브젝트풀, 데미지 세팅과정
+    public void DamageRoutine(float damage,int index)
+    {
+        DamageT = damage;
+        GameObject obj1 = ObjectPool.Instance.ObjectManager[4].Get();
+        obj1.GetComponent<DamageText>()?.SetText(this.transform, DamageT.ToString(), index);
+        myStat.HP -= DamageT;
+        SetHp();
+    }
 
-   
+    //맞을때마다 HP바 갱신
+    public void SetHp()
+    {
+        HPSlider.value = myStat.HP / myStat.MaxHP;
+    }
+
+    //맞았을때 색변화
+    IEnumerator HitColor(Material mat)
+    {
+        mat.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        mat.color = Color.white;
+    }
+
+    //드랍아이템 정하는 함수
+    protected void dropRand(int index, int MinMoney, int MaxMoney)
+    {
+        ObjectPool.Instance.GetItem(index, this.transform, MinMoney, MaxMoney);
+
+    }
+
+    private void OnEnable()
+    {
+        HpCanvas.gameObject.SetActive(true);
+        myStat.InitStat(myData.SoldierName, myData.MaxHP, myData.HP, myData.ATK, myData.DEF, myData.Speed, myData.AttackDelay, myData.EXP);
+    }
+
+    
 }

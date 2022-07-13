@@ -37,7 +37,30 @@ public class GameData : MonoBehaviour
 
     public PlayerData playerdata = new PlayerData();
     public Queue<string> EventString = new Queue<string>();
+    public UnityAction NotAction;
+    private Coroutine Notify;
 
+    public void SetNotify(string not)
+    {
+        EventString.Enqueue(not);
+
+        if (Notify == null)
+            Notify = StartCoroutine(NotifyRoutine());
+        
+
+    }
+
+    IEnumerator NotifyRoutine()
+    {
+        while(EventString.Count > 0)
+        {
+            NotAction?.Invoke();
+
+            yield return null;
+        }
+
+        Notify = null;
+    }
 
     public void Save(object SaveData,string SaveFileName)
     {
@@ -64,7 +87,9 @@ public class GameData : MonoBehaviour
 
         public Difficulty difficulty = Difficulty.Normal;
         public List<Item> myItems = new List<Item>();
-
+        public Item Helmet;
+        public Item Weapon;
+        public Item Shoes;
 
         #region 플레이어 스텟
 
@@ -75,89 +100,108 @@ public class GameData : MonoBehaviour
             set
             {
 
-                if(value != _Level)
+                if (value != _Level)
                 {
                     StatPoint += 3;
                     SkillPoint += 3;
+                    MaxHP += 50;
+                    CurHP = MaxHP;
+                    MaxMP += 50;
+                    CurMP = MaxMP;          
                 }
 
                 _Level = value;
-
+                MaxEXP = Level * 100;
+                UIManager.Instance.SetAll();
                 GameData.Instance.EventString.Enqueue("레벨 " + Level + "이 되었습니다!");
-                //맥스 HP,MP,SP업
+
             }
 
         }
         public int StatPoint = 0;
         public int SkillPoint = 1;
-        private int _ATK = 50;
+        public int _ATK = 50;
         public int ATK
         {
             get
             {
-                
-                return _ATK + ATK_Point;
+                if (Weapon != null)
+                    return _ATK + (int)Weapon.itemData.value;
+                else
+                    return _ATK;
             }
 
             set => _ATK = value;
         }
 
-        private int _DEF = 10;
+        public int _DEF = 10;
         public int DEF
         {
             get
             {
-                
-                return _DEF + DEF_Point;
+                if (Helmet != null)
+                    return _DEF + (int)Helmet.itemData.value;
+                else
+                    return _DEF;
             }
 
             set => _DEF = value;
         }
-        private float _MoveSpeed = 3;
+        public float _MoveSpeed = 3;
         public float MoveSpeed
         {
             get
             {
-                
-                return _MoveSpeed+(float)(Speed_Point * 0.05f);
+                if (Shoes != null)
+                    return _MoveSpeed + (int)Shoes.itemData.value;
+                else
+                    return _MoveSpeed;
             }
 
             set => _MoveSpeed = value;
         }
         //눈속임용 스텟
-        public float StatSpeed
-        {
-            get
-            {
-                return _MoveSpeed + Speed_Point;
-            }
-            private set => _MoveSpeed = value;
-        }
+        public float StatSpeed = 3;
 
 
 
-        public int ATK_Point = 0;
-        public int DEF_Point = 0;
-        public int Speed_Point = 0;
+
 
 
         private float _CurHP = 200;
         public float CurHP
         {
             get => _CurHP;
-            set => _CurHP = value;
+            set {
+                if (value > MaxHP)
+                    _CurHP = MaxHP;
+                else
+                    _CurHP = value;
+            }
         }
         private float _MaxHP = 200;
         public float MaxHP
         {
-            get => _MaxHP;
+            get
+            {
+                if (Helmet != null)
+                    return _MaxHP + (int)Helmet.itemData.value + 50;
+                else
+                    return _MaxHP;
+            }
             set => _MaxHP = value;
         }
         private float _CurMP = 100;
         public float CurMP
         {
             get => _CurMP;
-            set => _CurMP = value;
+            set
+            {
+                if (value > _MaxMP)
+                    _CurMP = _MaxMP;
+                else
+                    _CurMP = value;
+            }
         }
         private float _MaxMP = 100;
         public float MaxMP
@@ -172,20 +216,19 @@ public class GameData : MonoBehaviour
             get => _MaxSP;
             set => _MaxSP = value;
         }
-        private float _CurEXP = 50;
+        private float _CurEXP = 0;
         public float CurEXP
         {
             get => _CurEXP;
             set
             {
                 _CurEXP = value;
-                if (_CurEXP > _MaxEXP)
+                if (_CurEXP >= _MaxEXP)
                 {
                     float temp = _CurEXP - _MaxEXP;
                     _CurEXP = temp;
                     Level += 1;
-                    // 최대 EXP어떻게할지 _MaxEXP = 
-                }
+                 }
             }
         }
         private float _MaxEXP = 100;

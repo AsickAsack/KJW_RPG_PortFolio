@@ -11,14 +11,19 @@ public class UseItemData : ItemData
         {
             //hp포션
             case 0:
+                GameData.Instance.playerdata.CurHP += this.value;
+                UIManager.Instance.SetHP();
+
                 break;
 
             //mp포션
             case 1:
+                GameData.Instance.playerdata.CurMP += this.value;
+                UIManager.Instance.SetMp();
                 break;
 
         }
-        
+        //potion빠는 bgm        
     }
 
     

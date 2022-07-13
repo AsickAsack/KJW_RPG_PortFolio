@@ -3051,12 +3051,28 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3676831155719167567}
     m_Modifications:
+    - target: {fileID: 206546082693761463, guid: ad40ba3008c43f54d81281d1d6d2c43d, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4132241638005378074, guid: ad40ba3008c43f54d81281d1d6d2c43d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4132241638005378074, guid: ad40ba3008c43f54d81281d1d6d2c43d, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5852214342569998480, guid: ad40ba3008c43f54d81281d1d6d2c43d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5852214342569998480, guid: ad40ba3008c43f54d81281d1d6d2c43d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5852214342569998480, guid: ad40ba3008c43f54d81281d1d6d2c43d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8805769526841365743, guid: ad40ba3008c43f54d81281d1d6d2c43d, type: 3}

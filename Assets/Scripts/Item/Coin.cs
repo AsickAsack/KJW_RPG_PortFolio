@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public int gold = 0;
+    public Rigidbody myRigid;
+
+    private void Start()
     {
-        
+        myRigid.AddForce(Vector3.up * 400.0f + -Vector3.right * 400.0f);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnCollisionEnter(Collision collision)
     {
-        
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+
+            GameData.Instance.playerdata.money += gold;
+            ObjectPool.Instance.ObjectManager[5].Release(this.gameObject);
+
+        }
+
     }
 }

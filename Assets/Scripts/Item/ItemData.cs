@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum ItemType
 {
-    Equip,Use,Etc
+    Equip,Use,Etc,Gold
 }
 
 

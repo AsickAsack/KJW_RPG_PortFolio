@@ -33,6 +33,7 @@ public class Knight : Player, BattleSystem
     public State myState = State.Relax;
     public Rig AnimationRig;
     public LayerMask JumpMask;
+    public SkinnedMeshRenderer myRenderer;
     float DamageT;
 
 
@@ -136,7 +137,7 @@ public class Knight : Player, BattleSystem
                 if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block"))
                 {
                     myAnim.SetBool("IsRWalk", true);
-                    myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * 4.0f);
+                    myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
                 }
                 else
                     myAnim.SetBool("IsRWalk", false);
@@ -147,7 +148,7 @@ public class Knight : Player, BattleSystem
                 if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block"))
                 {
                     myAnim.SetBool("IsWalk", true);
-                    myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * 4.0f);
+                    myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
                 }
                 else
                     myAnim.SetBool("IsWalk", false);
@@ -310,7 +311,7 @@ public class Knight : Player, BattleSystem
         myCol = null;
     }
 
-
+    //맨손으로 죽일때도
 
 
     //오른쪽 펀치 공격할때
@@ -321,7 +322,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(GameData.Instance.playerdata.ATK-5, GameData.Instance.playerdata.ATK+5));
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(GameData.Instance.playerdata.ATK-5, GameData.Instance.playerdata.ATK+5)*0.5f);
             }
         }
         myCol = null;
@@ -334,7 +335,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5));
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5)*0.5f);
             }
         }
         myCol = null;
@@ -344,7 +345,7 @@ public class Knight : Player, BattleSystem
     public bool OnDamage(int index, float damage)
     {
         Uianim.SetTrigger("HPhit");
-        
+        StartCoroutine(HitColor(myRenderer.material));
 
         //방패로 막고있다면
         if (myAnim.GetBool("IsBlock"))
@@ -364,14 +365,10 @@ public class Knight : Player, BattleSystem
                     break;        
             }
 
-            DamageT = (int)((damage - GameData.Instance.playerdata.DEF) * 0.5f);
-            GameObject obj = ObjectPool.Instance.ObjectManager[4].Get();
-            obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), 1);
-            GameData.Instance.playerdata.CurHP -= DamageT;
-            UIManager.Instance.SetHP();
+            DamageRoutine((int)((damage - GameData.Instance.playerdata.DEF) * 0.5f), 1);
 
             //일정 확률로 리턴을 하여 스턴시킴
-            if (rand < 9)
+            if (rand < 9 && !myAnim.GetBool("IsRelax"))
             {
                 return false;
             }
@@ -391,13 +388,19 @@ public class Knight : Player, BattleSystem
                     myAnim.SetTrigger("GetHitL");
                     break;
             }
-            DamageT = (int)(damage - GameData.Instance.playerdata.DEF);
-            GameObject obj = ObjectPool.Instance.ObjectManager[4].Get();
-            obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), 2);
-            GameData.Instance.playerdata.CurHP -= DamageT;
-            UIManager.Instance.SetHP();
+
+            DamageRoutine((int)(damage - GameData.Instance.playerdata.DEF), 2);
         }
         return true;
+    }
+
+    public void DamageRoutine(float Damage, int index)
+    {
+        DamageT = Damage < 0 ? 0 : Damage;
+        GameObject obj = ObjectPool.Instance.ObjectManager[4].Get();
+        obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), index);
+        GameData.Instance.playerdata.CurHP -= DamageT;
+        UIManager.Instance.SetHP();
     }
 
     public void BlockBtn()
@@ -406,4 +409,13 @@ public class Knight : Player, BattleSystem
         IsBlock = !IsBlock;
         myAnim.SetBool("Block", IsBlock);
     }
+
+    IEnumerator HitColor(Material mat)
+    {
+        mat.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        mat.color = Color.white;
+    }
+
+
 }

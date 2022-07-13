@@ -15,7 +15,7 @@ MonoBehaviour:
   SoldierName: "\uC2A4\uD53C\uC5B4\uB9E8"
   MaxHP: 125
   HP: 125
-  ATK: 30
+  ATK: 40
   DEF: 10
   Speed: 3
   AttackDelay: 5

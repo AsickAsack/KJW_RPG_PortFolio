@@ -15,9 +15,9 @@ MonoBehaviour:
   ItemCode: 2
   myType: 0
   ItemName: "\uAC15\uCCA0 \uD22C\uAD6C"
-  ItemDes: "\uAC15\uCCA0\uB85C \uB9CC\uB4E0 \uD22C\uAD6C\uB2E4.\n\uCCB4\uB825\uACFC
-    \uBC29\uC5B4\uB825\uC744 \uC62C\uB824\uC900\uB2E4."
-  value: 50
+  ItemDes: "\uBC29\uC5B4\uB825 +20 \uCCB4\uB825 +100\n\n\uAC15\uCCA0\uB85C \uB9CC\uB4E0
+    \uD22C\uAD6C\uB2E4.\n\uCCB4\uB825\uACFC \uBC29\uC5B4\uB825\uC744 \uC62C\uB824\uC900\uB2E4."
+  value: 20
   BuyPrice: 5000
   SellPrice: 2500
   ItemImage: {fileID: 21300000, guid: b227c6c1c35b36940b602110d9556b13, type: 3}

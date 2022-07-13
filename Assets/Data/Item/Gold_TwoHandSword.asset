@@ -15,8 +15,8 @@ MonoBehaviour:
   ItemCode: 4
   myType: 0
   ItemName: "\uAE08 \uC591\uC190\uAC80"
-  ItemDes: "\uAE08\uC73C\uB85C \uC81C\uC791\uD55C \uC591\uC190\uAC80. \n\uC131\uB2A5\uC774
-    \uB6F0\uC5B4\uB098\uB2E4."
+  ItemDes: "\uACF5\uACA9\uB825 +100\n\uAE08\uC73C\uB85C \uC81C\uC791\uD55C \uC591\uC190\uAC80.
+    \n\uC131\uB2A5\uC774 \uB6F0\uC5B4\uB098\uB2E4."
   value: 100
   BuyPrice: 50000
   SellPrice: 25000

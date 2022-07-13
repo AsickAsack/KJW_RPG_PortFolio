@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3469095365662292003}
   - component: {fileID: 8116908020944677435}
   - component: {fileID: 8064658530838537703}
-  - component: {fileID: 847366757362279895}
+  - component: {fileID: -5298186885902629354}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Untagged
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2620161648062773365}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -116,7 +116,7 @@ CapsuleCollider:
   m_Height: 20.211657
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &847366757362279895
+--- !u!114 &-5298186885902629354
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,8 +125,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2620161648062773365}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3eb03cf2f4ae63b498d9956538a6a9d8, type: 3}
+  m_Script: {fileID: 11500000, guid: e064379f76825704582d4020f112a620, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemData: {fileID: 0}
+  gold: 0
   myRigid: {fileID: 8116908020944677435}

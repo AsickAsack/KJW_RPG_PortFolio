@@ -5,42 +5,18 @@ using UnityEngine;
 public class OneSwordMan : Soldier
 {
 
-    public override void ChangeState(S_State s)
+
+
+    //Á×¾úÀ»¶§
+    public override void Death()
     {
-        if (myState.Equals(s)) return;
+        myAnim.SetTrigger("Death");
+        SoundManager.Instance.DeleteEffectSource(this.GetComponent<AudioSource>());
+        myRigid.isKinematic = true;
+        dropRand(Random.Range(5, 8), 50, 100);
+        GameData.Instance.SetNotify(myData.EXP + "ÀÇ °æÇèÄ¡¸¦ È¹µæÇß½À´Ï´Ù.");
+        GameData.Instance.playerdata.CurEXP += myData.EXP;
+        UIManager.Instance.SetExp();
 
-        myState = s;
-
-        switch (myState)
-        {
-            case S_State.Patrol:
-                myAnim.SetTrigger("GoIdle");
-                break;
-
-            case S_State.Battle:
-                myAnim.SetTrigger("GoBattle");
-                StartCoroutine(GoBattle(1.7f));
-                break;
-            case S_State.OnAir:
-                Time.timeScale = 0.5f;
-                break;
-            case S_State.Stun:
-
-                Move = false;
-                if (StunCo == null)
-                    StunCo = StartCoroutine(Stun(3.0f));
-                else
-                {
-                    StopCoroutine(StunCo);
-                    StunCo = StartCoroutine(Stun(3.0f));
-                }
-
-                break;
-            case S_State.Death:
-                Move = false;
-                Death();
-                break;
-
-        }
     }
 }

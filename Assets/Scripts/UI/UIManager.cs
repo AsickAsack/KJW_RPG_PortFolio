@@ -15,14 +15,89 @@ public class UIManager : MonoBehaviour
     public Text EXPText;
     public Text LevelText;
 
+    [Header("[스텟 창 기능]")]
+
+    public Text StatLeveltx;
+    public Text StatATKtx;
+    public Text StatDeftx;
+    public Text StatSpeedTx;
+    public Text StatPointTx;
+    public GameObject[] Arrow;
+
+    public RectTransform[] NotifyPanel;
+    public Text[] NotifyText;
+    bool Notflag = true;
+    int Notindex = 0;
+
+    public void SetStatPopup()
+    {
+        StatLeveltx.text = GameData.Instance.playerdata.Level.ToString() + " LEVEL";
+        StatATKtx.text = GameData.Instance.playerdata.ATK.ToString();
+        StatDeftx.text = GameData.Instance.playerdata.DEF.ToString();
+        StatSpeedTx.text = GameData.Instance.playerdata.StatSpeed.ToString();
+        StatPointTx.text = GameData.Instance.playerdata.StatPoint.ToString();
+
+        if (GameData.Instance.playerdata.StatPoint > 0)
+        {
+            for(int i=0;i<Arrow.Length;i++)
+            Arrow[i].SetActive(true);
+        }
+    }
+
+    public void UpStatPoint(int index)
+    {
+        switch (index)
+        {
+            //공격력 찍었을때
+            case 0:
+                GameData.Instance.playerdata._ATK += 1;
+                StatATKtx.text = GameData.Instance.playerdata.ATK.ToString();
+                break;
+
+                //방어력 찍었을때
+            case 1:
+                GameData.Instance.playerdata._DEF += 1;
+                StatDeftx.text = GameData.Instance.playerdata.DEF.ToString();
+                break;
+            case 2:
+                GameData.Instance.playerdata._MoveSpeed += 0.1f;
+                GameData.Instance.playerdata.StatSpeed++;
+                StatSpeedTx.text = GameData.Instance.playerdata.StatSpeed.ToString();
+                break;
+        
+        }
+
+        GameData.Instance.playerdata.StatPoint--;
+
+        if (GameData.Instance.playerdata.StatPoint == 0)
+        {
+            for (int i = 0; i < Arrow.Length; i++)
+                Arrow[i].SetActive(false);
+        }
+
+        StatPointTx.text = GameData.Instance.playerdata.StatPoint.ToString();
+
+    }
+
     private void Awake()
     {
         Instance = this;
+        GameData.Instance.NotAction += Notify;
+
         SetHP();
         SetMp();
         SetExp();
         SetLevel();
     }
+
+    public void SetAll()
+    {
+        SetHP();
+        SetMp();
+        SetExp();
+        SetLevel();
+    }
+
 
     public void SetHP()
     {
@@ -47,5 +122,32 @@ public class UIManager : MonoBehaviour
         LevelText.text = "Lv." + GameData.Instance.playerdata.Level + "\nKnight";
     }
 
+    public void Notify()
+    {
+        if(Notflag)
+        {
+           Notflag = false;
+           StartCoroutine(MoveNoitfy(Notindex++ % 2));
+        }
+    }
+
+    IEnumerator MoveNoitfy(int index)
+    {
+        NotifyPanel[index].gameObject.SetActive(true);
+        NotifyText[index].text = GameData.Instance.EventString.Dequeue();
+        while (NotifyPanel[index].anchoredPosition.y > -50)
+        {
+            NotifyPanel[index].anchoredPosition += Vector2.down * Time.deltaTime * 200.0f;
+            yield return null;
+        }
+        while (NotifyPanel[index].anchoredPosition.y < 60)
+        {
+            NotifyPanel[index].anchoredPosition += Vector2.up * Time.deltaTime * 100.0f;
+            yield return null;
+        }
+        NotifyPanel[index].gameObject.SetActive(false);
+        Notflag = true;
+    }
+        
 
 }
