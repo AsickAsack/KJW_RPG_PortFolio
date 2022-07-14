@@ -12,14 +12,14 @@ public class Knight : Player, BattleSystem
 
     }
 
-    [Header("[ì¡°ì´ìŠ¤í‹± ì›€ì§ì„]")]
+    [Header("[Á¶ÀÌ½ºÆ½ ¿òÁ÷ÀÓ]")]
 
     public JoySticPanel myJoystic;
     Vector3 Dir = Vector3.zero;
     public GameObject MyChar = null;
     Quaternion MyCharRotate = Quaternion.identity;
 
-    [Header("[ì• ë‹ˆë©”ì´ì…˜ ê´€ë ¨]")]
+    [Header("[¾Ö´Ï¸ŞÀÌ¼Ç °ü·Ã]")]
 
     public GameObject RelaxSword;
     public GameObject AttackSword;
@@ -44,9 +44,9 @@ public class Knight : Player, BattleSystem
     Vector3 ClimbDir;
     bool IsBlock = false;
 
-    #region ìœ í•œìƒíƒœê¸°ê³„
+    #region À¯ÇÑ»óÅÂ±â°è
 
-    //ìƒíƒœê°€ ë°”ë€”ë•Œ
+    //»óÅÂ°¡ ¹Ù²ğ¶§
     public void ChangeState(State s)
     {
         if (myState == s) return;
@@ -72,9 +72,10 @@ public class Knight : Player, BattleSystem
             case State.Fly:
                 break;
         }
+
     }
 
-    //ì–‘ì†ê²€ì— ë¶™ì´ëŠ” IKë¥¼ ìì—°ìŠ¤ëŸ½ê²Œ ë¶™ì—¬ì¤€ë‹¤.
+    //¾ç¼Õ°Ë¿¡ ºÙÀÌ´Â IK¸¦ ÀÚ¿¬½º·´°Ô ºÙ¿©ÁØ´Ù.
     IEnumerator SetIK(float time)
     {
         yield return new WaitForSeconds(time);
@@ -85,7 +86,7 @@ public class Knight : Player, BattleSystem
         }    
     }
 
-    //ìƒíƒœë§ˆë‹¤ì˜ ì—…ë°ì´íŠ¸
+    //»óÅÂ¸¶´ÙÀÇ ¾÷µ¥ÀÌÆ®
     void StateProcess()
     {
        
@@ -108,6 +109,8 @@ public class Knight : Player, BattleSystem
         }
     }
 
+
+
     #endregion
 
     public void LadderCheck()
@@ -124,7 +127,7 @@ public class Knight : Player, BattleSystem
     }
 
 
-    // íšŒì „ë¡œì§
+    // È¸Àü·ÎÁ÷
     void KnighteRotate()
     {
         if (myJoystic.MoveOn && myJoystic.Dir != Vector3.zero && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block"))
@@ -144,7 +147,7 @@ public class Knight : Player, BattleSystem
 
     private void FixedUpdate()
     {
-        //ìŠ¤í…Œì´íŠ¸ë¡œ ì´ë™ì œí•œ ê±¸ê¸°
+        //½ºÅ×ÀÌÆ®·Î ÀÌµ¿Á¦ÇÑ °É±â
 
         switch (myState)
         {
@@ -199,9 +202,9 @@ public class Knight : Player, BattleSystem
 
 
 
-    #region ì• ë‹ˆë©”ì´ì…˜ í•¨ìˆ˜ë“¤
+    #region ¾Ö´Ï¸ŞÀÌ¼Ç ÇÔ¼öµé
 
-    //ì†ì´ ë–¼ì–´ì§€ëŠ” ì• ë‹ˆë©”ì´ì…˜ì¼ë•Œ IK Weight ì„¤ì •
+    //¼ÕÀÌ ¶¼¾îÁö´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀÏ¶§ IK Weight ¼³Á¤
     public void SetWeight(int Value)
     {
         if (WeightChange != null)
@@ -233,23 +236,21 @@ public class Knight : Player, BattleSystem
         }
     }
 
-    //ì• ë‹ˆë©”ì´ì…˜ íƒ€ì´ë°ì— ë§ì¶° ì í”„í•¨
+    //¾Ö´Ï¸ŞÀÌ¼Ç Å¸ÀÌ¹Ö¿¡ ¸ÂÃç Á¡ÇÁÇÔ
     void Jump()
     {
-        this.
         LandEffect.SetActive(false);
         myRigid.AddForce(this.transform.up * 7.0f, ForceMode.Impulse);
-        
     }
 
-    //ì í”„ë²„íŠ¼
+    //Á¡ÇÁ¹öÆ°
     public void JumpButton()
     { 
         myAnim.SetTrigger("Jump");
         StartCoroutine(Flying());
     }
 
-    //ì í”„ í›„ì— ë°”ë‹¥ì— ë ˆì´ì €ë¥¼ ì´ì„œ ì°©ì§€ í™•ì¸
+    //Á¡ÇÁ ÈÄ¿¡ ¹Ù´Ú¿¡ ·¹ÀÌÀú¸¦ ½÷¼­ ÂøÁö È®ÀÎ
     IEnumerator Flying()
     {
        yield return new WaitForSeconds(0.5f);
@@ -282,8 +283,8 @@ public class Knight : Player, BattleSystem
 
     }
 
-    //ë¬´ê¸° ë°”ê¿€ë•Œ
-    //ì˜¤ë””ì˜¤ ë‚˜ì¤‘ì— ë‹¤ë¥¸ê±° ë„£ê¸°!!
+    //¹«±â ¹Ù²Ü¶§
+    //¿Àµğ¿À ³ªÁß¿¡ ´Ù¸¥°Å ³Ö±â!!
     public void WPChange_Btn()
     {
         if (!myAnim.GetBool("IsChange"))
@@ -310,7 +311,7 @@ public class Knight : Player, BattleSystem
 
 
 
-    //ì°©ì§€í• ë•Œ ì´í™íŠ¸ì¼œì¤Œ
+    //ÂøÁöÇÒ¶§ ÀÌÆåÆ®ÄÑÁÜ
     public void Landing()
     {
         LandEffect.SetActive(true);
@@ -335,7 +336,7 @@ public class Knight : Player, BattleSystem
 
     #endregion
 
-    //ì˜¤ë¥¸ìª½ìœ¼ë¡œ í›„ë¦¬ë©´ 0 , ì™¼ìª½ì€ 1 , ê°€ìš´ë°ëŠ” 2
+    //¿À¸¥ÂÊÀ¸·Î ÈÄ¸®¸é 0 , ¿ŞÂÊÀº 1 , °¡¿îµ¥´Â 2
     public void SwordAttack(int index)
     {
         myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[Random.Range(6, 8)]);
@@ -351,10 +352,10 @@ public class Knight : Player, BattleSystem
         myCol = null;
     }
 
-    //ë§¨ì†ìœ¼ë¡œ ì£½ì¼ë•Œë„
+    //¸Ç¼ÕÀ¸·Î Á×ÀÏ¶§µµ
 
 
-    //ì˜¤ë¥¸ìª½ í€ì¹˜ ê³µê²©í• ë•Œ
+    //¿À¸¥ÂÊ ÆİÄ¡ °ø°İÇÒ¶§
     public void RPunchAttack()
     {
         myCol = Physics.OverlapSphere(RightHand.position, 1.0f, 1 << LayerMask.NameToLayer("Monster"));
@@ -381,25 +382,25 @@ public class Knight : Player, BattleSystem
         myCol = null;
     }
 
-    //ë§ì•˜ì„ë•Œ
+    //¸Â¾ÒÀ»¶§
     public bool OnDamage(int index, float damage)
     {
         Uianim.SetTrigger("HPhit");
         StartCoroutine(HitColor(myRenderer.material));
 
-        //ë°©íŒ¨ë¡œ ë§‰ê³ ìˆë‹¤ë©´
+        //¹æÆĞ·Î ¸·°íÀÖ´Ù¸é
         if (myAnim.GetBool("IsBlock"))
         {
             int rand = Random.Range(1, 11);
             myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[3]);
             switch (index)
             {
-                //ì˜¤ë¥¸ìª½ ë§ì•˜ì„ë•Œ
+                //¿À¸¥ÂÊ ¸Â¾ÒÀ»¶§
                 case 0:
                     myAnim.SetTrigger("BlockHitR");
                     break;
 
-                //ì™¼ìª½ ë§ì•˜ì„ë•Œ
+                //¿ŞÂÊ ¸Â¾ÒÀ»¶§
                 case 1:
                     myAnim.SetTrigger("BlockHitL");
                     break;        
@@ -407,7 +408,7 @@ public class Knight : Player, BattleSystem
 
             DamageRoutine((int)((damage - GameData.Instance.playerdata.DEF) * 0.5f), 1);
 
-            //ì¼ì • í™•ë¥ ë¡œ ë¦¬í„´ì„ í•˜ì—¬ ìŠ¤í„´ì‹œí‚´
+            //ÀÏÁ¤ È®·ü·Î ¸®ÅÏÀ» ÇÏ¿© ½ºÅÏ½ÃÅ´
             if (rand < 9 && !myAnim.GetBool("IsRelax"))
             {
                 return false;
@@ -418,12 +419,12 @@ public class Knight : Player, BattleSystem
             myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
             switch (index)
             {
-                //ì˜¤ë¥¸ìª½ ë§ì•˜ì„ë•Œ
+                //¿À¸¥ÂÊ ¸Â¾ÒÀ»¶§
                 case 0:
                     myAnim.SetTrigger("GetHitR");
                     break;
 
-                //ì™¼ìª½ ë§ì•˜ì„ë•Œ
+                //¿ŞÂÊ ¸Â¾ÒÀ»¶§
                 case 1:
                     myAnim.SetTrigger("GetHitL");
                     break;
