@@ -8,7 +8,7 @@ public class Knight : Player, BattleSystem
 
     public enum State
     {
-        Relax,Battle,Climb,Fly
+        Relax,Battle,Ladder,Fly
 
     }
 
@@ -66,7 +66,8 @@ public class Knight : Player, BattleSystem
                 WeightChange = StartCoroutine(SetIK(0.5f));
 
                 break;
-            case State.Climb:
+            case State.Ladder:
+                myRigid.useGravity = false;
                 break;
             case State.Fly:
                 break;
@@ -93,11 +94,14 @@ public class Knight : Player, BattleSystem
         {
             case State.Relax:
                 KnighteRotate();
+                LadderCheck();
                 break;
             case State.Battle:
+                
+
                 KnighteRotate();
                 break;
-            case State.Climb:
+            case State.Ladder:
 
                 break;
             case State.Fly:
@@ -108,6 +112,20 @@ public class Knight : Player, BattleSystem
 
 
     #endregion
+
+    public void LadderCheck()
+    {
+        Debug.DrawRay(this.transform.position, MyChar.transform.forward);
+        if(Physics.Raycast(this.transform.position, MyChar.transform.forward,0.5f,LayerMask.NameToLayer("Ladder")))
+        {
+            
+            myAnim.SetBool("IsLadder", true);
+            myAnim.SetTrigger("GoLadder"); 
+            ChangeState(State.Ladder);
+
+        }
+    }
+
 
     // 회전로직
     void KnighteRotate()
@@ -154,7 +172,30 @@ public class Knight : Player, BattleSystem
                     myAnim.SetBool("IsWalk", false);
                 break;
 
-          
+            case State.Ladder:
+                {
+                    if (myJoystic.MoveOn)
+                    {
+                        if (myJoystic.Dir.z > 0)
+                        {
+                            myAnim.SetInteger("LadderIndex", 1);
+                            myRigid.MovePosition(this.transform.position + Vector3.up * Time.deltaTime * 2.0f);
+                        }
+                        else if (myJoystic.Dir.z < 0)
+                        {
+                            myAnim.SetInteger("LadderIndex", 2);
+                            myRigid.MovePosition(this.transform.position + Vector3.down * Time.deltaTime * 2.0f);
+                        }
+                    }
+                    else
+                    {
+                        myAnim.SetInteger("LadderIndex", 0);
+
+                    }
+                    
+                }
+                break;
+
 
         }
     }
