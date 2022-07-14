@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using System.Diagnostics;
+using System.ComponentModel;
 
 public class ObjectPool : MonoBehaviour
 {
@@ -22,7 +24,8 @@ public class ObjectPool : MonoBehaviour
 
     private void Awake()
     {
-
+        int nProcessID = Process.GetCurrentProcess().Id;
+        UnityEngine.Debug.Log(nProcessID);
         Instance = this;
 
         Init(0, DropItem);
@@ -38,23 +41,23 @@ public class ObjectPool : MonoBehaviour
     void Init(int index ,GameObject prefab)
     {
         ObjectManager[index] = new ObjectPool<GameObject>(
-        //»õ·Î¿î ¿ÀºêÁ§Æ®¸¦ »ý¼ºÇÒ¶§
+        //ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
         createFunc: () =>
         {
             var CreateObj = Instantiate(prefab,folder[index]);
             return CreateObj;
         },
-        //°¡Á®°¥¶§
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         actionOnGet: (Obj) =>
         {
             Obj.gameObject.SetActive(true);
         },
-        // ´Ù½Ã °¡Áö°í ¿Ã¶§
+        // ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½
         actionOnRelease: (Obj) =>
         {  
             Obj.gameObject.SetActive(false);
         },
-        //Å¸°Ù ¿ÀºêÁ§Æ®¿¡°Ô Àû¿ëÇÒ ÇÔ¼ö
+        //Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
         actionOnDestroy: (Obj) =>
         {
             Destroy(Obj.gameObject);
