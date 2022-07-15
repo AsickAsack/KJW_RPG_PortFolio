@@ -37,6 +37,7 @@ public class Knight : Player, BattleSystem
     float DamageT;
 
 
+    Coroutine IsAir;
     Coroutine WeightChange;
     Collider[] myCol;
     Quaternion MyCamRot = Quaternion.identity;
@@ -55,6 +56,8 @@ public class Knight : Player, BattleSystem
         switch(myState)
         {
             case State.Relax:
+                myRigid.useGravity = true;
+                myRigid.isKinematic = false;
                 myAnim.SetBool("IsBattle", false);
                 myAnim.SetBool("IsRelax", true);
                 
@@ -68,6 +71,7 @@ public class Knight : Player, BattleSystem
                 break;
             case State.Ladder:
                 myRigid.useGravity = false;
+                myRigid.isKinematic = true;
                 break;
             case State.Fly:
                 break;
@@ -86,6 +90,17 @@ public class Knight : Player, BattleSystem
         }    
     }
 
+    public void AirCheck()
+    {
+        if(myRigid.velocity.y < -2.0f)
+        {
+           
+            if(IsAir == null)
+            myAnim.SetBool("IsAir", true);
+            IsAir = StartCoroutine(Flying());
+        }
+    }
+
     //상태마다의 업데이트
     void StateProcess()
     {
@@ -94,15 +109,14 @@ public class Knight : Player, BattleSystem
         {
             case State.Relax:
                 KnighteRotate();
-                LadderCheck();
+                AirCheck();
                 break;
             case State.Battle:
-                
-
+                AirCheck();
                 KnighteRotate();
                 break;
             case State.Ladder:
-
+                LadderCheck();
                 break;
             case State.Fly:
                 break;
@@ -115,22 +129,20 @@ public class Knight : Player, BattleSystem
 
     public void LadderCheck()
     {
-        Debug.DrawRay(this.transform.position, MyChar.transform.forward);
-        if(Physics.Raycast(this.transform.position, MyChar.transform.forward,0.5f,LayerMask.NameToLayer("Ladder")))
+        Debug.DrawRay(this.transform.position, -MyChar.transform.up);
+        if (Physics.Raycast(this.transform.position, -MyChar.transform.up, 0.1f,1<<LayerMask.NameToLayer("Wall")))
         {
-            
-            myAnim.SetBool("IsLadder", true);
-            myAnim.SetTrigger("GoLadder"); 
-            ChangeState(State.Ladder);
+            myAnim.SetInteger("LadderIndex", 4);
+            ChangeState(State.Relax);
+
 
         }
     }
 
-
     // 회전로직
     void KnighteRotate()
     {
-        if (myJoystic.MoveOn && myJoystic.Dir != Vector3.zero && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block"))
+        if (myJoystic.MoveOn && myJoystic.Dir != Vector3.zero && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block")&&!myAnim.GetBool("IsLadder"))
         {
             MyCamRot = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
             myDirecTion = MyCamRot * new Vector3(myJoystic.Dir.x, 0.0f, myJoystic.Dir.z);
@@ -152,7 +164,7 @@ public class Knight : Player, BattleSystem
         switch (myState)
         {
             case State.Relax:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("LadderChange"))
                 {
                     myAnim.SetBool("IsRWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -174,23 +186,27 @@ public class Knight : Player, BattleSystem
 
             case State.Ladder:
                 {
-                    if (myJoystic.MoveOn)
+                    
+                    if (myJoystic.MoveOn &&!myAnim.GetBool("LadderChange")) 
                     {
-                        if (myJoystic.Dir.z > 0)
+                        if (myJoystic.Dir.z > 0 && myAnim.GetBool("IsLadder"))
                         {
                             myAnim.SetInteger("LadderIndex", 1);
-                            myRigid.MovePosition(this.transform.position + Vector3.up * Time.deltaTime * 2.0f);
+                            myRigid.MovePosition(this.transform.position + Vector3.up * Time.deltaTime * 1.0f);
                         }
-                        else if (myJoystic.Dir.z < 0)
+                        else if (myJoystic.Dir.z < 0 && myAnim.GetBool("IsLadder"))
                         {
                             myAnim.SetInteger("LadderIndex", 2);
-                            myRigid.MovePosition(this.transform.position + Vector3.down * Time.deltaTime * 2.0f);
+                            myRigid.MovePosition(this.transform.position + Vector3.down * Time.deltaTime * 1.0f);
                         }
                     }
                     else
                     {
-                        myAnim.SetInteger("LadderIndex", 0);
-
+                        if(myAnim.GetBool("IsLadder"))
+                        { 
+                            myAnim.SetInteger("LadderIndex", 0);
+                            myJoystic.Dir = Vector3.zero;
+                        }
                     }
                     
                 }
@@ -200,6 +216,7 @@ public class Knight : Player, BattleSystem
         }
     }
 
+    
 
 
     #region 애니메이션 함수들
@@ -259,11 +276,15 @@ public class Knight : Player, BattleSystem
             if (Physics.Raycast(Foot.position, -Foot.up, out RaycastHit hit2, 0.5f, JumpMask))
             {
                 myAnim.SetBool("IsJump", false);
+                myAnim.SetBool("IsAir", false);
                 break;
 
             }
             yield return null;
         }
+
+        IsAir = null; 
+
     }
 
 
