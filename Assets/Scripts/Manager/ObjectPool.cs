@@ -18,7 +18,7 @@ public class ObjectPool : MonoBehaviour
     public GameObject Coin;
 
     public Transform[] folder;
-
+    int ItemRand;
 
     private void Awake()
     {
@@ -73,7 +73,7 @@ public class ObjectPool : MonoBehaviour
             return obj;
 
     }
-    int ItemRand;
+    
     public GameObject GetItem(int index, Transform tr, int minMoney, int MaxMoney)
     {
         GameObject obj = ObjectManager[0].Get();
@@ -84,10 +84,10 @@ public class ObjectPool : MonoBehaviour
         ItemRand = Random.Range(1, 101);
         temp.itemData.Clear();
         temp.itemData.Add(itemDatas[8]);
-        //temp.itemData[0] = itemDatas[8];
         temp.itemData[0].value = Random.Range(minMoney, MaxMoney + 1);
         temp.itemData.Add(itemDatas[index]);
         temp.itemData.Add(itemDatas[4]);
+
         if (ItemRand <= 20)
             temp.itemData.Add(itemDatas[Random.Range(0, 2)]);
         else if (ItemRand >= 95)

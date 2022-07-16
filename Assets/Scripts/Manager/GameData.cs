@@ -76,7 +76,6 @@ public class GameData : MonoBehaviour
 
 
 
-
     [System.Serializable]
     public class PlayerData
     {

@@ -9,26 +9,25 @@ public class Knight : Player, BattleSystem
     public enum State
     {
         Relax,Battle,Ladder,Fly
-
     }
 
     [Header("[조이스틱 움직임]")]
 
     public JoySticPanel myJoystic;
-    Vector3 Dir = Vector3.zero;
     public GameObject MyChar = null;
     Quaternion MyCharRotate = Quaternion.identity;
 
     [Header("[애니메이션 관련]")]
 
-    public GameObject RelaxSword;
-    public GameObject AttackSword;
+    private GameObject RelaxSword;
+    private GameObject AttackSword;
+    private Transform AttackSpot;
+    public GameObject[] Swords;
+    public GameObject[] BackSwords;
     public GameObject LandEffect;
     public Transform RightHand;
     public Transform LeftHand;
-    public Transform AttackSpot;
     public Transform Foot;
-    public GameObject HitEffect;
     public Animator Uianim;
     public State myState = State.Relax;
     public Rig AnimationRig;
@@ -36,14 +35,20 @@ public class Knight : Player, BattleSystem
     public SkinnedMeshRenderer myRenderer;
     float DamageT;
 
-
-    Coroutine IsAir;
     Coroutine WeightChange;
     Collider[] myCol;
     Quaternion MyCamRot = Quaternion.identity;
     Vector3 myDirecTion;
-    Vector3 ClimbDir;
     bool IsBlock = false;
+    bool ladderMove = false;
+
+
+    private void Awake()
+    {
+        CheckWeapon();
+
+        UIManager.Instance.GetButtonFunc(JumpButton, BlockBtn, WPChange_Btn, AttackButton);
+    }
 
     #region 유한상태기계
 
@@ -60,14 +65,12 @@ public class Knight : Player, BattleSystem
                 myRigid.isKinematic = false;
                 myAnim.SetBool("IsBattle", false);
                 myAnim.SetBool("IsRelax", true);
-                
-     
+
                 break;
             case State.Battle:
                 myAnim.SetBool("IsBattle", true);
                 myAnim.SetBool("IsRelax", false);
-                WeightChange = StartCoroutine(SetIK(0.5f));
-
+  
                 break;
             case State.Ladder:
                 myRigid.useGravity = false;
@@ -77,28 +80,6 @@ public class Knight : Player, BattleSystem
                 break;
         }
 
-    }
-
-    //양손검에 붙이는 IK를 자연스럽게 붙여준다.
-    IEnumerator SetIK(float time)
-    {
-        yield return new WaitForSeconds(time);
-        while(AnimationRig.weight != 1)
-        {
-            AnimationRig.weight += Time.deltaTime;
-            yield return null;
-        }    
-    }
-
-    public void AirCheck()
-    {
-        if(myRigid.velocity.y < -2.0f)
-        {
-           
-            if(IsAir == null)
-            myAnim.SetBool("IsAir", true);
-            IsAir = StartCoroutine(Flying());
-        }
     }
 
     //상태마다의 업데이트
@@ -124,33 +105,9 @@ public class Knight : Player, BattleSystem
     }
 
 
-
     #endregion
 
-    public void LadderCheck()
-    {
-        Debug.DrawRay(this.transform.position, -MyChar.transform.up);
-        if (Physics.Raycast(this.transform.position, -MyChar.transform.up, 0.1f,1<<LayerMask.NameToLayer("Wall")))
-        {
-            myAnim.SetInteger("LadderIndex", 4);
-            ChangeState(State.Relax);
-
-
-        }
-    }
-
-    // 회전로직
-    void KnighteRotate()
-    {
-        if (myJoystic.MoveOn && myJoystic.Dir != Vector3.zero && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block")&&!myAnim.GetBool("IsLadder"))
-        {
-            MyCamRot = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
-            myDirecTion = MyCamRot * new Vector3(myJoystic.Dir.x, 0.0f, myJoystic.Dir.z);
-            MyCharRotate = Quaternion.LookRotation((this.transform.position + myDirecTion) - this.transform.position);
-            MyChar.transform.rotation = Quaternion.Slerp(MyChar.transform.rotation, MyCharRotate, Time.deltaTime * 15.0f);
-        }
-    }
-
+    #region 업데이트, 이동관련
 
     private void Update()
     {
@@ -164,7 +121,7 @@ public class Knight : Player, BattleSystem
         switch (myState)
         {
             case State.Relax:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("LadderChange"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder"))
                 {
                     myAnim.SetBool("IsRWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -175,7 +132,7 @@ public class Knight : Player, BattleSystem
 
                 break;
             case State.Battle:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder"))
                 {
                     myAnim.SetBool("IsWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -192,11 +149,13 @@ public class Knight : Player, BattleSystem
                         if (myJoystic.Dir.z > 0 && myAnim.GetBool("IsLadder"))
                         {
                             myAnim.SetInteger("LadderIndex", 1);
-                            myRigid.MovePosition(this.transform.position + Vector3.up * Time.deltaTime * 1.0f);
+                            if (ladderMove)
+                                myRigid.MovePosition(this.transform.position + Vector3.up * Time.deltaTime * 1.0f);
                         }
                         else if (myJoystic.Dir.z < 0 && myAnim.GetBool("IsLadder"))
                         {
                             myAnim.SetInteger("LadderIndex", 2);
+                            if(ladderMove)
                             myRigid.MovePosition(this.transform.position + Vector3.down * Time.deltaTime * 1.0f);
                         }
                     }
@@ -216,16 +175,50 @@ public class Knight : Player, BattleSystem
         }
     }
 
-    
+    // 회전로직
+    void KnighteRotate()
+    {
+        if (myJoystic.MoveOn && myJoystic.Dir != Vector3.zero && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder"))
+        {
+            MyCamRot = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
+            myDirecTion = MyCamRot * new Vector3(myJoystic.Dir.x, 0.0f, myJoystic.Dir.z);
+            MyCharRotate = Quaternion.LookRotation((this.transform.position + myDirecTion) - this.transform.position);
+            MyChar.transform.rotation = Quaternion.Slerp(MyChar.transform.rotation, MyCharRotate, Time.deltaTime * 15.0f);
+        }
+    }
 
+#endregion
 
-    #region 애니메이션 함수들
+    #region 사다리 관련
+
+    public void LadderCheck()
+    {
+        if (Physics.Raycast(this.transform.position, -MyChar.transform.up, 0.05f, 1 << LayerMask.NameToLayer("Wall")))
+        {
+            Debug.Log("레이");
+            myAnim.SetInteger("LadderIndex", 4);
+            ChangeState(State.Relax);
+        }
+    }
+
+    //사다리 무브 확인
+    public void setladdermove(int index)
+    {
+        if (index > 0)
+            ladderMove = true;
+        else
+            ladderMove = false;
+    }
+
+    #endregion
+
+    #region 무기 교체, IK
 
     //손이 떼어지는 애니메이션일때 IK Weight 설정
     public void SetWeight(int Value)
     {
         if (WeightChange != null)
-        { 
+        {
             StopCoroutine(WeightChange);
             WeightChange = StartCoroutine(ChangeIK(Value));
         }
@@ -233,11 +226,12 @@ public class Knight : Player, BattleSystem
             WeightChange = StartCoroutine(ChangeIK(Value));
     }
 
+
     IEnumerator ChangeIK(int Value)
     {
-        if(Value.Equals(0))
-        { 
-            while(AnimationRig.weight != Value)
+        if (Value.Equals(0))
+        {
+            while (AnimationRig.weight != Value)
             {
                 AnimationRig.weight = Value;
                 yield return null;
@@ -247,47 +241,129 @@ public class Knight : Player, BattleSystem
         {
             while (AnimationRig.weight != Value)
             {
-                AnimationRig.weight += Time.deltaTime *2.0f;
+                AnimationRig.weight += Time.deltaTime * 2.0f;
                 yield return null;
             }
         }
+    }
+
+    //애니메이션에 맞춰 무기 교체
+    public void ChangeWeapon()
+    {
+        switch (myState)
+        {
+            case State.Relax:
+                RelaxSword.SetActive(true);
+                AttackSword.SetActive(false);
+                break;
+            case State.Battle:
+                RelaxSword.SetActive(false);
+                AttackSword.SetActive(true);
+                break;
+        }
+    }
+
+    public void CheckWeapon()
+    {
+        if(AttackSword!=null)
+        {
+            AttackSword.SetActive(false);
+            RelaxSword.SetActive(false);
+        }
+
+        if (GameData.Instance.playerdata.Weapon == null)
+        {
+            AttackSword = Swords[0];
+            RelaxSword = BackSwords[0];
+            AttackSpot = Swords[0].GetComponentInChildren<Transform>();
+        }
+        else
+        {
+            AttackSword = Swords[1];
+            RelaxSword = BackSwords[1];
+            AttackSpot = Swords[1].GetComponentInChildren<Transform>();
+
+        }
+
+        if (myState == State.Battle)
+        {
+            AttackSword.SetActive(true);
+            RelaxSword.SetActive(false);
+        }
+        else
+        {
+            AttackSword.SetActive(false);
+            RelaxSword.SetActive(true);
+        }
+
+    }
+
+
+    #endregion
+
+    #region 점프 관련
+
+    float jumpTime=0.0f;
+
+    public void AirCheck()
+    {
+
+        if (!Physics.Raycast(this.transform.position, -MyChar.transform.up, 0.1f))
+        {
+
+            jumpTime += Time.deltaTime;
+            if (!myAnim.GetBool("IsJump") && !myAnim.GetBool("IsAir") && myState != State.Ladder && !myAnim.GetBool("IsLadder"))
+            {
+                
+                myAnim.SetTrigger("Fall");
+            }
+            
+        }
+        else
+        { 
+            if (myAnim.GetBool("IsJump"))
+            {
+                myAnim.SetBool("IsJump", false);
+                if (jumpTime > 1.2f)
+                { 
+                    Uianim.SetTrigger("HPhit");
+                    DamageRoutine((int)(jumpTime*10), 0);
+                    StartCoroutine(HitColor(myRenderer.material));
+
+                }
+                jumpTime = 0.0f;
+            }
+        }
+
     }
 
     //애니메이션 타이밍에 맞춰 점프함
     void Jump()
     {
         LandEffect.SetActive(false);
-        myRigid.AddForce(this.transform.up * 7.0f, ForceMode.Impulse);
+        myRigid.AddForce(this.transform.up * 5.0f, ForceMode.Impulse);
+        myAnim.SetBool("IsJump", true);
     }
+
+
+
+    //착지할때 이펙트켜줌
+    public void Landing()
+    {
+        LandEffect.SetActive(true);
+    }
+
+    #endregion
+
+    #region 버튼 함수 모음
 
     //점프버튼
     public void JumpButton()
-    { 
-        myAnim.SetTrigger("Jump");
-        StartCoroutine(Flying());
-    }
-
-    //점프 후에 바닥에 레이저를 쏴서 착지 확인
-    IEnumerator Flying()
     {
-       yield return new WaitForSeconds(0.5f);
-        while (true)
-        {
-            if (Physics.Raycast(Foot.position, -Foot.up, out RaycastHit hit2, 0.5f, JumpMask))
-            {
-                myAnim.SetBool("IsJump", false);
-                myAnim.SetBool("IsAir", false);
-                break;
-
-            }
-            yield return null;
-        }
-
-        IsAir = null; 
-
+        myAnim.SetTrigger("Jump");
     }
 
-
+    //공격버튼
     public void AttackButton()
     {
         switch (myState)
@@ -304,7 +380,14 @@ public class Knight : Player, BattleSystem
 
     }
 
-    //무기 바꿀때
+    //실드 버튼
+    public void BlockBtn()
+    {
+        IsBlock = !IsBlock;
+        myAnim.SetBool("Block", IsBlock);
+    }
+
+    //무기바꾸기 버튼
     //오디오 나중에 다른거 넣기!!
     public void WPChange_Btn()
     {
@@ -314,48 +397,25 @@ public class Knight : Player, BattleSystem
             {
                 case State.Relax:
                     ChangeState(State.Battle);
-            
+
                     break;
                 case State.Battle:
                     ChangeState(State.Relax);
-          
+
                     if (WeightChange != null)
                     {
                         StopCoroutine(WeightChange);
                     }
-                    AnimationRig.weight = 0;
                     break;
             }
         }
 
     }
 
-
-
-    //착지할때 이펙트켜줌
-    public void Landing()
-    {
-        LandEffect.SetActive(true);
-    }
-
-
-    public void ChangeWeapon()
-    {
-        switch (myState)
-        {
-            case State.Relax:
-                RelaxSword.SetActive(true);
-                AttackSword.SetActive(false);
-                break;
-            case State.Battle:
-                RelaxSword.SetActive(false);
-                AttackSword.SetActive(true);
-                break;
-        }
-    }
-
-
+ 
     #endregion
+
+    #region 배틀 관련
 
     //오른쪽으로 후리면 0 , 왼쪽은 1 , 가운데는 2
     public void SwordAttack(int index)
@@ -390,6 +450,7 @@ public class Knight : Player, BattleSystem
         myCol = null;
     }
 
+    //왼손으로 펀치할때
     public void LPunchAttack(int index)
     {
         myCol = Physics.OverlapSphere(LeftHand.position, 1.0f, 1 << LayerMask.NameToLayer("Monster"));
@@ -456,6 +517,7 @@ public class Knight : Player, BattleSystem
         return true;
     }
 
+    //데미지 받는 함수 
     public void DamageRoutine(float Damage, int index)
     {
         DamageT = Damage < 0 ? 0 : Damage;
@@ -465,12 +527,7 @@ public class Knight : Player, BattleSystem
         UIManager.Instance.SetHP();
     }
 
-    public void BlockBtn()
-    {
-      
-        IsBlock = !IsBlock;
-        myAnim.SetBool("Block", IsBlock);
-    }
+    
 
     IEnumerator HitColor(Material mat)
     {
@@ -479,5 +536,5 @@ public class Knight : Player, BattleSystem
         mat.color = Color.white;
     }
 
-
+    #endregion
 }

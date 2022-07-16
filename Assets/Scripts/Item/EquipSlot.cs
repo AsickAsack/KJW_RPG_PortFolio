@@ -11,7 +11,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
     public Image Icon;
     public int ItemCode;
     public Image DragImgae;
-    
+    public Knight knight;
 
     private void Awake()
     {
@@ -33,6 +33,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
                     break;
                 case 4:
                     GameData.Instance.playerdata.Weapon = null;
+                    knight.CheckWeapon();
                     break;
 
             }
@@ -84,6 +85,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
                             GameData.Instance.playerdata.Weapon.IsEquip = false;
                         GameData.Instance.playerdata.Weapon = EquipItem;
                         GameData.Instance.playerdata.Weapon.IsEquip = true;
+                        knight.CheckWeapon();
                         break;
                 }
 

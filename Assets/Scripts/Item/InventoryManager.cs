@@ -28,6 +28,7 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
         Slot = this.transform.GetComponentsInChildren<InventorySlot>();
     }
 
+    //인벤토리 열때
     public void OpenInventory()
     {
         slotState = SlotState.All;
@@ -50,11 +51,28 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
             {
                 Slot[i].ItemCountTx.text = GameData.Instance.playerdata.myItems[i].ItemCount.ToString("N0");
                 Slot[i].ItemCountTx.gameObject.SetActive(true);
-            }
-            
+            }       
         }
     }
 
+
+    //인벤토리 끌때
+    public void ExitInvetory()
+    {
+        if(CurItem != null)
+        {
+            CurItem.SelectImage.SetActive(false);
+            CurItem.myAnim.SetBool("IsSelect", false);
+
+            if (QuickRegisterBtn.activeSelf)
+                QuickRegisterBtn.SetActive(false);
+        }
+
+    }
+
+
+
+    //카테고리 바꿀때
     public void Changebutton(int index)
     {
         for(int i=0;i<ButtonSelectImage.Length;i++)
@@ -84,10 +102,9 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
                 break;
         }
 
-
     }
 
-
+    //슬롯 바꿀때
     public void ChangeSlot(ItemType itemType)
     {
         ResetSlots();
@@ -117,6 +134,7 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
         }
     }
 
+    //슬롯 리셋할때
     public void ResetSlots()
     {
         if (CurItem != null)
@@ -133,6 +151,8 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
 
     }
 
+
+    //아이템을 눌렀을때 루틴
     public void OnPointerDown(PointerEventData eventData)
     {
         if(eventData.pointerCurrentRaycast.gameObject.GetComponent<InventorySlot>() != null)
@@ -165,6 +185,8 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
       
     }
 
+
+    //눌렀다 떼면 설명창 꺼줌
     public void OnPointerUp(PointerEventData eventData)
     {
         if (CurItem != null)
@@ -173,13 +195,15 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
         }
     }
 
+
+    //퀵슬롯 등록
     public void QuickRegister(int index)
     {
         QuickSlot[index].GetComponent<QuicSlot>().SetQuickSlot(CurItem.itemdata);
-
-
     }
 
+
+    //아이템 쓸때
     public void InVenUseItem()
     {
         if (CurItem != null)

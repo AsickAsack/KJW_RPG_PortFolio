@@ -13,24 +13,25 @@ public class LadderBottom : MonoBehaviour
     private void Awake()
     {
         LadderBottonBtn.onClick.AddListener(() => { GoUpLadder(); });
-        TargetPos = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 0.7f);
+        TargetPos = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 0.2f);
     }
-
 
 
     private void OnTriggerEnter(Collider other)
     {
-       
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            Debug.Log(other.transform);
             if (other.gameObject.GetComponent<Knight>() != null)
                 player = other.gameObject.GetComponent<Knight>();
 
             if (!player.myAnim.GetBool("IsLadder"))
             {
-                
-                LadderBottonBtn.gameObject.SetActive(true);
 
+                //LadderBottonBtn.gameObject.SetActive(true);
+                player.myAnim.SetBool("IsWalk", false);
+                GoUpLadder();
 
             }
         }
@@ -61,15 +62,14 @@ public class LadderBottom : MonoBehaviour
 
         if (check)
         {
-            player.AnimationRig.weight = 0.0f;
             yield return new WaitForSeconds(0.5f);
         }
-
+        player.myAnim.SetTrigger("GoLadder");
         while (ExitTime < 0.75f)
         {
             ExitTime += Time.deltaTime;
             player.transform.position = Vector3.Lerp(player.transform.position, TargetPos, Time.deltaTime * 5.0f);
-            player.MyChar.transform.rotation = Quaternion.Slerp(player.MyChar.transform.rotation, Quaternion.identity, Time.deltaTime * 5.0f);
+            player.MyChar.transform.rotation = Quaternion.Slerp(player.MyChar.transform.rotation,this.transform.rotation, Time.deltaTime * 5.0f);
 
             
 
@@ -77,8 +77,8 @@ public class LadderBottom : MonoBehaviour
         }
         player.myAnim.SetBool("LadderChange", false);
         player.myAnim.SetBool("IsRWalk", false);
-        player.myAnim.SetTrigger("GoLadder");
-        yield return new WaitForSeconds(1.0f);
+        
+        //yield return new WaitForSeconds(1.0f);
         player.ChangeState(Knight.State.Ladder);
     }
 

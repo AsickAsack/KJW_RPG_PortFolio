@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class UIManager : MonoBehaviour
 {
@@ -29,6 +30,39 @@ public class UIManager : MonoBehaviour
     bool Notflag = true;
     int Notindex = 0;
 
+    [Header("[스텟 창 기능]")]
+
+    public UnityAction[] ButtonFunc = new UnityAction[4];
+    public Sprite[] ButtonImage = new Sprite[4]; 
+
+    private void Awake()
+    {
+        Instance = this;
+        GameData.Instance.NotAction += Notify;
+
+        SetHP();
+        SetMp();
+        SetExp();
+        SetLevel();
+    }
+
+    // 점프,블락,체인지,어택..
+    public void GetButtonFunc(UnityAction func1, UnityAction func2, UnityAction func3, UnityAction func4)
+    {
+        ButtonFunc[0] += func1;
+        ButtonFunc[1] += func2;
+        ButtonFunc[2] += func3;
+        ButtonFunc[3] += func4;
+    }
+
+
+
+
+
+
+    #region 스텟창 기능들
+
+    //스텟 텍스트로찍기
     public void SetStatPopup()
     {
         StatLeveltx.text = GameData.Instance.playerdata.Level.ToString() + " LEVEL";
@@ -44,6 +78,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    //스텟 올렸을때
     public void UpStatPoint(int index)
     {
         switch (index)
@@ -79,16 +114,11 @@ public class UIManager : MonoBehaviour
 
     }
 
-    private void Awake()
-    {
-        Instance = this;
-        GameData.Instance.NotAction += Notify;
+    #endregion
 
-        SetHP();
-        SetMp();
-        SetExp();
-        SetLevel();
-    }
+ 
+
+    #region 기본  UI 텍스트들
 
     public void SetAll()
     {
@@ -122,6 +152,10 @@ public class UIManager : MonoBehaviour
         LevelText.text = "Lv." + GameData.Instance.playerdata.Level + "\nKnight";
     }
 
+    #endregion
+
+    #region 알림기능
+
     public void Notify()
     {
         if(Notflag)
@@ -148,6 +182,6 @@ public class UIManager : MonoBehaviour
         NotifyPanel[index].gameObject.SetActive(false);
         Notflag = true;
     }
-        
 
+    #endregion
 }

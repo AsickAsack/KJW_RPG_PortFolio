@@ -16,12 +16,23 @@ public class LadderTop : MonoBehaviour
         
     }
 
-
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            if (player.myAnim.GetInteger("LadderIndex") == 1)
+            {
+                player.myAnim.SetInteger("LadderIndex", 3);
+                player.myAnim.SetBool("IsLadder", false);
+            }
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            if(other.GetComponent<Knight>() != null)
+            Debug.Log(other.transform);
+            if (other.GetComponent<Knight>() != null)
             player = other.gameObject.GetComponent<Knight>();
 
             //타고 올라올때라면
@@ -33,7 +44,10 @@ public class LadderTop : MonoBehaviour
             }
             else if(!player.myAnim.GetBool("IsLadder"))
             {
-                LadderTopBtn.gameObject.SetActive(true);
+                GoUpLadder();
+                player.myAnim.SetBool("IsWalk", false);
+                //LadderTopBtn.gameObject.SetActive(true);
+
             }
         }
     }
@@ -46,6 +60,7 @@ public class LadderTop : MonoBehaviour
         if (player.myState == Knight.State.Battle)
         {
             player.ChangeState(Knight.State.Relax);
+
             StartCoroutine(LaderProcess(true));
             return;
         }
@@ -56,30 +71,37 @@ public class LadderTop : MonoBehaviour
 
     }
 
+    
+
     IEnumerator LaderProcess(bool check)
     {
+
         player.myAnim.SetBool("IsLadder", true);
         player.myAnim.SetBool("LadderChange", true);
-
         if (check)
         {
-            player.AnimationRig.weight = 0.0f;
-            yield return new WaitForSeconds(1.0f);
-        }
+            yield return new WaitForSeconds(0.5f);
 
+        }
+        
+
+
+        player.myAnim.SetTrigger("GoLadderDown");
         while (ExitTime < 0.75f)
         {
+            
             ExitTime += Time.deltaTime;
             player.transform.position = Vector3.Lerp(player.transform.position, TargetPos.transform.position, Time.deltaTime * 5.0f);
-            player.MyChar.transform.rotation = Quaternion.Slerp(player.MyChar.transform.rotation, Quaternion.identity, Time.deltaTime * 5.0f);
+            player.MyChar.transform.rotation = Quaternion.Slerp(player.MyChar.transform.rotation, this.transform.rotation, Time.deltaTime * 5.0f);
 
 
 
             yield return null;
         }
+        
         player.myAnim.SetBool("LadderChange", false);
-        player.myAnim.SetBool("IsRWalk", false);
-        player.myAnim.SetTrigger("GoLadderDown");
+        
+        
         yield return new WaitForSeconds(1.0f);
         player.ChangeState(Knight.State.Ladder);
     }
@@ -94,6 +116,8 @@ public class LadderTop : MonoBehaviour
 
         }
     }
+
+    
 
     IEnumerator GOladder(Transform tr)
     {
