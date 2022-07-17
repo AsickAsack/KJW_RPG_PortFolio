@@ -116,8 +116,10 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
     private void Update()
     {
-        HpCanvas.transform.rotation = Camera.main.transform.rotation;
-        StateProcess();
+       
+            HpCanvas.transform.rotation = Camera.main.transform.rotation;
+            StateProcess();
+        
     }
 
     #endregion

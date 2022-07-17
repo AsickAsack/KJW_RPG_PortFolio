@@ -6,15 +6,9 @@ using UnityEngine.UI;
 public class LadderTop : MonoBehaviour
 {
     Knight player;
-    public Button LadderTopBtn;
     public GameObject TargetPos;
     float ExitTime = 0.0f;
 
-    private void Awake()
-    {
-        LadderTopBtn.onClick.AddListener(() => { GoUpLadder(); });
-        
-    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -55,7 +49,6 @@ public class LadderTop : MonoBehaviour
     public void GoUpLadder()
     {
         ExitTime = 0.0f;
-        LadderTopBtn.gameObject.SetActive(false);
 
         if (player.myState == Knight.State.Battle)
         {
@@ -104,17 +97,6 @@ public class LadderTop : MonoBehaviour
         
         yield return new WaitForSeconds(1.0f);
         player.ChangeState(Knight.State.Ladder);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-          
-                if (LadderTopBtn.gameObject.activeSelf)
-                    LadderTopBtn.gameObject.SetActive(false);
-
-        }
     }
 
     

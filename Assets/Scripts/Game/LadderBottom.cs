@@ -5,15 +5,13 @@ using UnityEngine.UI;
 
 public class LadderBottom : MonoBehaviour
 {
-    public Button LadderBottonBtn;
     Knight player;
     Vector3 TargetPos;
     float ExitTime = 0.0f;
 
     private void Awake()
     {
-        LadderBottonBtn.onClick.AddListener(() => { GoUpLadder(); });
-        TargetPos = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 0.2f);
+        TargetPos = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z-0.1f);
     }
 
 
@@ -40,7 +38,6 @@ public class LadderBottom : MonoBehaviour
     public void GoUpLadder()
     {
         ExitTime = 0.0f;
-        LadderBottonBtn.gameObject.SetActive(false);
 
         if (player.myState == Knight.State.Battle)
         {
@@ -83,17 +80,6 @@ public class LadderBottom : MonoBehaviour
     }
 
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            if (!player.myAnim.GetBool("IsLadder"))
-            {
-                if(LadderBottonBtn.gameObject.activeSelf)
-                LadderBottonBtn.gameObject.SetActive(false);
 
-            }
-        }
-    }
 
 }
