@@ -32,7 +32,7 @@ public struct Stat
 public abstract class Soldier : MonoBehaviour, BattleSystem
 {
     #region 오디오소스,리지드바디,애니메이터 프로퍼티
-    
+
     private AudioSource _myAudio;
     public AudioSource myAudio
     {
@@ -73,7 +73,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     protected SoldierData myData;
     [SerializeField]
     protected Stat myStat;
-    public AutoDetect Detect;
+    public FieldOfViewAngle Detect;
 
     public GameObject Sword;
     public GameObject BackSword;
@@ -88,6 +88,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     protected Coroutine StunCo;
     public float HitTime = 0.0f;
     public Button Killbtn;
+    protected bool IsAssaDeath = false;
 
     //많이쓰는 변수 멤버변수로 선언
     int Rand;
@@ -116,10 +117,10 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
     private void Update()
     {
-       
-            HpCanvas.transform.rotation = Camera.main.transform.rotation;
-            StateProcess();
-        
+
+        HpCanvas.transform.rotation = Camera.main.transform.rotation;
+        StateProcess();
+
     }
 
     #endregion
@@ -127,7 +128,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     //몬스터의 상태
     public enum S_State
     {
-        Patrol, Battle, Death, Stun
+        Patrol, Battle, Death, Stun, Assasination
     }
 
     //패트롤로 시작
@@ -173,6 +174,10 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 }
 
                 break;
+
+            case S_State.Assasination:
+                break;
+
             case S_State.Death:
                 Death();
                 Move = false;
@@ -187,9 +192,9 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     {
         yield return new WaitForSeconds(time);
 
-        while(this.transform.position.y > -10.0f)
+        while (this.transform.position.y > -10.0f)
         {
-            this.transform.position += Vector3.down * Time.deltaTime*0.5f;
+            this.transform.position += Vector3.down * Time.deltaTime * 0.5f;
             yield return null;
         }
 
@@ -208,7 +213,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         switch (myState)
         {
             case S_State.Patrol:
-                
+
                 Patrol();
                 break;
             case S_State.Battle:
@@ -219,9 +224,12 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
                 break;
 
+            case S_State.Assasination:
+                break;
+
 
             case S_State.Death:
-          
+
                 break;
         }
     }
@@ -248,12 +256,12 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     {
         Killbtn.gameObject.SetActive(true);
         Killbtn.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 0.1f, 0));
-        
+
         myAnim.SetTrigger("Stun");
         myAnim.SetBool("IsStun", true);
 
         yield return new WaitForSeconds(time);
-       
+
 
         if (myState != S_State.Death)
         {
@@ -269,7 +277,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             }
         }
 
-         Killbtn.gameObject.SetActive(false);
+        Killbtn.gameObject.SetActive(false);
     }
 
     //배틀상황일때
@@ -343,59 +351,101 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             for (int i = 0; i < myCol.Length; i++)
             {
                 //널체크, 상대가 막았는지 확인
-                if(myCol[i].GetComponent<BattleSystem>() != null)
-               if(!myCol[i].GetComponent<BattleSystem>().OnDamage(index,Random.Range(myStat.ATK-5, myStat.ATK + 5)))
-                {
-                    ChangeState(S_State.Stun);
-                    
-                }
+                if (myCol[i].GetComponent<BattleSystem>() != null)
+                    if (!myCol[i].GetComponent<BattleSystem>().OnDamage(index, Random.Range(myStat.ATK - 5, myStat.ATK + 5)))
+                    {
+                        ChangeState(S_State.Stun);
+
+                    }
             }
         }
         myCol = null;
+    }
+
+    public void LookRotation(Transform tr)
+    {
+        this.transform.LookAt(tr.transform.position);
+    }
+
+    public void notifytoSoliders()
+    {
+        Collider[] col = Physics.OverlapSphere(this.transform.position, 5.0f, 1 << LayerMask.NameToLayer("Monster"));
+        for (int i = 0; i < col.Length; i++)
+        {
+            col[i].GetComponent<Soldier>().LookRotation(this.transform);
+        }
+    }
+
+    public void OnAssa(int index)
+    {
+        ChangeState(S_State.Assasination);
+
+        switch(index)
+        {
+            case 0:
+                myAnim.SetTrigger("Assassination");
+                break;
+            case 1:
+                myAnim.SetTrigger("OneShot");
+                DamageRoutine(myStat.HP, 0);
+                notifytoSoliders();
+                break;
+        }
+    }
+
+    public void OnDamageAssa()
+    {
+        DamageRoutine(myStat.HP, 0);
+        IsAssaDeath = true;
     }
 
 
     //데미지 입었을때의 로직
     public bool OnDamage(int index,float damage)
     {
-        StartCoroutine(HitColor(myRenderer.material));
-
-        //방패로 막힘
-        Rand = Random.Range(1, 11);
-        if(Rand < 3)
+        if (myState != S_State.Death)
         {
-            myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[3]);
-            myAnim.SetTrigger("GetHitS");
 
-            DamageRoutine((int)((damage - myStat.DEF) * 0.5f), 1);
-            return false;
+            StartCoroutine(HitColor(myRenderer.material));
+
+            //방패로 막힘
+            Rand = Random.Range(1, 11);
+            if (Rand < 3)
+            {
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[3]);
+                myAnim.SetTrigger("GetHitS");
+
+                DamageRoutine((int)((damage - myStat.DEF) * 0.5f), 1);
+                return false;
+            }
+
+            //주먹으로 쳤을때 소리 넣기
+            myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
+
+            switch (index)
+            {
+                case 0:
+                    myAnim.SetTrigger("GetHitL");
+                    break;
+                case 1:
+                    myAnim.SetTrigger("GetHitR");
+                    break;
+                case 2:
+                    myAnim.SetTrigger("GetHitM");
+                    break;
+                case 3:
+                    myAnim.SetTrigger("Upper");
+                    break;
+                case 4:
+                    myAnim.SetTrigger("OneShot");
+                    DamageRoutine(myStat.HP, 0);
+                    return true;
+            }
+
+            DamageRoutine((int)(damage - myStat.DEF), 0);
+
+            return true;
         }
-
-        //주먹으로 쳤을때 소리 넣기
-        myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
-
-        switch (index)
-        {
-            case 0:
-                myAnim.SetTrigger("GetHitL");
-                break;
-            case 1:
-                myAnim.SetTrigger("GetHitR");
-                break;
-            case 2:
-                myAnim.SetTrigger("GetHitM");
-                break;
-            case 3:
-                myAnim.SetTrigger("Upper");
-                break;
-            case 4:
-                myAnim.SetTrigger("OneShot");
-                DamageRoutine(myStat.HP, 0);
-                return true;
-        }
-
-        DamageRoutine((int)(damage - myStat.DEF), 0);
-
         return true;
     }
 
@@ -434,6 +484,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     {
         HpCanvas.gameObject.SetActive(true);
         myStat.InitStat(myData.SoldierName, myData.MaxHP, myData.HP, myData.ATK, myData.DEF, myData.Speed, myData.AttackDelay, myData.EXP);
+        IsAssaDeath = false;
     }
 
     

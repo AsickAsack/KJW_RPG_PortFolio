@@ -1387,7 +1387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: c03a340fbb20d2b408ded57ef8e6dcc5, type: 2}
-  Detect: {fileID: 9097067657170411247}
+  Detect: {fileID: 0}
   Sword: {fileID: 8519130394372235598}
   BackSword: {fileID: 1539386202962911563}
   HpCanvas: {fileID: 4991229809091537771}
@@ -3005,7 +3005,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9097067657170411241}
-  - component: {fileID: 9097067657170411247}
   - component: {fileID: 9097067657170411246}
   m_Layer: 0
   m_Name: AutoDetect
@@ -3029,22 +3028,6 @@ Transform:
   m_Father: {fileID: 1539386202962575149}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9097067657170411247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9097067657170411240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9c5321befb07b9409c30a3f74d9b733, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Enemy: []
-  DetectLayer:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!136 &9097067657170411246
 CapsuleCollider:
   m_ObjectHideFlags: 0

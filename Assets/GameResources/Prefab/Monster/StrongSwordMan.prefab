@@ -837,7 +837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: ed9289a57e118b545841eb30023a21a7, type: 2}
-  Detect: {fileID: 6860126137906847283}
+  Detect: {fileID: 0}
   Sword: {fileID: 5569127490634515530}
   BackSword: {fileID: 8689635475719941746}
   HpCanvas: {fileID: 7957439523108608104}
@@ -3226,19 +3226,33 @@ PrefabInstance:
       propertyPath: DetectLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1727732657155552519, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
---- !u!114 &6860126137906847283 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1727732657155552519, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
+--- !u!1 &6860126137906847284 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1727732657155552512, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
   m_PrefabInstance: {fileID: 5246187595600653108}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+--- !u!114 &3460698744108219152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6860126137906847284}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9c5321befb07b9409c30a3f74d9b733, type: 3}
+  m_Script: {fileID: 11500000, guid: b878d0d558d1f0c478c432785d58f198, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ViewAngle: 190
+  Distance: 8
+  TargetMask:
+    serializedVersion: 2
+    m_Bits: 64
+  Enemy: []
+  mychar: {fileID: 5246187595584929737}
 --- !u!4 &6860126137906847285 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1727732657155552513, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}

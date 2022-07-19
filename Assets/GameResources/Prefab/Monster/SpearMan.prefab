@@ -1198,7 +1198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 52f681b36baa220428b726442a371644, type: 2}
-  Detect: {fileID: 7477194004049023648}
+  Detect: {fileID: 3195993902060699979}
   Sword: {fileID: 8088033811404800898}
   BackSword: {fileID: 8088033811006511200}
   HpCanvas: {fileID: 5413004141144950681}
@@ -3168,21 +3168,35 @@ PrefabInstance:
       propertyPath: DetectLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1727732657155552519, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
---- !u!114 &7477194004049023648 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1727732657155552519, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
-  m_PrefabInstance: {fileID: 8088033810808891303}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9c5321befb07b9409c30a3f74d9b733, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &7477194004049023654 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1727732657155552513, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
   m_PrefabInstance: {fileID: 8088033810808891303}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7477194004049023655 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1727732657155552512, guid: f6467d3ae85b6df4eb881f2a22ece60a, type: 3}
+  m_PrefabInstance: {fileID: 8088033810808891303}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3195993902060699979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477194004049023655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b878d0d558d1f0c478c432785d58f198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ViewAngle: 190
+  Distance: 10
+  TargetMask:
+    serializedVersion: 2
+    m_Bits: 64
+  Enemy: []
+  mychar: {fileID: 8088033811905903535}

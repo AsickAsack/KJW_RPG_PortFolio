@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class MoveRock : MonoBehaviour
 {
-    public Vector2 RimitPos;
+
     public Vector3 OrgPos;
+    public int index = 0;
+    Vector3[] RemitPos = new Vector3[2];
+    Vector3 TargetPos;
     Coroutine MoveCo;
     float speed = 2.0f;
 
-    int rand = 0;
-
+    //움직일 범위와 되돌아올 자리를 선언해줌
     private void Awake()
     {
         OrgPos = transform.localPosition;
+        RemitPos[0] = new Vector3(OrgPos.x - 5.0f,OrgPos.y,OrgPos.z);
+        RemitPos[1] = new Vector3(OrgPos.x + 5.0f,OrgPos.y, OrgPos.z);
+        TargetPos = RemitPos[index++ % 2];
+
     }
 
 
-
+    //플레이어가 범위 안에 들어오면 돌 무브 시작
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
@@ -28,56 +34,24 @@ public class MoveRock : MonoBehaviour
     }
 
 
-
-
     IEnumerator MoveStart()
     {
-
-        rand = Random.Range(0, 2);
-
-
-        if (rand == 0)
+        while (true)
         {
-            while (true)
+
+            if (Vector3.Distance(this.transform.localPosition, TargetPos) < 0.5f)
             {
-
-                while (this.transform.localPosition.x > RimitPos.x)
-                {
-                    this.transform.localPosition += -Vector3.right * Time.deltaTime * speed;
-                    yield return null;
-                }
-
-                while (this.transform.localPosition.x < RimitPos.y)
-                {
-                    this.transform.localPosition += Vector3.right * Time.deltaTime * speed;
-                    yield return null;
-                }
-
+                TargetPos= RemitPos[index++ % 2];
             }
-        }
-        else
-        { 
-            while (true)
-            {
-                while (this.transform.localPosition.x < RimitPos.y)
-                {
-                    this.transform.localPosition += Vector3.right * Time.deltaTime * speed;
-                    yield return null;
-                }
 
-                while (this.transform.localPosition.x > RimitPos.x)
-                {
-                    this.transform.localPosition += -Vector3.right * Time.deltaTime * speed;
-                    yield return null;
-                }
+            this.transform.localPosition = Vector3.MoveTowards(this.transform.localPosition, TargetPos, Time.deltaTime * speed);
 
-            }
+            yield return null;
         }
+       
     }
 
-
-
-
+    //나가면 돌 무빙 종료하고 원위치
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
@@ -90,4 +64,40 @@ public class MoveRock : MonoBehaviour
             this.transform.localPosition = OrgPos;
         }
     }
+
+    //돌에 올라가면 플레이어의 위치를 고정시키기위해 자식으로 만들어줌
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            collision.transform.SetParent(this.transform);
+        }
+    }
+
+    //움직일때는 부모를 해제
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            if(collision.transform.GetComponent<Knight>().myJoystic.MoveOn)
+            {
+                collision.transform.SetParent(null);
+            }
+            else
+            {
+                collision.transform.SetParent(this.transform);
+            }
+        }
+    }
+
+    //나가면 부모를 해제
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            collision.transform.SetParent(null);
+        }
+    }
+
+
 }

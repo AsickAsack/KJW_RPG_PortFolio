@@ -8,7 +8,7 @@ public class Knight : Player, BattleSystem
 
     public enum State
     {
-        Relax,Battle,Ladder,Fly
+        Relax,Battle,Ladder,Fly, Assasination
     }
 
     [Header("[조이스틱 움직임]")]
@@ -33,14 +33,24 @@ public class Knight : Player, BattleSystem
     public Rig AnimationRig;
     public LayerMask JumpMask;
     public SkinnedMeshRenderer myRenderer;
+    public AutoDetect Detect;
+    public CapsuleCollider CapColl;
     float DamageT;
 
+    [Header("[행글라이더]")]
+    public GameObject Hanglider;
+
+
+    Coroutine AssamoveCo;
     Coroutine WeightChange;
     Collider[] myCol;
     Quaternion MyCamRot = Quaternion.identity;
     Vector3 myDirecTion;
     bool IsBlock = false;
     bool ladderMove = false;
+
+
+
 
 
     private void Awake()
@@ -77,7 +87,12 @@ public class Knight : Player, BattleSystem
                 myRigid.isKinematic = true;
                 break;
             case State.Fly:
+                DragSet(10);
                 break;
+            case State.Assasination:
+                break;
+
+                
         }
 
     }
@@ -100,6 +115,10 @@ public class Knight : Player, BattleSystem
                 LadderCheck();
                 break;
             case State.Fly:
+                KnighteRotate();
+                HangCheck();
+                    break;
+            case State.Assasination:
                 break;
         }
     }
@@ -107,9 +126,64 @@ public class Knight : Player, BattleSystem
 
     #endregion
 
-    #region 업데이트, 이동관련
+    #region 행글라이더 관련
 
-    private void Update()
+    public void HangCheck()
+    {
+
+        if (Physics.Raycast(this.transform.position, -MyChar.transform.up, 0.1f))
+        {
+            myAnim.SetBool("IsHang", false);
+            Hanglider.SetActive(false);
+            myRigid.drag = 0;
+            ChangeState(State.Relax);
+
+        }
+    }
+
+    public void HangBtn()
+    {
+        //버튼 끄기
+        
+        StartCoroutine(ChangeHangMonde());
+
+        
+    }
+
+    IEnumerator ChangeHangMonde()
+    {
+        //화면끄기
+
+        if (myState == State.Battle)
+        {
+            ChangeState(State.Relax);
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        
+        ChangeState(State.Fly);
+        Hanglider.SetActive(true);
+        this.transform.position = this.transform.position + new Vector3(0, 0, 5.0f);
+        myAnim.SetTrigger("GoHang");
+
+        yield return null;
+
+    }
+
+
+
+    public void DragSet(int index)
+    {
+        myRigid.drag = index;
+    }
+
+
+        #endregion
+
+
+        #region 업데이트, 이동관련
+
+        private void Update()
     {
         StateProcess();
     }
@@ -168,6 +242,12 @@ public class Knight : Player, BattleSystem
                         }
                     }
                     
+                }
+                break;
+
+            case State.Fly:
+                {
+                    myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
                 }
                 break;
 
@@ -357,41 +437,123 @@ public class Knight : Player, BattleSystem
 
     #region 버튼 함수 모음
 
+    //암살 기능
+    public void Assasinationing()
+    {
+        if(myState == State.Relax)
+        { 
+            ChangeState(State.Assasination);
+            myAnim.SetTrigger("Assasination");
+        }
+        else if(myState == State.Battle)
+        {
+            ChangeState(State.Assasination);
+            myAnim.SetTrigger("Assasination2");
+        }
+    }
+
+    public void Assamove(int index)
+    {
+        AssamoveCo = StartCoroutine(AssasinMove(index));
+    }
+
+    IEnumerator AssasinMove(int index)
+    {
+        switch(index)
+        {
+            case 0:
+                while(true)
+                {
+                    myRigid.MovePosition(this.transform.position + (Detect.Enemy[0].transform.position - this.transform.position).normalized * Time.deltaTime * 1.0f);
+                    yield return null;
+                }
+                
+            case 1:
+                while (true)
+                {
+                    myRigid.MovePosition(this.transform.position + -transform.forward * Time.deltaTime * 0.7f);
+                    yield return null;
+                }
+            case 2:
+                while (true)
+                {
+                    MyChar.transform.rotation = Quaternion.Slerp(MyChar.transform.rotation, Detect.Enemy[0].transform.rotation, Time.deltaTime * 3.0f);
+                    this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Detect.Enemy[0].transform.position.x, Detect.Enemy[0].transform.position.y, Detect.Enemy[0].transform.position.z+0.2f), Time.deltaTime * 3.0f);
+                    yield return null;
+                }
+
+        }
+    }
+
+    public void StopAssaMove()
+    {
+        StopCoroutine(AssamoveCo);
+    }
+
+    //암살
+    public void AssaEnemyTrriger(int index)
+    {
+        Detect.Enemy[0].GetComponent<Soldier>().OnAssa(index);
+    }
+
+    public void goTarget()
+    {
+        CapColl.isTrigger = true;
+        myRigid.useGravity = false;
+        Assamove(2);
+       
+    }
+
+    public void EndAssa()
+    {
+        CapColl.isTrigger = false;
+        myRigid.useGravity = true;
+        ChangeState(State.Relax);
+
+    }
+
+
     //점프버튼
     public void JumpButton()
     {
+        if(!myAnim.GetBool("IsHang"))
         myAnim.SetTrigger("Jump");
     }
 
     //공격버튼
     public void AttackButton()
     {
-        switch (myState)
-        {
-            case State.Relax:
+        if (!myAnim.GetBool("IsHang"))
+        { 
+            switch (myState)
+            {
+                case State.Relax:
                 
-                myAnim.SetTrigger("Punch");
-                break;
-            case State.Battle:
+                    myAnim.SetTrigger("Punch");
+                    break;
+                case State.Battle:
                 
-                myAnim.SetTrigger("Attack");
-                break;
+                    myAnim.SetTrigger("Attack");
+                    break;
+            }
         }
-
     }
 
     //실드 버튼
     public void BlockBtn()
     {
-        IsBlock = !IsBlock;
-        myAnim.SetBool("Block", IsBlock);
+        if (!myAnim.GetBool("IsHang")&& !myAnim.GetBool("IsHang"))
+        {
+            IsBlock = !IsBlock;
+            myAnim.SetBool("Block", IsBlock);
+        }
     }
 
     //무기바꾸기 버튼
     //오디오 나중에 다른거 넣기!!
     public void WPChange_Btn()
     {
-        if (!myAnim.GetBool("IsChange"))
+        if (!myAnim.GetBool("IsChange") && !myAnim.GetBool("IsHang"))
         {
             switch (myState)
             {
@@ -425,7 +587,7 @@ public class Knight : Player, BattleSystem
         if (myCol != null)
         {
             for (int i = 0; i < myCol.Length; i++)
-            {
+            {   
                 myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5));
                 myAnim.SetBool("Block", false);
             }
@@ -499,19 +661,21 @@ public class Knight : Player, BattleSystem
         else
         {
             myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
-            switch (index)
+            if (myState != State.Assasination)
             {
-                //오른쪽 맞았을때
-                case 0:
-                    myAnim.SetTrigger("GetHitR");
-                    break;
+                switch (index)
+                {
+                    //오른쪽 맞았을때
+                    case 0:
+                        myAnim.SetTrigger("GetHitR");
+                        break;
 
-                //왼쪽 맞았을때
-                case 1:
-                    myAnim.SetTrigger("GetHitL");
-                    break;
+                    //왼쪽 맞았을때
+                    case 1:
+                        myAnim.SetTrigger("GetHitL");
+                        break;
+                }
             }
-
             DamageRoutine((int)(damage - GameData.Instance.playerdata.DEF), 2);
         }
         return true;
