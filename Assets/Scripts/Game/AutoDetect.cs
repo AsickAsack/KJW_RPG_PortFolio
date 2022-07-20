@@ -8,6 +8,8 @@ public class AutoDetect : MonoBehaviour
     public LayerMask DetectLayer;
     public GameObject AssaButton;
     public Transform mychar;
+    public GameObject NearEnemy;
+    public Soldier NESolider;
 
     private void Awake()
     {
@@ -29,20 +31,32 @@ public class AutoDetect : MonoBehaviour
     {
         if (DetectLayer == 1 << other.gameObject.layer)
         {
-           
-            if(Vector3.Distance(Enemy[0].transform.position, mychar.position) < 1.5f)
+
+            if(other.gameObject)
+
+
+            if(Vector3.Distance(other.transform.position, mychar.position) < 1.5f)
             {
-         
-                AssaButton.gameObject.SetActive(true);
+                NearEnemy = other.gameObject;
+                
             }
-            else
+            
+            if(NearEnemy !=null)
             {
-           
-                if (AssaButton.gameObject.activeSelf)
+                if (NESolider == null)
+                    NESolider = NearEnemy.GetComponent<Soldier>();
+
+                if (NESolider.myState == Soldier.S_State.Patrol)
                 {
-                    AssaButton.gameObject.SetActive(false);
+                    AssaButton.transform.position = Camera.main.WorldToScreenPoint(NearEnemy.transform.position + new Vector3(1.5f, 1.0f, 0.0f));
+                    AssaButton.gameObject.SetActive(true);
                 }
+                if (NESolider.myState == Soldier.S_State.Assasination || NESolider.myState == Soldier.S_State.Battle)
+                    AssaButton.gameObject.SetActive(false);
             }
+
+
+
         }
 
     }

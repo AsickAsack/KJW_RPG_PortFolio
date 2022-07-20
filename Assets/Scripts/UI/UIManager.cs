@@ -68,7 +68,11 @@ public class UIManager : MonoBehaviour
         StatLeveltx.text = GameData.Instance.playerdata.Level.ToString() + " LEVEL";
         StatATKtx.text = GameData.Instance.playerdata.ATK.ToString();
         StatDeftx.text = GameData.Instance.playerdata.DEF.ToString();
-        StatSpeedTx.text = GameData.Instance.playerdata.StatSpeed.ToString();
+        if (GameData.Instance.playerdata.Shoes != null)
+            StatSpeedTx.text = (GameData.Instance.playerdata.StatSpeed+ GameData.Instance.playerdata.Shoes.itemData.value).ToString();
+        else
+            StatSpeedTx.text = GameData.Instance.playerdata.StatSpeed.ToString();
+
         StatPointTx.text = GameData.Instance.playerdata.StatPoint.ToString();
 
         if (GameData.Instance.playerdata.StatPoint > 0)

@@ -9,7 +9,8 @@ public class StrongMan : Soldier
 
     //Á×¾úÀ»¶§
     public override void Death()
-    {
+    {   
+        if(!IsAssaDeath)
         myAnim.SetTrigger("Death");
         SoundManager.Instance.DeleteEffectSource(this.GetComponent<AudioSource>());
         myRigid.isKinematic = true;

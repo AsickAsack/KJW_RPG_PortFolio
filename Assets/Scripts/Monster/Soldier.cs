@@ -160,7 +160,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 break;
 
             case S_State.Battle:
-                myAnim.SetBool("IsWalk", true);
+                
                 break;
             case S_State.Stun:
 
@@ -180,6 +180,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
             case S_State.Death:
                 Death();
+                NotifyToPlayer();
                 Move = false;
                 HpCanvas.gameObject.SetActive(false);
                 StartCoroutine(DeathAfter(2.0f));
@@ -187,6 +188,16 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
         }
     }
+
+    public void NotifyToPlayer()
+    {
+        Collider[] col = Physics.OverlapSphere(this.transform.position, 5.0f, 1 << LayerMask.NameToLayer("Player"));
+        for (int i = 0; i < col.Length; i++)
+        {
+            col[i].GetComponent<Knight>().Detect.Enemy.Remove(this.gameObject);
+        }
+    }
+
 
     IEnumerator DeathAfter(float time)
     {
@@ -352,7 +363,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             {
                 //널체크, 상대가 막았는지 확인
                 if (myCol[i].GetComponent<BattleSystem>() != null)
-                    if (!myCol[i].GetComponent<BattleSystem>().OnDamage(index, Random.Range(myStat.ATK - 5, myStat.ATK + 5)))
+                    if (!myCol[i].GetComponent<BattleSystem>().OnDamage(index, Random.Range(myStat.ATK - 5, myStat.ATK + 5), this.transform))
                     {
                         ChangeState(S_State.Stun);
 
@@ -401,10 +412,15 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
 
     //데미지 입었을때의 로직
-    public bool OnDamage(int index,float damage)
+    public bool OnDamage(int index,float damage,Transform tr)
     {
         if (myState != S_State.Death)
         {
+            if (myState == S_State.Patrol)
+            {
+                this.transform.LookAt(tr);
+                ChangeState(S_State.Battle);
+            }
 
             StartCoroutine(HitColor(myRenderer.material));
 

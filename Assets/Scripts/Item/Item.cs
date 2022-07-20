@@ -10,6 +10,7 @@ public class Item
     public int UID;
     public bool IsEquip;
 
+    //장비용 생성자
     public Item(ItemData itemdata)
     {
         this.itemData = itemdata;
@@ -29,7 +30,15 @@ public class Item
         
     }
 
-    
+    //소비템용 생성자
+    public Item(ItemData itemdata, int count)
+    {
+        this.itemData = itemdata;
+        this.ItemCount = count;
+        UID = 0;
+
+    }
+
 }
  
 

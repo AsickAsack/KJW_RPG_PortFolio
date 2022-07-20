@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface BattleSystem
 {
-    public bool OnDamage(int index,float Damage);
+    public bool OnDamage(int index,float Damage,Transform tr);
 }
 
 public class Player : MonoBehaviour

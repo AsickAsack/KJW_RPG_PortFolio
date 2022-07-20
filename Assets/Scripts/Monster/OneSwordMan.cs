@@ -10,7 +10,8 @@ public class OneSwordMan : Soldier
     //Á×¾úÀ»¶§
     public override void Death()
     {
-        myAnim.SetTrigger("Death");
+        if (!IsAssaDeath)
+            myAnim.SetTrigger("Death");
         SoundManager.Instance.DeleteEffectSource(this.GetComponent<AudioSource>());
         myRigid.isKinematic = true;
         dropRand(Random.Range(5, 8), 50, 100);

@@ -383,18 +383,16 @@ public class Knight : Player, BattleSystem
 
     #region 점프 관련
 
-    float jumpTime=0.0f;
+    Vector3 JumpPos;
+    float JumpDistance;
 
     public void AirCheck()
     {
-
         if (!Physics.Raycast(this.transform.position, -MyChar.transform.up, 0.1f))
         {
-
-            jumpTime += Time.deltaTime;
             if (!myAnim.GetBool("IsJump") && !myAnim.GetBool("IsAir") && myState != State.Ladder && !myAnim.GetBool("IsLadder"))
             {
-                
+                JumpPos = this.transform.position;
                 myAnim.SetTrigger("Fall");
             }
             
@@ -404,22 +402,28 @@ public class Knight : Player, BattleSystem
             if (myAnim.GetBool("IsJump"))
             {
                 myAnim.SetBool("IsJump", false);
-                if (jumpTime > 1.2f)
-                { 
-                    Uianim.SetTrigger("HPhit");
-                    DamageRoutine((int)(jumpTime*10), 0);
-                    StartCoroutine(HitColor(myRenderer.material));
-
-                }
-                jumpTime = 0.0f;
             }
         }
 
     }
 
+    public void AirDamageCheck()
+    {
+        JumpDistance = Vector3.Distance(JumpPos, this.transform.position);
+
+        if (JumpDistance > 5.0f)
+        {
+            Uianim.SetTrigger("HPhit");
+            DamageRoutine((int)(JumpDistance * 5.0f), 0);
+            StartCoroutine(HitColor(myRenderer.material));
+        }
+        
+    }
+
     //애니메이션 타이밍에 맞춰 점프함
     void Jump()
     {
+        JumpPos = this.transform.position;
         LandEffect.SetActive(false);
         myRigid.AddForce(this.transform.up * 5.0f, ForceMode.Impulse);
         myAnim.SetBool("IsJump", true);
@@ -431,11 +435,12 @@ public class Knight : Player, BattleSystem
     public void Landing()
     {
         LandEffect.SetActive(true);
+        AirDamageCheck();
     }
 
     #endregion
 
-    #region 버튼 함수 모음
+    #region 암살기능
 
     //암살 기능
     public void Assasinationing()
@@ -464,7 +469,7 @@ public class Knight : Player, BattleSystem
             case 0:
                 while(true)
                 {
-                    myRigid.MovePosition(this.transform.position + (Detect.Enemy[0].transform.position - this.transform.position).normalized * Time.deltaTime * 1.0f);
+                    myRigid.MovePosition(this.transform.position + (Detect.NearEnemy.transform.position - this.transform.position).normalized * Time.deltaTime * 1.0f);
                     yield return null;
                 }
                 
@@ -477,8 +482,8 @@ public class Knight : Player, BattleSystem
             case 2:
                 while (true)
                 {
-                    MyChar.transform.rotation = Quaternion.Slerp(MyChar.transform.rotation, Detect.Enemy[0].transform.rotation, Time.deltaTime * 3.0f);
-                    this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Detect.Enemy[0].transform.position.x, Detect.Enemy[0].transform.position.y, Detect.Enemy[0].transform.position.z+0.2f), Time.deltaTime * 3.0f);
+                    MyChar.transform.rotation = Quaternion.Slerp(MyChar.transform.rotation, Detect.NearEnemy.transform.rotation, Time.deltaTime * 3.0f);
+                    this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Detect.NearEnemy.transform.position.x, Detect.NearEnemy.transform.position.y, Detect.NearEnemy.transform.position.z+0.2f), Time.deltaTime * 3.0f);
                     yield return null;
                 }
 
@@ -493,7 +498,7 @@ public class Knight : Player, BattleSystem
     //암살
     public void AssaEnemyTrriger(int index)
     {
-        Detect.Enemy[0].GetComponent<Soldier>().OnAssa(index);
+        Detect.NearEnemy.GetComponent<Soldier>().OnAssa(index);
     }
 
     public void goTarget()
@@ -511,7 +516,9 @@ public class Knight : Player, BattleSystem
         ChangeState(State.Relax);
 
     }
+#endregion
 
+    #region 버튼 함수 모음
 
     //점프버튼
     public void JumpButton()
@@ -588,7 +595,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {   
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5));
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5), this.transform);
                 myAnim.SetBool("Block", false);
             }
         }
@@ -606,7 +613,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(GameData.Instance.playerdata.ATK-5, GameData.Instance.playerdata.ATK+5)*0.5f);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(GameData.Instance.playerdata.ATK-5, GameData.Instance.playerdata.ATK+5)*0.5f, this.transform);
             }
         }
         myCol = null;
@@ -620,14 +627,14 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5)*0.5f);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5)*0.5f, this.transform);
             }
         }
         myCol = null;
     }
 
     //맞았을때
-    public bool OnDamage(int index, float damage)
+    public bool OnDamage(int index, float damage,Transform tr)
     {
         Uianim.SetTrigger("HPhit");
         StartCoroutine(HitColor(myRenderer.material));
