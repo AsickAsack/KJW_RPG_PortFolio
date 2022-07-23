@@ -37,21 +37,24 @@ public class AutoDetect : MonoBehaviour
 
             if(Vector3.Distance(other.transform.position, mychar.position) < 1.5f)
             {
-                NearEnemy = other.gameObject;
-                
-            }
+                if(NearEnemy != other.gameObject)
+                { 
+                    NearEnemy = other.gameObject;
+                    NESolider = null;
+                }
+             }
             
             if(NearEnemy !=null)
             {
-                if (NESolider == null)
-                    NESolider = NearEnemy.GetComponent<Soldier>();
+                if(NESolider == null)
+                NESolider = NearEnemy.GetComponent<Soldier>();
 
                 if (NESolider.myState == Soldier.S_State.Patrol)
                 {
                     AssaButton.transform.position = Camera.main.WorldToScreenPoint(NearEnemy.transform.position + new Vector3(1.5f, 1.0f, 0.0f));
                     AssaButton.gameObject.SetActive(true);
                 }
-                if (NESolider.myState == Soldier.S_State.Assasination || NESolider.myState == Soldier.S_State.Battle)
+                if (NESolider.myState == Soldier.S_State.Assasination || NESolider.myState == Soldier.S_State.Battle || Vector3.Distance(NearEnemy.transform.position, mychar.position) > 1.5f)
                     AssaButton.gameObject.SetActive(false);
             }
 

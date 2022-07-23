@@ -17,6 +17,6 @@ MonoBehaviour:
   HP: 100
   ATK: 30
   DEF: 10
-  Speed: 3
+  Speed: 1
   AttackDelay: 3
   EXP: 50

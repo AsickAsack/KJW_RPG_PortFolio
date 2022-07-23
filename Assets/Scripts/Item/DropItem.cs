@@ -5,10 +5,12 @@ using UnityEngine.EventSystems;
 
 public class DropItem : MonoBehaviour 
 {
-    public List<ItemData> itemData = new List<ItemData>();
+    public List<ItemData> itemData;
     public Rigidbody myRigid;
     public GameObject CheckBtn;
     float disApearTime;
+
+  
 
     private void Start()
     {
@@ -22,10 +24,10 @@ public class DropItem : MonoBehaviour
         disApearTime += Time.deltaTime;
         
 
-        if (disApearTime >= 60.0f || itemData.Count == 0)
+        if (disApearTime >= 30.0f || itemData.Count == 0)
         {
             disApearTime = 0.0f;
-            ObjectPool.Instance.ObjectManager[0].Release(this.gameObject);
+            ObjectPool.Instance.Drop.Release(this.gameObject);
         }
 
     }
@@ -50,12 +52,7 @@ public class DropItem : MonoBehaviour
         }
     }
 
-    //반납될때 아이템데이터 리스트 클리어
-    private void OnDisable()
-    {
-        if(itemData.Count != 0)
-        itemData.Clear();
-    }
+ 
 
 
     /*

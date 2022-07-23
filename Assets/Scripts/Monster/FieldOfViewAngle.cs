@@ -12,11 +12,26 @@ public class FieldOfViewAngle : MonoBehaviour
     private Collider[] myColl;
     public List<GameObject> Enemy;
     public Transform mychar;
+    Knight knight;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (1 << other.gameObject.layer == TargetMask)
+        {
+            knight = other.GetComponent<Knight>();
+            if (!knight.SilentMode && !Enemy.Contains(other.transform.gameObject))
+            {
+                Enemy.Add(other.transform.gameObject);
+            }
+        }
+
+    }
 
     private void OnTriggerStay(Collider other)
     {
         if(1<<other.gameObject.layer == TargetMask)
         {
+            if(knight.SilentMode)
             SearchTarget();
         }
 

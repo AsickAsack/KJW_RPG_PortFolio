@@ -37,6 +37,14 @@ public class DialogueManager : MonoBehaviour
 
     }
 
+    public void MelindaBtn()
+    {
+        if (GameData.Instance.playerdata.Quest && QuestManager.instance.QuestFinish)
+            QuestManager.instance.getReward();
+
+            SetDialogue(GameData.Instance.playerdata.StoryIndex);
+    }
+
 
     public void SetDialogue(int index)
     {
@@ -64,7 +72,7 @@ public class DialogueManager : MonoBehaviour
         
         IsDialogue = true;
 
-        if (Dialogue[FirstIndex][SecondIndex] == '*')
+        if (Dialogue[FirstIndex][SecondIndex] == '*' || Dialogue[FirstIndex][SecondIndex] == '`')
             temp += ' ';
         else
             temp += Dialogue[FirstIndex][SecondIndex];
@@ -90,8 +98,13 @@ public class DialogueManager : MonoBehaviour
             //버튼누르면 quest false
             temp = Dialogue[FirstIndex].Replace('*', ' ');
         }
+        else if(Dialogue[FirstIndex].Contains('`'))
+        { 
+            temp = Dialogue[FirstIndex].Replace('`',' ');
+            GameData.Instance.playerdata.StoryIndex++;
+        }
         else
-            temp = Dialogue[FirstIndex];
+        temp = Dialogue[FirstIndex];
 
         DialogueTx.text = temp;
         IsDialogue = false;
@@ -124,7 +137,10 @@ public class DialogueManager : MonoBehaviour
             case 0:
                 {
                     IsQuest = false;
-                    SetDialogue(3);
+                    GameData.Instance.playerdata.StoryIndex++;
+                    MelindaBtn();
+                    GameData.Instance.playerdata.Quest = true;
+                    QuestManager.instance.SetQuest(11);
                 }
                 break;
             case 1:

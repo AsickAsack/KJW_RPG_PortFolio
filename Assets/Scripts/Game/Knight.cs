@@ -48,7 +48,7 @@ public class Knight : Player, BattleSystem
     Vector3 myDirecTion;
     bool IsBlock = false;
     bool ladderMove = false;
-
+    public bool SilentMode = true;
 
 
 
@@ -613,7 +613,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(GameData.Instance.playerdata.ATK-5, GameData.Instance.playerdata.ATK+5)*0.5f, this.transform);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(20,30), this.transform);
             }
         }
         myCol = null;
@@ -627,7 +627,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5)*0.5f, this.transform);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(20,30), this.transform);
             }
         }
         myCol = null;
@@ -692,7 +692,7 @@ public class Knight : Player, BattleSystem
     public void DamageRoutine(float Damage, int index)
     {
         DamageT = Damage < 0 ? 0 : Damage;
-        GameObject obj = ObjectPool.Instance.ObjectManager[4].Get();
+        GameObject obj = ObjectPool.Instance.ObjectManager[3].Get();
         obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), index);
         GameData.Instance.playerdata.CurHP -= DamageT;
         UIManager.Instance.SetHP();

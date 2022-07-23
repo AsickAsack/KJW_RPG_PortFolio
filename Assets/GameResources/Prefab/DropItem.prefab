@@ -696,8 +696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eb03cf2f4ae63b498d9956538a6a9d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemData:
-  - {fileID: 0}
+  itemData: []
   myRigid: {fileID: 8116908020944677435}
   CheckBtn: {fileID: 1528551160967046465}
 --- !u!136 &8213385871906012937

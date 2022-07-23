@@ -15,7 +15,7 @@ public class DamageText : MonoBehaviour
 
     public void ReleaseText()
     {
-        ObjectPool.Instance.ObjectManager[4].Release(this.gameObject);
+        ObjectPool.Instance.ObjectManager[3].Release(this.gameObject);
     }
 
     public void SetText(Transform tr,string text,int color)

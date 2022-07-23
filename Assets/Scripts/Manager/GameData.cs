@@ -163,10 +163,6 @@ public class GameData : MonoBehaviour
         public float StatSpeed = 3;
 
 
-
-
-
-
         private float _CurHP = 200;
         public float CurHP
         {
@@ -238,7 +234,8 @@ public class GameData : MonoBehaviour
         }
 
         public int money = 0;
-
+        public int StoryIndex = 0;
+        public bool Quest = false;
 
 
         #endregion

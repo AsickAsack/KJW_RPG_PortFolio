@@ -1313,7 +1313,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539386202962907371}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -35.956753, y: 0, z: 20.922056}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1367,7 +1367,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539386202962907371}
-  m_Material: {fileID: 13400000, guid: b7a1a0f57301f2c4ea31753ef2e0756b, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.2
@@ -1387,7 +1387,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: c03a340fbb20d2b408ded57ef8e6dcc5, type: 2}
-  Detect: {fileID: 0}
+  Detect: {fileID: 8535215949423865581}
+  PatrolMask:
+    serializedVersion: 2
+    m_Bits: 1040
   Sword: {fileID: 8519130394372235598}
   BackSword: {fileID: 1539386202962911563}
   HpCanvas: {fileID: 4991229809091537771}
@@ -2910,7 +2913,6 @@ GameObject:
   - component: {fileID: 8519130394372569912}
   - component: {fileID: 8519130394375465210}
   - component: {fileID: 8519130394374448812}
-  - component: {fileID: 8519130394372235585}
   m_Layer: 0
   m_Name: SM_Wep_Broadsword_01
   m_TagString: Untagged
@@ -2983,19 +2985,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8519130394372235585
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8519130394372235598}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.09, y: 0.8914137, z: 0.059882767}
-  m_Center: {x: 0.00000002422572, y: 0.3217891, z: 0.00000012743635}
 --- !u!1 &9097067657170411240
 GameObject:
   m_ObjectHideFlags: 0
@@ -3006,6 +2995,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9097067657170411241}
   - component: {fileID: 9097067657170411246}
+  - component: {fileID: 8535215949423865581}
   m_Layer: 0
   m_Name: AutoDetect
   m_TagString: Untagged
@@ -3042,6 +3032,25 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8535215949423865581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9097067657170411240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b878d0d558d1f0c478c432785d58f198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ViewAngle: 190
+  Distance: 8
+  TargetMask:
+    serializedVersion: 2
+    m_Bits: 64
+  Enemy: []
+  mychar: {fileID: 1539386202962575149}
 --- !u!1001 &2066521855639830010
 PrefabInstance:
   m_ObjectHideFlags: 0

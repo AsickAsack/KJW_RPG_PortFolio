@@ -1124,7 +1124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8088033811905471731}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -37.614414, y: 0, z: 20.85623}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1199,6 +1199,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 52f681b36baa220428b726442a371644, type: 2}
   Detect: {fileID: 3195993902060699979}
+  PatrolMask:
+    serializedVersion: 2
+    m_Bits: 1040
   Sword: {fileID: 8088033811404800898}
   BackSword: {fileID: 8088033811006511200}
   HpCanvas: {fileID: 5413004141144950681}
