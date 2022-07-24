@@ -31,6 +31,7 @@ public class QuicSlot : MonoBehaviour, IPointerClickHandler
             { 
                 SlotItem.itemData.UseItem(SlotItem.itemData.ItemCode);
                 SlotItem.ItemCount--;
+                
                 if (SlotItem.ItemCount == 0)
                 { 
                     GameData.Instance.playerdata.myItems.Remove(SlotItem);

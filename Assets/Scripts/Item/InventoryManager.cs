@@ -31,6 +31,7 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
     //인벤토리 열때
     public void OpenInventory()
     {
+        ResetSlots();
         slotState = SlotState.All;
         ButtonSelectImage[0].SetActive(true);
         GoldText.text = GameData.Instance.playerdata.money.ToString("N0") + " 골드";
