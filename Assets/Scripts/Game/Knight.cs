@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using Cinemachine;
 
 public class Knight : Player, BattleSystem
 {
-
+    
     public enum State
     {
         Relax,Battle,Ladder,Fly, Assasination
@@ -36,6 +37,7 @@ public class Knight : Player, BattleSystem
     public AutoDetect Detect;
     public CapsuleCollider CapColl;
     float DamageT;
+    public ParticleSystem[] Potion;
 
     [Header("[행글라이더]")]
     public GameObject Hanglider;
@@ -49,15 +51,19 @@ public class Knight : Player, BattleSystem
     bool IsBlock = false;
     bool ladderMove = false;
     public bool SilentMode = true;
-
-
-
+    public GameObject Effect;
+    public GameObject SwordTrail;
+    public CinemachineVirtualCamera mycamera;
+    NoiseSettings mynoisedef;
+    public GameObject SkillEffect;
 
     private void Awake()
     {
         CheckWeapon();
-
+        mynoisedef = Resources.Load("First_Noise") as NoiseSettings;
         UIManager.Instance.GetButtonFunc(JumpButton, BlockBtn, WPChange_Btn, AttackButton);
+        UIManager.Instance.PickUp += Pickup;
+        UIManager.Instance.PotionConsume += PotionConsume;
     }
 
     #region 유한상태기계
@@ -520,6 +526,27 @@ public class Knight : Player, BattleSystem
 
     #region 버튼 함수 모음
 
+
+    //포션 흡입
+    public void PotionConsume()
+    {
+        myAnim.SetTrigger("Activate");
+        Potion[0].Play();
+        Potion[1].Play();
+    }
+
+    public void WarpToHome()
+    {
+        myAnim.SetTrigger("Activate");
+        UIManager.Instance.WarpUI(this.transform);
+    }
+
+    //픽업
+    public void Pickup()
+    {
+        myAnim.SetTrigger("PickUp");
+    }
+
     //점프버튼
     public void JumpButton()
     {
@@ -581,6 +608,12 @@ public class Knight : Player, BattleSystem
 
     }
 
+    public void skillbtn()
+    {
+        SkillEffect.SetActive(true);
+        mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = mynoisedef;
+    }
  
     #endregion
 
@@ -593,10 +626,13 @@ public class Knight : Player, BattleSystem
         myCol = Physics.OverlapSphere(AttackSpot.position, 2.0f, 1 << LayerMask.NameToLayer("Monster"));
         if (myCol != null)
         {
+            
+            
             for (int i = 0; i < myCol.Length; i++)
             {   
                 myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5), this.transform);
                 myAnim.SetBool("Block", false);
+                GameObject myeffect = Instantiate(Effect, myCol[i].transform.position + new Vector3(0,1.0f,-0.5f), Quaternion.identity);
             }
         }
         myCol = null;
@@ -705,6 +741,12 @@ public class Knight : Player, BattleSystem
         mat.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         mat.color = Color.white;
+    }
+
+    public void SetSwordtrail(int index)
+    {
+
+        SwordTrail.SetActive(0==index);
     }
 
     #endregion

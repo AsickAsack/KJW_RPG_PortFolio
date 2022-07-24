@@ -7,10 +7,12 @@ public class UseItemData : ItemData
 {
     public override void UseItem(int ItemCode)
     {
-        switch(ItemCode)
+        UIManager.Instance.PotionConsume?.Invoke();
+        switch (ItemCode)
         {
             //hpÆ÷¼Ç
             case 0:
+                
                 GameData.Instance.playerdata.CurHP += this.value;
                 UIManager.Instance.SetHP();
 

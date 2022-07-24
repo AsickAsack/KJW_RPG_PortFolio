@@ -57,6 +57,7 @@ public class DamageText : MonoBehaviour
             case 2:
                 myText.color = Color.yellow;
                 break;
+
         }
 
         myText.text = text;

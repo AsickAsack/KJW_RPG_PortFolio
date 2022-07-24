@@ -114,7 +114,7 @@ public class ObjectPool : MonoBehaviour
         temp.itemData.Add(itemDatas[8]);
         temp.itemData[0].value = Random.Range(minMoney, MaxMoney + 1);
         temp.itemData.Add(itemDatas[index]);
-        temp.itemData.Add(itemDatas[4]);
+        temp.itemData.Add(itemDatas[0]);
 
         if (ItemRand <= 20)
             temp.itemData.Add(itemDatas[Random.Range(0, 2)]);

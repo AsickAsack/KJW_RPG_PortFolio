@@ -67,6 +67,7 @@ public class DropItemSlotManager : MonoBehaviour
                     temp.ItemCount++;
             }
 
+            UIManager.Instance.PickUp?.Invoke();
             Not = Dropitem.itemData[i].myType == ItemType.Gold ? Dropitem.itemData[i].value.ToString() + " ∞ÒµÂ∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ." : Dropitem.itemData[i].ItemName + " 1∞≥∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ.";
             GameData.Instance.SetNotify(Not);
 
@@ -107,6 +108,7 @@ public class DropItemSlotManager : MonoBehaviour
                     temp.ItemCount++;
             }
 
+            UIManager.Instance.PickUp?.Invoke();
             Not = Dropitem.itemData[index].myType == ItemType.Gold ? Dropitem.itemData[index].value.ToString() + " ∞ÒµÂ∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ." : Dropitem.itemData[index].ItemName + "1∞≥∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ.";
             GameData.Instance.SetNotify(Not);
             Dropitem.itemData.RemoveAt(index);

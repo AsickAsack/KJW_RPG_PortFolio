@@ -33,7 +33,16 @@ public class UIManager : MonoBehaviour
     [Header("[스텟 창 기능]")]
 
     public UnityAction[] ButtonFunc = new UnityAction[4];
-    public Sprite[] ButtonImage = new Sprite[4]; 
+    public Sprite[] ButtonImage = new Sprite[4];
+    public UnityAction PickUp;
+    public UnityAction PotionConsume;
+
+    [Header("[워프UI 기능]")]
+
+    public Image WarpImage;
+    public GameObject WarpNotouch;
+    public Transform WarpPos;
+    public GameObject WarpEffect;
 
     private void Awake()
     {
@@ -188,4 +197,39 @@ public class UIManager : MonoBehaviour
     }
 
     #endregion
+
+    public void WarpUI(Transform tr)
+    {
+        WarpNotouch.SetActive(true);
+        WarpEffect.SetActive(true);
+        StartCoroutine(WaitWarp(tr));
+    }
+
+    IEnumerator WaitWarp(Transform tr)
+    {
+        yield return new WaitForSeconds(1.5f);
+        WarpImage.gameObject.SetActive(true);
+
+        while (WarpImage.fillAmount < 1.0f)
+        {
+            WarpImage.fillAmount += Time.deltaTime;
+
+            yield return null;
+        }
+
+        tr.transform.position = WarpPos.transform.position;
+
+        while(WarpImage.fillAmount > 0.0f)
+        {
+            WarpImage.fillAmount -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        WarpImage.gameObject.SetActive(false);
+        WarpNotouch.SetActive(false);
+        WarpEffect.SetActive(false);
+        WarpImage.fillAmount = 0.0f;
+    }
+
 }
