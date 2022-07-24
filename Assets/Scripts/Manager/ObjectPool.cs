@@ -10,12 +10,14 @@ public class ObjectPool : MonoBehaviour
 
     public ObjectPool<GameObject>[] ObjectManager = new ObjectPool<GameObject>[4];
     public ObjectPool<GameObject> Drop;
+    public ObjectPool<GameObject>[] WarpDoor = new ObjectPool<GameObject>[1];
     public ItemData[] itemDatas;
     public GameObject DropItem;
     public GameObject SwordMan;
     public GameObject SpearMan;
     public GameObject S_SwordMan;
     public GameObject Damage_text;
+    public GameObject WarpDoorObject;
 
     public Transform[] folder;
     int ItemRand;
@@ -30,9 +32,37 @@ public class ObjectPool : MonoBehaviour
         Init(1, SpearMan);
         Init(2, S_SwordMan);
         Init(3, Damage_text);
-
+        InitEffect(0, WarpDoorObject, 5, 2);
 
     }
+
+    void InitEffect(int index,GameObject prefab,int findex,int maxCount)
+    {
+        WarpDoor[index] = new ObjectPool<GameObject>(
+      //새로운 오브젝트를 생성할때
+      createFunc: () =>
+      {
+          var CreateObj = Instantiate(prefab, folder[findex]);
+          return CreateObj;
+      },
+      //가져갈때
+      actionOnGet: (Obj) =>
+      {
+          Obj.gameObject.SetActive(true);
+      },
+      // 다시 가지고 올때
+      actionOnRelease: (Obj) =>
+      {
+          Obj.gameObject.SetActive(false);
+      },
+      //타겟 오브젝트에게 적용할 함수
+      actionOnDestroy: (Obj) =>
+      {
+          Destroy(Obj.gameObject);
+      }, maxSize: maxCount);
+    }
+
+
 
     void dropInit()
     {

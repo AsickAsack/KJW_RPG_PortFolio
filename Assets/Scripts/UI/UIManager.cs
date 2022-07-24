@@ -43,6 +43,8 @@ public class UIManager : MonoBehaviour
     public GameObject WarpNotouch;
     public Transform WarpPos;
     public GameObject WarpEffect;
+    GameObject WarpDoor;
+    public Vector3 OrgPos = Vector3.zero;
 
     private void Awake()
     {
@@ -198,11 +200,21 @@ public class UIManager : MonoBehaviour
 
     #endregion
 
+    public void WellRecovery()
+    {
+        GameData.Instance.playerdata.CurHP = GameData.Instance.playerdata.MaxHP;
+        SetHP();
+    }
+
+
     public void WarpUI(Transform tr)
     {
         WarpNotouch.SetActive(true);
         WarpEffect.SetActive(true);
         StartCoroutine(WaitWarp(tr));
+        WarpDoor = ObjectPool.Instance.WarpDoor[0].Get();
+        WarpDoor.transform.position = WarpPos.transform.position + new Vector3(0, 0.5f, 2.0f);
+        OrgPos = tr.transform.position;
     }
 
     IEnumerator WaitWarp(Transform tr)

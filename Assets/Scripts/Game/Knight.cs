@@ -55,7 +55,8 @@ public class Knight : Player, BattleSystem
     public GameObject SwordTrail;
     public CinemachineVirtualCamera mycamera;
     NoiseSettings mynoisedef;
-    public GameObject SkillEffect;
+    public GameObject[] SkillEffect;
+    Coroutine DefenceSkill = null;
 
     private void Awake()
     {
@@ -201,7 +202,7 @@ public class Knight : Player, BattleSystem
         switch (myState)
         {
             case State.Relax:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge"))
                 {
                     myAnim.SetBool("IsRWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -212,7 +213,7 @@ public class Knight : Player, BattleSystem
 
                 break;
             case State.Battle:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge"))
                 {
                     myAnim.SetBool("IsWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -526,6 +527,34 @@ public class Knight : Player, BattleSystem
 
     #region 버튼 함수 모음
 
+    public void SpecialAttack()
+    {
+        myAnim.SetTrigger("Special");
+        StartCoroutine(SpecialCool());
+    }
+
+    IEnumerator SpecialCool()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        myAnim.SetBool("IsSpecial", false);
+    }
+
+
+    public void SilentModeBtn()
+    {
+        if (SilentMode)
+        {
+            SilentMode = false;
+            GameData.Instance.playerdata.MoveSpeed *= 2.0f;
+        }
+        else
+        {
+            SilentMode = true;
+            GameData.Instance.playerdata.MoveSpeed *= 0.5f;
+        }
+    }
+
 
     //포션 흡입
     public void PotionConsume()
@@ -610,9 +639,30 @@ public class Knight : Player, BattleSystem
 
     public void skillbtn()
     {
-        SkillEffect.SetActive(true);
+        //if(DefenceSkill == null)
+        
+        myAnim.SetTrigger("Charge");
+        SkillEffect[0].SetActive(true);
         mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = mynoisedef;
+        DefenceSkill = StartCoroutine(DefenceUp());
+        
+    }
+
+    IEnumerator DefenceUp()
+    {
+        yield return new WaitForSeconds(2.0f);
+        mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = null ;
+        myAnim.SetBool("IsCharge", false);
+        SkillEffect[0].SetActive(false);
+        SkillEffect[1].SetActive(true);
+        GameData.Instance.playerdata.DEF += 10;
+
+        yield return new WaitForSeconds(60.0f);
+        GameData.Instance.playerdata.DEF -= 10;
+
+        SkillEffect[1].SetActive(false);
+        DefenceSkill = null;
     }
  
     #endregion

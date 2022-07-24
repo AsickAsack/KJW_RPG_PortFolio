@@ -33,6 +33,13 @@ public class FieldOfViewAngle : MonoBehaviour
         {
             if(knight.SilentMode)
             SearchTarget();
+            else
+            {
+                if (!Enemy.Contains(other.transform.gameObject))
+                {
+                    Enemy.Add(other.transform.gameObject);
+                }
+            }
         }
 
     }
