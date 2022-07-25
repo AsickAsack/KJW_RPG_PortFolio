@@ -11,6 +11,9 @@ public class MonsterSpawnManager : MonoBehaviour
     public Vector2 SpawnMapsize;
     public Vector3 PatrolArea;
     public Vector3 SpawnArea;
+    public Transform KingMovePos;
+    public Vector2 KingMapSize;
+    public Vector3 KingMoveArea;
     int[] MaxCount = new int[3];
 
 
@@ -19,6 +22,7 @@ public class MonsterSpawnManager : MonoBehaviour
         Instance = this;
         PatrolMapSize = new Vector2(SpawnMap.localScale.x * 0.5f, SpawnMap.localScale.z *0.5f);
         SpawnMapsize = new Vector2(SpawnMap.localScale.x * 0.25f, SpawnMap.localScale.z * 0.25f);
+        KingMapSize = new Vector2(KingMovePos.localScale.x * 0.5f, KingMovePos.localScale.z * 0.5f);
     }
 
     private void Start()
@@ -74,6 +78,15 @@ public class MonsterSpawnManager : MonoBehaviour
         return PatrolArea;
     }
 
+    public Vector3 GetKingMovePos()
+    {
+
+        KingMoveArea = new Vector3(Random.Range(KingMovePos.position.x - KingMapSize.x, KingMovePos.position.x + KingMapSize.x), KingMovePos.position.y
+            , Random.Range(KingMovePos.position.z - KingMapSize.y, KingMovePos.position.z + KingMapSize.y));
+
+
+        return KingMoveArea;
+    }
 
 
 

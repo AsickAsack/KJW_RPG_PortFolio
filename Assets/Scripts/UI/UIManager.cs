@@ -212,7 +212,7 @@ public class UIManager : MonoBehaviour
         WarpNotouch.SetActive(true);
         WarpEffect.SetActive(true);
         StartCoroutine(WaitWarp(tr));
-        WarpDoor = ObjectPool.Instance.WarpDoor[0].Get();
+        WarpDoor = ObjectPool.Instance.Effects[0].Get();
         WarpDoor.transform.position = WarpPos.transform.position + new Vector3(0, 0.5f, 2.0f);
         OrgPos = tr.transform.position;
     }

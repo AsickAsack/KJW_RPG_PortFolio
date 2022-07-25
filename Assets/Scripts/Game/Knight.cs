@@ -51,8 +51,7 @@ public class Knight : Player, BattleSystem
     bool IsBlock = false;
     bool ladderMove = false;
     public bool SilentMode = true;
-    public GameObject Effect;
-    public GameObject SwordTrail;
+    private GameObject SwordTrail;
     public CinemachineVirtualCamera mycamera;
     NoiseSettings mynoisedef;
     public GameObject[] SkillEffect;
@@ -202,7 +201,7 @@ public class Knight : Player, BattleSystem
         switch (myState)
         {
             case State.Relax:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge") && !myAnim.GetBool("IsKnock"))
                 {
                     myAnim.SetBool("IsRWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -213,7 +212,7 @@ public class Knight : Player, BattleSystem
 
                 break;
             case State.Battle:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge") && !myAnim.GetBool("IsKnock"))
                 {
                     myAnim.SetBool("IsWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -363,12 +362,14 @@ public class Knight : Player, BattleSystem
             AttackSword = Swords[0];
             RelaxSword = BackSwords[0];
             AttackSpot = Swords[0].GetComponentInChildren<Transform>();
+            SwordTrail = Swords[0].transform.GetChild(1).gameObject;
         }
         else
         {
             AttackSword = Swords[1];
             RelaxSword = BackSwords[1];
             AttackSpot = Swords[1].GetComponentInChildren<Transform>();
+            SwordTrail = Swords[1].transform.GetChild(1).gameObject;
 
         }
 
@@ -682,7 +683,8 @@ public class Knight : Player, BattleSystem
             {   
                 myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5), this.transform);
                 myAnim.SetBool("Block", false);
-                GameObject myeffect = Instantiate(Effect, myCol[i].transform.position + new Vector3(0,1.0f,-0.5f), Quaternion.identity);
+                GameObject myeffect = ObjectPool.Instance.Effects[2].Get();
+                myeffect.transform.position = myCol[i].transform.position + new Vector3(0, 1.0f, -0.5f);
             }
         }
         myCol = null;
@@ -726,7 +728,7 @@ public class Knight : Player, BattleSystem
         StartCoroutine(HitColor(myRenderer.material));
 
         //방패로 막고있다면
-        if (myAnim.GetBool("IsBlock"))
+        if (myAnim.GetBool("IsBlock") && tr.gameObject.GetComponent<BossKing>() == null)
         {
             int rand = Random.Range(1, 11);
             myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[3]);
@@ -740,7 +742,10 @@ public class Knight : Player, BattleSystem
                 //왼쪽 맞았을때
                 case 1:
                     myAnim.SetTrigger("BlockHitL");
-                    break;        
+                    break;
+
+              
+
             }
 
             DamageRoutine((int)((damage - GameData.Instance.playerdata.DEF) * 0.5f), 1);
@@ -766,6 +771,11 @@ public class Knight : Player, BattleSystem
                     //왼쪽 맞았을때
                     case 1:
                         myAnim.SetTrigger("GetHitL");
+                        break;
+
+                    //넉백 맞았을때
+                    case 2:
+                        myAnim.SetTrigger("GetKnock");
                         break;
                 }
             }

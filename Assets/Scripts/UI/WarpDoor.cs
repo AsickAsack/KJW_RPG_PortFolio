@@ -12,7 +12,7 @@ public class WarpDoor : MonoBehaviour
         DestroyTime += Time.deltaTime;
         if (DestroyTime > 60.0f)
         {
-            ObjectPool.Instance.WarpDoor[0].Release(this.gameObject);
+            ObjectPool.Instance.Effects[0].Release(this.gameObject);
         }
     }
 
@@ -21,7 +21,7 @@ public class WarpDoor : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             other.transform.position = UIManager.Instance.OrgPos;
-            ObjectPool.Instance.WarpDoor[0].Release(this.gameObject);
+            ObjectPool.Instance.Effects[0].Release(this.gameObject);
         }
     }
 }

@@ -29,7 +29,7 @@ public class AutoDetect : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (DetectLayer == 1 << other.gameObject.layer)
+        if (DetectLayer == 1 << other.gameObject.layer && !other.CompareTag("King"))
         {
 
             if(other.gameObject)
