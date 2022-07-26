@@ -1392,7 +1392,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1040
   Sword: {fileID: 8519130394372235598}
-  BackSword: {fileID: 1539386202962911563}
   HpCanvas: {fileID: 4991229809091537771}
   HPSlider: {fileID: 4213142555834333915}
   HitTime: 0
@@ -1419,7 +1418,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 12
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -1454,7 +1453,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

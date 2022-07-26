@@ -46,8 +46,14 @@ public class UIManager : MonoBehaviour
     GameObject WarpDoor;
     public Vector3 OrgPos = Vector3.zero;
 
+    [Header("[종료 기능]")]
+
+    public GameObject ExitPopup;
+   
+
     private void Awake()
     {
+        Debug.Log(GameData.Instance.playerdata.Helmet);
         Instance = this;
         GameData.Instance.NotAction += Notify;
 
@@ -56,6 +62,21 @@ public class UIManager : MonoBehaviour
         SetExp();
         SetLevel();
     }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            WarpNotouch.SetActive(true);
+            ExitPopup.SetActive(true);
+        }
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
 
     // 점프,블락,체인지,어택..
     public void GetButtonFunc(UnityAction func1, UnityAction func2, UnityAction func3, UnityAction func4)

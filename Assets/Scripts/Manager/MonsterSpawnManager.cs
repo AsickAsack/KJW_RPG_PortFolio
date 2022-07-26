@@ -15,7 +15,7 @@ public class MonsterSpawnManager : MonoBehaviour
     public Vector2 KingMapSize;
     public Vector3 KingMoveArea;
     int[] MaxCount = new int[3];
-
+    public Transform Player;
 
     private void Awake()
     {

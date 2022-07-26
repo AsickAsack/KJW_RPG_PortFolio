@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Newtonsoft.Json;
 using System.IO;
+using System;
 
-[System.Serializable]
+[Serializable]
 public class GameData : MonoBehaviour
 {
 
@@ -36,9 +37,12 @@ public class GameData : MonoBehaviour
     #endregion
 
     public PlayerData playerdata = new PlayerData();
+    public PlayerData playerdata2 = new PlayerData();
     public Queue<string> EventString = new Queue<string>();
     public UnityAction NotAction;
     private Coroutine Notify;
+    TimeSpan CirPlayTime = new TimeSpan();
+    public bool IsPlay = false;
 
     public void SetNotify(string not)
     {
@@ -62,18 +66,39 @@ public class GameData : MonoBehaviour
         Notify = null;
     }
 
-    public void Save(object SaveData,string SaveFileName)
+    public void Save()
     {
-        string data = JsonConvert.SerializeObject(SaveData);
-        File.WriteAllText(Application.persistentDataPath + SaveFileName, data);
+        SetSavePos();
+        SetSaveTime();
+        string data = JsonConvert.SerializeObject(playerdata);
+        File.WriteAllText(Application.dataPath +"/GameData.json", data);
+        Debug.Log(playerdata.PlayTime);
     }
 
-    public void Load(string LoadFileName)
+    public void SetSavePos()
     {
-        string data = File.ReadAllText(Application.persistentDataPath + LoadFileName);
+        playerdata.SavePos[0] = MonsterSpawnManager.Instance.Player.position.x;
+        playerdata.SavePos[1] = MonsterSpawnManager.Instance.Player.position.y;
+        playerdata.SavePos[2] = MonsterSpawnManager.Instance.Player.position.z;
+    }
+
+    public void SetSaveTime()
+    {
+        CirPlayTime = DateTime.Now - playerdata.FirstTime;
+        playerdata.PlayTime = CirPlayTime.Hours.ToString() + " 시간 " + CirPlayTime.Minutes.ToString() + " 분";
+    }
+
+    public void Load()
+    {
+        string data = File.ReadAllText(Application.dataPath + "/GameData.json");
         playerdata = JsonConvert.DeserializeObject<PlayerData>(data);
     }
 
+    public void CheckDataLoad()
+    {
+        string data = File.ReadAllText(Application.dataPath + "/GameData.json");
+        playerdata2 = JsonConvert.DeserializeObject<PlayerData>(data);
+    }
 
 
     [System.Serializable]
@@ -86,9 +111,13 @@ public class GameData : MonoBehaviour
 
         public Difficulty difficulty = Difficulty.Normal;
         public List<Item> myItems = new List<Item>();
-        public Item Helmet;
-        public Item Weapon;
-        public Item Shoes;
+        public Item Helmet = null;
+        public Item Weapon = null;
+        public Item Shoes = null;
+
+        public float[] SavePos = new float[3];
+        public DateTime FirstTime;
+        public string PlayTime;
 
         #region 플레이어 스텟
 
@@ -110,9 +139,13 @@ public class GameData : MonoBehaviour
                 }
 
                 _Level = value;
-                MaxEXP = Level * 100;
-                UIManager.Instance.SetAll();
-                GameData.Instance.EventString.Enqueue("레벨 " + Level + "이 되었습니다!");
+
+                if (GameData.Instance.IsPlay)
+                {
+                    MaxEXP = Level * 100;
+                    UIManager.Instance.SetAll();
+                    GameData.Instance.EventString.Enqueue("레벨 " + Level + "이 되었습니다!");
+                }
 
             }
 

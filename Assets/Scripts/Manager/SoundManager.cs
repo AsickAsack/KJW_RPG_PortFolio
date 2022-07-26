@@ -103,9 +103,14 @@ public class SoundManager : MonoBehaviour
             ChangeEffectVolume(_EffectVolume);
         }
     }
-    
+
     //이펙트 오디오 소스를 리스트에 넣어줄 함수
-    public void AddEffectSource(AudioSource myAudio)=> EffectSource.Add(myAudio);
+    public void AddEffectSource(AudioSource myAudio)
+    {
+        EffectSource.Add(myAudio);
+        EffectSource[EffectSource.Count-1].volume = _EffectVolume;
+    }
+
          
     //이펙트 오디오 소스를 리스트에서 삭제시킬 함수
     public void DeleteEffectSource(AudioSource myAudio) => EffectSource.Remove(myAudio);

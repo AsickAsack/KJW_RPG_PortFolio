@@ -13,9 +13,8 @@ public class SkillBtn : MonoBehaviour , IPointerClickHandler
     public Text Cooltimetext;
     public Image Cool_Image;
     Coroutine CoolRoutine = null;
-    public GameObject Outline;
     bool IsActive = false;
-
+    public Animator animator;
 
 
     IEnumerator CoolTimeLogic()
@@ -49,7 +48,7 @@ public class SkillBtn : MonoBehaviour , IPointerClickHandler
         if (Skill_Index == 2)
         { 
             IsActive = !IsActive;
-            Outline.SetActive(IsActive);
+            animator.SetBool("IsActive", IsActive); // ¹Ù²Ù±â
         }
 
         if (CoolRoutine == null && CoolTime > 0.0f)
