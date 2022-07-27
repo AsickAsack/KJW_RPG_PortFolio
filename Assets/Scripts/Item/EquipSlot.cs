@@ -58,8 +58,8 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
 
             if (EquipItem.itemData.ItemCode == ItemCode)
             {
-        
-                Icon.sprite = EquipItem.itemData.ItemImage;
+
+                Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
                 Icon.gameObject.SetActive(true);
 
                 switch(ItemCode)
@@ -108,7 +108,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
                 if (GameData.Instance.playerdata.Helmet != null)
                 {
                     EquipItem = GameData.Instance.playerdata.Helmet;
-                    Icon.sprite = EquipItem.itemData.ItemImage;
+                    Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode]; 
                     Icon.gameObject.SetActive(true);
                 }
                 break;
@@ -116,7 +116,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
                 if (GameData.Instance.playerdata.Shoes != null)
                 {
                     EquipItem = GameData.Instance.playerdata.Shoes;
-                    Icon.sprite = EquipItem.itemData.ItemImage;
+                    Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
                     Icon.gameObject.SetActive(true);
                 }
                 break;
@@ -124,7 +124,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
                 if (GameData.Instance.playerdata.Weapon != null)
                 {
                     EquipItem = GameData.Instance.playerdata.Weapon;
-                    Icon.sprite = EquipItem.itemData.ItemImage;
+                    Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
                     Icon.gameObject.SetActive(true);
                 }
                 break;
@@ -150,7 +150,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        DragImgae.sprite = EquipItem.itemData.ItemImage;
+        DragImgae.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
         DragImgae.gameObject.SetActive(true);
         DragImgae.transform.position = eventData.position;
     }

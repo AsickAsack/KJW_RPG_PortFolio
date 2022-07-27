@@ -29,7 +29,7 @@ public class DropItemSlotManager : MonoBehaviour
             if (!dropItemSlots[i].gameObject.activeSelf)
             {
                 dropItemSlots[i].ItemNameText.text = Dropitem.itemData[i].myType == ItemType.Gold ? Dropitem.itemData[i].value.ToString() + " °ñµå" : Dropitem.itemData[i].ItemName;
-                dropItemSlots[i].Icon.sprite = Dropitem.itemData[i].ItemImage;
+                dropItemSlots[i].Icon.sprite = UIManager.Instance.ItemIcon[Dropitem.itemData[i].ItemCode];
                 dropItemSlots[i].gameObject.SetActive(true);
             }
         }

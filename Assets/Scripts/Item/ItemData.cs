@@ -20,6 +20,5 @@ public abstract class ItemData : ScriptableObject
     public float value;
     public float BuyPrice;
     public float SellPrice;
-    public Sprite ItemImage;
     
 }

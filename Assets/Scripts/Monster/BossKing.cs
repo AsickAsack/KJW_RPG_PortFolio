@@ -68,7 +68,7 @@ public class BossKing : MonoBehaviour, BattleSystem
     private void Awake()
     {
         stat.InitStat(KingData.SoldierName, KingData.MaxHP, KingData.HP, KingData.ATK, KingData.DEF, KingData.Speed, KingData.AttackDelay, KingData.EXP);
-        stat.HP *= 0.4f;
+        stat.HP *= 0.2f;
         SetHp();
     }
 
@@ -191,13 +191,13 @@ public class BossKing : MonoBehaviour, BattleSystem
         {
 
             Rand = Random.Range(1, 11);
-            if (Rand <= 2)
+            if (Rand <= 1)
             {
                 //È¸º¹
                 myAnim.SetTrigger("Heal");
                 yield return new WaitForSeconds(1.0f);
             }
-            else if (Rand > 2 && 6 >= Rand)
+            else if (Rand > 1 && 5 >= Rand)
             {
                 myAnim.SetTrigger("FireBall");
                 yield return new WaitForSeconds(7.0f);
@@ -235,10 +235,15 @@ public class BossKing : MonoBehaviour, BattleSystem
     public void ShotSpecial()
     {
         SpecialFire = ObjectPool.Instance.Effects[3].Get();
-        SpecialFire.GetComponentInChildren<FireSkill>().Damage = stat.ATK;
-        SpecialFire.GetComponentInChildren<FireSkill>().King = this.transform;
-        SpecialFire.transform.position = Detect.Enemy[0].transform.position + new Vector3(0, 6.0f, 0.0f);
+        FireSkill temp = SpecialFire.GetComponent<FireSkill>();
+        temp.Damage = stat.ATK;
+        temp.King = this.transform;
+        SpecialFire.transform.position = Detect.Enemy[0].transform.position + new Vector3(0, 5.0f, 0.0f);
+        
+
     }
+
+
 
     public void EndSpecial()
     {

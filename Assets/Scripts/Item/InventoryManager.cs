@@ -39,7 +39,7 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
         for (int i=0;i<GameData.Instance.playerdata.myItems.Count;i++)
         {
             Slot[i].itemdata = GameData.Instance.playerdata.myItems[i];
-            Slot[i].Icon.sprite = GameData.Instance.playerdata.myItems[i].itemData.ItemImage;
+            Slot[i].Icon.sprite = UIManager.Instance.ItemIcon[GameData.Instance.playerdata.myItems[i].itemData.ItemCode];
             Slot[i].Icon.gameObject.SetActive(true);
             if(GameData.Instance.playerdata.myItems[i].itemData.myType == ItemType.Equip)
             {
@@ -118,7 +118,7 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
         for (int i = 0; i < items.Count; i++)
         {
             Slot[i].itemdata = items[i];
-            Slot[i].Icon.sprite = items[i].itemData.ItemImage;
+            Slot[i].Icon.sprite = UIManager.Instance.ItemIcon[items[i].itemData.ItemCode];
             Slot[i].Icon.gameObject.SetActive(true);
             if (items[i].itemData.myType == ItemType.Equip)
             {

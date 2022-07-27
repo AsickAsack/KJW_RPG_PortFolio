@@ -6,19 +6,33 @@ using UnityEngine.UI;
 
 public class QuicSlot : MonoBehaviour, IPointerClickHandler
 {
+    public int index;
     Item SlotItem;
     public Image Icon;
     public Text ItemCounttx;
 
 
+    private void Awake()
+    {
+        CheckLoadQuick();
+    }
+
+    public void CheckLoadQuick()
+    {
+        if(GameData.Instance.playerdata.QuickSlot[index] != null)
+        {
+            SetQuickSlot(GameData.Instance.playerdata.QuickSlot[index]);
+        }
+    }
+
     public void SetQuickSlot(Item item)
     {
         SlotItem = item;
-        Icon.sprite = SlotItem.itemData.ItemImage;
+        Icon.sprite = UIManager.Instance.ItemIcon[SlotItem.itemData.ItemCode];
         ItemCounttx.text = SlotItem.ItemCount.ToString();
         Icon.gameObject.SetActive(true);
         ItemCounttx.gameObject.SetActive(true);
-
+        GameData.Instance.playerdata.QuickSlot[index] = item;
     }
 
 

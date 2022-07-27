@@ -18,7 +18,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler,IDragHandler,IEndD
     {
         if(eventData.pointerCurrentRaycast.gameObject.GetComponent<InventorySlot>().Icon.gameObject.activeSelf)
         {
-            DragImage.sprite = itemdata.itemData.ItemImage;
+            DragImage.sprite = UIManager.Instance.ItemIcon[itemdata.itemData.ItemCode];
             DragImage.gameObject.SetActive(true);
             DragImage.transform.position = eventData.position;
         }

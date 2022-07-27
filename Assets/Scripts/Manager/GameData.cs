@@ -114,6 +114,7 @@ public class GameData : MonoBehaviour
         public Item Helmet = null;
         public Item Weapon = null;
         public Item Shoes = null;
+        public Item[] QuickSlot = new Item[2];
 
         public float[] SavePos = new float[3];
         public DateTime FirstTime;

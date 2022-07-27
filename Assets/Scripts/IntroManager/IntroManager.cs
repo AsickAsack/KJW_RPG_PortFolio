@@ -23,8 +23,9 @@ public class IntroManager : MonoBehaviour
     private void Awake()
     {
         SoundManager.Instance.BgmAudio.clip = SoundManager.Instance.myBgmClip[0];
-        SoundManager.Instance.BgmAudio.Play();
         SoundManager.Instance.AddEffectSource(AudioSource);
+      
+       
     }
 
     private void Start()
@@ -36,6 +37,7 @@ public class IntroManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2.0f);
         IntroCanvas.SetActive(false);
+        SoundManager.Instance.BgmAudio.Play();
     }
 
 
@@ -53,9 +55,10 @@ public class IntroManager : MonoBehaviour
     {
         if (File.Exists(Application.dataPath + "/GameData.json"))
         {
+            SoundManager.Instance.DeleteEffectSource(AudioSource);
+            GameData.Instance.Load();
             GameData.Instance.IsPlay = true;
-            Debug.Log("æ¿¿Ãµø");
-            //æ¿¿Ãµø
+            SceneLoader.Instance.Loading_LoadScene(1);
         }
         else
         {

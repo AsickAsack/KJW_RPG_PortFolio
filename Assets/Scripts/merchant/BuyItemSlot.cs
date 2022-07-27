@@ -27,10 +27,15 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 
     private void Awake()
     {
-        Icon.sprite = itemdata.ItemImage;
+        
         ItemName.text = itemdata.ItemName;
         ItemPrice.text = itemdata.BuyPrice.ToString("N0") + "°ñµå";
         MovePos = new Vector2(ItemDesPanel.GetComponent<RectTransform>().sizeDelta.x * 0.5f, ItemDesPanel.GetComponent<RectTransform>().sizeDelta.y * 0.5f);
+        
+    }
+    private void Start()
+    {
+        Icon.sprite = UIManager.Instance.ItemIcon[itemdata.ItemCode];
     }
 
     public void OnPointerDown(PointerEventData eventData)

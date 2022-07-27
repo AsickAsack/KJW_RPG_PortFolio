@@ -62,7 +62,7 @@ public class SellSlot : MonoBehaviour ,IPointerClickHandler
 
     public void SetItem()
     {
-        Icon.sprite = item.itemData.ItemImage;
+        Icon.sprite = UIManager.Instance.ItemIcon[item.itemData.ItemCode];
         ItemCount.text = "x"+item.ItemCount.ToString();
         ItemName.text = item.itemData.ItemName;
         SellPrice.text = item.itemData.SellPrice.ToString("N0")+" °ñµå";

@@ -49,7 +49,12 @@ public class UIManager : MonoBehaviour
     [Header("[종료 기능]")]
 
     public GameObject ExitPopup;
-   
+
+    [Header("[아이템]")]
+    public Sprite[] ItemIcon;
+
+
+
 
     private void Awake()
     {
@@ -86,11 +91,6 @@ public class UIManager : MonoBehaviour
         ButtonFunc[2] += func3;
         ButtonFunc[3] += func4;
     }
-
-
-
-
-
 
     #region 스텟창 기능들
 
