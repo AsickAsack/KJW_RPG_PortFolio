@@ -18,6 +18,7 @@ public class IntroManager : MonoBehaviour
 
     public AudioSource AudioSource;
     public Animator animator;
+    public GameObject IntroCanvas;
 
     private void Awake()
     {
@@ -25,6 +26,19 @@ public class IntroManager : MonoBehaviour
         SoundManager.Instance.BgmAudio.Play();
         SoundManager.Instance.AddEffectSource(AudioSource);
     }
+
+    private void Start()
+    {
+        StartCoroutine(IntroEnd());
+    }
+
+    IEnumerator IntroEnd()
+    {
+        yield return new WaitForSeconds(2.0f);
+        IntroCanvas.SetActive(false);
+    }
+
+
 
     private void Update()
     {
