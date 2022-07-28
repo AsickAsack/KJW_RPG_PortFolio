@@ -25,7 +25,8 @@ public class UseItemData : ItemData
                 break;
 
         }
-        //potionºü´Â bgm        
+
+        SoundManager.Instance.PlayEffect1Shot(12);
     }
 
     

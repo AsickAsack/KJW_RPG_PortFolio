@@ -80,6 +80,7 @@ public class QuestManager : MonoBehaviour
     {
         if(CurQuest != null && QuestFinish)
         {
+            SoundManager.Instance.PlayEffect1Shot(15);
             QuestFinish = false;
             GameData.Instance.playerdata.Quest = false;
             GameData.Instance.playerdata.myItems.Add(new(CurQuest.Reward));

@@ -141,6 +141,7 @@ public class DialogueManager : MonoBehaviour
                     MelindaBtn();
                     GameData.Instance.playerdata.Quest = true;
                     QuestManager.instance.SetQuest(11);
+                    SoundManager.Instance.PlayEffect1Shot(14);
                 }
                 break;
             case 1:

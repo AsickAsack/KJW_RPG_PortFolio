@@ -53,6 +53,7 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 
     public void BuyBtn()
     {
+        SoundManager.Instance.PlayEffect1Shot(10);
         CurItemdata = this.itemdata;
         NotouchPanel.gameObject.SetActive(true);
         BuyPopup.SetActive(true);
@@ -69,6 +70,7 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
                 {
                     ErrorPopup.SetActive(true);
                     ErrorMessage.text = "인벤토리 공간이 부족합니다.";
+                    SoundManager.Instance.PlayEffect1Shot(11);
                 }
                 else
                 {
@@ -97,6 +99,7 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
                     NotouchPanel.gameObject.SetActive(false);
                     BuyPopup.SetActive(false);
                     Buy_Manager.OpenShop();
+                    SoundManager.Instance.PlayEffect1Shot(20);
 
                 }
 
@@ -105,6 +108,7 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
             {
                 ErrorPopup.SetActive(true);
                 ErrorMessage.text = "돈이 부족합니다.";
+                SoundManager.Instance.PlayEffect1Shot(11);
             }
         }
 
@@ -119,7 +123,6 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
                 if(int.Parse(Count.text) != 1)
                 {
                     Count.text = (int.Parse(Count.text)-1).ToString("N0");
-                    // 못내리는 효과음
                 }
                 break;
             case 1:
@@ -127,6 +130,7 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
                 break;
 
         }
+        SoundManager.Instance.PlayEffect1Shot(10);
 
     }
 

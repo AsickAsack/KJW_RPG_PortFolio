@@ -64,6 +64,7 @@ public class Knight : Player, BattleSystem
         UIManager.Instance.GetButtonFunc(JumpButton, BlockBtn, WPChange_Btn, AttackButton);
         UIManager.Instance.PickUp += Pickup;
         UIManager.Instance.PotionConsume += PotionConsume;
+        SoundManager.Instance.mainEffectSource = myAudio;
     }
 
     #region 유한상태기계
@@ -294,6 +295,11 @@ public class Knight : Player, BattleSystem
             ladderMove = true;
         else
             ladderMove = false;
+    }
+
+    public void ladderSound(int index)
+    {
+        SoundManager.Instance.PlayEffect1Shot(index);
     }
 
     #endregion
@@ -567,6 +573,7 @@ public class Knight : Player, BattleSystem
 
     public void WarpToHome()
     {
+        SoundManager.Instance.PlayEffect1Shot(18);
         myAnim.SetTrigger("Activate");
         UIManager.Instance.WarpUI(this.transform);
     }
@@ -641,7 +648,7 @@ public class Knight : Player, BattleSystem
     public void skillbtn()
     {
         //if(DefenceSkill == null)
-        
+        SoundManager.Instance.PlayEffect1Shot(17);
         myAnim.SetTrigger("Charge");
         SkillEffect[0].SetActive(true);
         mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();

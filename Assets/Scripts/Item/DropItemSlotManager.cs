@@ -22,6 +22,7 @@ public class DropItemSlotManager : MonoBehaviour
     // 첨에 열렸을때
     public void openDropItem()
     {
+        SoundManager.Instance.PlayEffect1Shot(10);
         DropItemPanel.SetActive(true);
 
         for(int i=0;i<Dropitem.itemData.Count;i++)
@@ -43,7 +44,7 @@ public class DropItemSlotManager : MonoBehaviour
         if(Dropitem.itemData.Count+GameData.Instance.playerdata.myItems.Count > 12)
         {
             GameData.Instance.SetNotify("인벤토리가 꽉찼습니다.");
-            //안되는 사운드
+            SoundManager.Instance.PlayEffect1Shot(11);
 
             return;
         }
@@ -72,6 +73,7 @@ public class DropItemSlotManager : MonoBehaviour
             GameData.Instance.SetNotify(Not);
 
         }
+        SoundManager.Instance.PlayEffect1Shot(16);
         Dropitem.itemData.Clear();
     }
 
@@ -84,7 +86,7 @@ public class DropItemSlotManager : MonoBehaviour
         if (GameData.Instance.playerdata.myItems.Count+1 > 12)
         {
             GameData.Instance.SetNotify("인벤토리가 꽉찼습니다.");
-            //안되는 사운드
+            SoundManager.Instance.PlayEffect1Shot(11);
 
             return;
         }
@@ -109,6 +111,7 @@ public class DropItemSlotManager : MonoBehaviour
             }
 
             UIManager.Instance.PickUp?.Invoke();
+            SoundManager.Instance.PlayEffect1Shot(16);
             Not = Dropitem.itemData[index].myType == ItemType.Gold ? Dropitem.itemData[index].value.ToString() + " 골드를 획득했습니다." : Dropitem.itemData[index].ItemName + "1개를 획득했습니다.";
             GameData.Instance.SetNotify(Not);
             Dropitem.itemData.RemoveAt(index);

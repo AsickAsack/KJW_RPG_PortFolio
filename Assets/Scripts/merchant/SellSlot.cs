@@ -28,6 +28,7 @@ public class SellSlot : MonoBehaviour ,IPointerClickHandler
         CurItem = this.item;
         if (CurItem != null)
         {
+            SoundManager.Instance.PlayEffect1Shot(10);
             NoTouchPanel.SetActive(true);
             SellPopup.SetActive(true);
             SellCount.text = "1";
@@ -42,6 +43,7 @@ public class SellSlot : MonoBehaviour ,IPointerClickHandler
             {
                 ErrorPopup.SetActive(true);
                 ErrorText.text = "수량이 부족합니다.";
+                SoundManager.Instance.PlayEffect1Shot(11);
             }
             else
             {
@@ -54,7 +56,7 @@ public class SellSlot : MonoBehaviour ,IPointerClickHandler
                 Sell_Manager.OpenShop();
                 NoTouchPanel.SetActive(false);
                 SellPopup.SetActive(false);
-
+                SoundManager.Instance.PlayEffect1Shot(20);
             }
         }
     }
@@ -77,11 +79,14 @@ public class SellSlot : MonoBehaviour ,IPointerClickHandler
                 if (int.Parse(SellCount.text) != 1)
                 {
                     SellCount.text = (int.Parse(SellCount.text) - 1).ToString("N0");
-                    // 못내리는 효과음
+                    SoundManager.Instance.PlayEffect1Shot(10);
                 }
+                else
+                    SoundManager.Instance.PlayEffect1Shot(11);
                 break;
             case 1:
                 SellCount.text = (int.Parse(SellCount.text) + 1).ToString("N0");
+                SoundManager.Instance.PlayEffect1Shot(10);
                 break;
 
         }

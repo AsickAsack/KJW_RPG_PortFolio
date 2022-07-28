@@ -71,6 +71,8 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public AudioSource mainEffectSource;
+
     public void SetBGM(AudioClip clip , bool loop = false)
     {
         BgmAudio.clip = clip;
@@ -125,6 +127,11 @@ public class SoundManager : MonoBehaviour
         {
             Audio.volume = V;
         }
+    }
+
+    public void PlayEffect1Shot(int index)
+    {
+        mainEffectSource.PlayOneShot(myEffectClip[index]);
     }
 
     #endregion

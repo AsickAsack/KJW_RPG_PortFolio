@@ -23,6 +23,8 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
     {
         if(EquipItem != null)
         {
+            SoundManager.Instance.PlayEffect1Shot(13);
+
             switch (EquipItem.itemData.ItemCode)
             {
                 case 2:
@@ -53,7 +55,7 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
         
         if (ivManager.CurItem != null)
         {
-
+            SoundManager.Instance.PlayEffect1Shot(13);
             EquipItem = ivManager.CurItem.itemdata;
 
             if (EquipItem.itemData.ItemCode == ItemCode)

@@ -3,17 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ZoomOutBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class ZoomOutBtn : MonoBehaviour, IPointerClickHandler
 {
     public Transform myCam;
-    bool IsClick = false;
     float posZ;
     float speed = 20.0f;
+    Coroutine ZoomOutCo;
 
-    private void Update()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        if (IsClick)
+        if (ZoomOutCo == null)
+            ZoomOutCo = StartCoroutine(ZoomOut());
+        else
         {
+            StopCoroutine(ZoomOutCo);
+            ZoomOutCo = StartCoroutine(ZoomOut());
+        }
+    }
+
+    IEnumerator ZoomOut()
+    {
+        SoundManager.Instance.PlayEffect1Shot(24);
+        float Zoomtime = 0.0f;
+
+        while (Zoomtime < 1.0f)
+        {
+            Zoomtime += Time.deltaTime;
+
+
             posZ = myCam.transform.localPosition.z;
             posZ -= Time.deltaTime * speed;
 
@@ -22,17 +39,10 @@ public class ZoomOutBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
             myCam.transform.localPosition = Vector3.Lerp(myCam.transform.localPosition, new Vector3(0, 0, posZ), Time.deltaTime * 15.0f);
 
-
+            yield return null;
         }
+
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        IsClick = true;
-    }
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        IsClick = false;
-    }
 }

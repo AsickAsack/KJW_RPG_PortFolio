@@ -194,6 +194,7 @@ public class BossKing : MonoBehaviour, BattleSystem
             if (Rand <= 1)
             {
                 //È¸º¹
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[12]);
                 myAnim.SetTrigger("Heal");
                 yield return new WaitForSeconds(1.0f);
             }
@@ -255,8 +256,8 @@ public class BossKing : MonoBehaviour, BattleSystem
     public void SetFireball()
     {
         Rand = Random.Range(1, 4);
-        
-        for(int i=0;i<Rand;i++)
+        myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[19]);
+        for (int i=0;i<Rand;i++)
         {
             Fireball[i] = ObjectPool.Instance.Effects[1].Get();
             Fireball[i].transform.position = SkillPos[i].position;
@@ -265,6 +266,7 @@ public class BossKing : MonoBehaviour, BattleSystem
 
     public void ShotFireBall()
     {
+        
         myAnim.SetBool("IsFireBall", false);
         for (int i = 0; i < Rand; i++)
         {

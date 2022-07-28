@@ -60,7 +60,9 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
     //ÀÎº¥Åä¸® ²ø¶§
     public void ExitInvetory()
     {
-        if(CurItem != null)
+        SoundManager.Instance.PlayEffect1Shot(10);
+
+        if (CurItem != null)
         {
             CurItem.SelectImage.SetActive(false);
             CurItem.myAnim.SetBool("IsSelect", false);
@@ -76,6 +78,8 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
     //Ä«Å×°í¸® ¹Ù²Ü¶§
     public void Changebutton(int index)
     {
+        SoundManager.Instance.PlayEffect1Shot(10);
+
         for(int i=0;i<ButtonSelectImage.Length;i++)
         {
             ButtonSelectImage[i].SetActive(i == index);
@@ -158,6 +162,8 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
     {
         if(eventData.pointerCurrentRaycast.gameObject.GetComponent<InventorySlot>() != null)
         {
+            SoundManager.Instance.PlayEffect1Shot(10);
+
             QuickRegisterBtn.SetActive(false);
             if (CurItem != null)
             {
@@ -200,6 +206,7 @@ public class InventoryManager : MonoBehaviour , IPointerDownHandler, IPointerUpH
     //Äü½½·Ô µî·Ï
     public void QuickRegister(int index)
     {
+        SoundManager.Instance.PlayEffect1Shot(10);
         QuickSlot[index].GetComponent<QuicSlot>().SetQuickSlot(CurItem.itemdata);
     }
 

@@ -37,6 +37,7 @@ public class OptionManager : MonoBehaviour
 
     public void ReAskSave()
     {
+        SoundManager.Instance.PlayEffect1Shot(10);
         GameData.Instance.Save();
         OpenOption();
         SavePopup.SetActive(false);
@@ -92,6 +93,7 @@ public class OptionManager : MonoBehaviour
 
     public void ClickSliderBtn(int index)
     {
+        SoundManager.Instance.PlayEffect1Shot(10);
         switch (index)
         {
             case 0:

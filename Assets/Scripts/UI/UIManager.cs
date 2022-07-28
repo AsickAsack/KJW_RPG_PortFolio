@@ -117,6 +117,8 @@ public class UIManager : MonoBehaviour
     //스텟 올렸을때
     public void UpStatPoint(int index)
     {
+        SoundManager.Instance.PlayEffect1Shot(10);
+
         switch (index)
         {
             //공격력 찍었을때
