@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myBgmClip:
   - {fileID: 8300000, guid: 9cecc78ef810b8843bdc76636f58f1ee, type: 3}
+  - {fileID: 8300000, guid: 044172f20e8707946a508279ebaec587, type: 3}
   myEffectClip:
   - {fileID: 8300000, guid: d201b8260386c8a41bfc0206c2003469, type: 3}
   - {fileID: 8300000, guid: fbcafc71369287e4faa19c97665a531a, type: 3}

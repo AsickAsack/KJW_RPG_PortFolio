@@ -68,7 +68,7 @@ public class BossKing : MonoBehaviour, BattleSystem
     private void Awake()
     {
         stat.InitStat(KingData.SoldierName, KingData.MaxHP, KingData.HP, KingData.ATK, KingData.DEF, KingData.Speed, KingData.AttackDelay, KingData.EXP);
-        stat.HP *= 0.2f;
+        //stat.HP *= 0.2f;
         SetHp();
     }
 
@@ -97,10 +97,7 @@ public class BossKing : MonoBehaviour, BattleSystem
         {
 
             case KingState.Idle:
-                if (Detect.Enemy.Count > 0)
-                {
-                    ChangeState(KingState.Battle_Far);
-                }
+             
                 break;
 
 

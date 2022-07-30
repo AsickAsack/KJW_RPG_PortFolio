@@ -119,6 +119,7 @@ public class GameData : MonoBehaviour
         public float[] SavePos = new float[3];
         public DateTime FirstTime;
         public string PlayTime;
+        public bool KingFight = false;
 
         #region 플레이어 스텟
 

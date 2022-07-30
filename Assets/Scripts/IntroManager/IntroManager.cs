@@ -103,7 +103,7 @@ public class IntroManager : MonoBehaviour
         SoundManager.Instance.DeleteEffectSource(AudioSource);
         GameData.Instance.playerdata.FirstTime = System.DateTime.Now;
         GameData.Instance.IsPlay = true;
-        SceneLoader.Instance.Loading_LoadScene(1);
+        SceneLoader.Instance.Loading_LoadScene(3);
     }
 
     public void LoadGame(int index)
