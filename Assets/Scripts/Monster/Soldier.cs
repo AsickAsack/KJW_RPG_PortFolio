@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public struct Stat
 {
@@ -77,6 +78,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     Vector3 PatrolDir=Vector3.zero;
     public LayerMask PatrolMask;
 
+
     public GameObject Sword;
 
     public GameObject HpCanvas;
@@ -90,14 +92,13 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     public float HitTime = 0.0f;
     public Button Killbtn;
     protected bool IsAssaDeath = false;
-
-
+    public NavMeshAgent myNavi;
+    public int patrolIndex = 0;
 
     //많이쓰는 변수 멤버변수로 선언
     int Rand;
     int ItemRand;
     float DamageT;
-    bool Move = true;
 
     //추상함수
     public abstract void Death();
@@ -118,17 +119,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     private void Start()
     {
        SoundManager.Instance.AddEffectSource(this.GetComponent<AudioSource>());
-
-       ChangeState(S_State.Patrol);
-
-    }
-
-    //리지드바디 이동
-    private void FixedUpdate()
-    {
-        if (Move && HitTime < 0.1f && myState == S_State.Battle && !myAnim.GetBool("IsAttack") )
-            myRigid.MovePosition(this.transform.position + Dir.normalized * Time.deltaTime * myStat.Speed);
-        
     }
 
 
@@ -174,22 +164,23 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         switch (myState)
         {
             case S_State.Patrol:
-                myStat.Speed = 1.0f;
+                
+                myNavi.speed = 1.0f;
+                myNavi.isStopped = true;
                 myAnim.SetBool("IsRun", false);
-                myAnim.SetBool("IsWalk", true);
-                SetDir();
+                if(patrolIndex > 6)
+                { 
+                    myAnim.SetBool("IsWalk", true);
+                    SetAiDir();
+                }
+                else
+                    MonsterSpawnManager.Instance.GetStandDir(patrolIndex);
+                myNavi.isStopped = false;
                 break;
 
             case S_State.Battle:
                 {
-                    myAnim.SetBool("IsRun", true);
-                    myAnim.SetBool("IsWalk", false);
-                    myStat.Speed = 3.0f;
-                    if (Wait != null)
-                    {
-                        StopCoroutine(Wait);
-                        Wait = null;
-                    }
+                    ChangeBattle();
 
                 }
                 break;
@@ -210,6 +201,12 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 break;
 
             case S_State.Death:
+                myNavi.enabled = false;
+                if (Wait != null)
+                {
+                    StopCoroutine(Wait);
+                    Wait = null;
+                }
                 Death();
                 NotifyToPlayer();
                 HpCanvas.gameObject.SetActive(false);
@@ -257,7 +254,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         {
             case S_State.Patrol:
 
-                Patrol();
+                AIPatrol();
                 break;
             case S_State.Battle:
                 BattleState();
@@ -269,63 +266,74 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
             case S_State.Assasination:
                 break;
-
-
-            case S_State.Death:
-
-                break;
         }
     }
 
-    public void SetDir()
+
+    public void SetAiDir()
     {
-        Dir = MonsterSpawnManager.Instance.GetPatrolVector(this.transform);
-        
-        //Dir = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
+        myNavi.SetDestination(MonsterSpawnManager.Instance.GetPatrolDir(patrolIndex,this.transform));
     }
-    bool isWait = false;
 
-    public void Patrol()
+    int AIRand = 0;
+
+    public void AIPatrol()
     {
-        this.transform.position = Vector3.MoveTowards(this.transform.position,Dir, myStat.Speed * Time.deltaTime);
-        //PatrolTime += Time.deltaTime;
 
-        if (Detect.Enemy.Count > 0)
+        if(Detect.Enemy.Count > 0)
         {
             ChangeState(S_State.Battle);
         }
 
-        if(!isWait)
-        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(Dir-this.transform.position), Time.deltaTime * 2.0f);
+        if (myNavi.remainingDistance < 0.1f)
+        { 
+            if (patrolIndex > 6)
+            {
+                AIRand = Random.Range(0, 2);
+                if (Wait == null)
+                {
+                    if (AIRand == 0)
+                        SetAiDir();
+                    else
+                        Wait = StartCoroutine(WaitPatrol());
+                }         
+            }
+            else
+            {
+                if (Wait == null)
+                {
+                    Wait = StartCoroutine(StandPatrol(AIRand++ % 2));
+                }
 
-            
-        if (Physics.Raycast(this.transform.position, this.transform.forward + this.transform.up, 3.0f, PatrolMask))
-            SetDir();
-
-        if (Vector3.Distance(Dir, this.transform.position) < 0.5f)
-            if (Wait == null)
-                Wait = StartCoroutine(WaitPatrol());
-
-
-
-        //if(PatrolTime > 5.0f)
-        //    if (Wait == null)
-        //        Wait = StartCoroutine(WaitPatrol());
-
-
-
-
+            }
+        }
+        
+        
     }
+    IEnumerator StandPatrol(int rand)
+    {
+
+        myAnim.SetBool("IsWalk", false);
+        yield return new WaitForSeconds(Random.Range(3.0f,5.0f));
+        myAnim.SetBool("IsWalk", true);
+
+        if(rand == 0)
+            SetAiDir();
+        else
+            MonsterSpawnManager.Instance.GetStandDir(patrolIndex);
+
+        Wait = null;
+    }
+
+
 
     IEnumerator WaitPatrol()
     {
-        isWait = true;
         myAnim.SetBool("IsWalk", false);
 
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(Random.Range(3.0f, 5.0f));
         myAnim.SetBool("IsWalk", true);
-        SetDir();
-        isWait = false;
+        SetAiDir();
         Wait = null;
     }
 
@@ -360,13 +368,26 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         Killbtn.gameObject.SetActive(false);
     }
 
+    public void ChangeBattle()
+    {
+        myAnim.SetBool("IsRun", true);
+        myAnim.SetBool("IsWalk", false);
+        myNavi.speed = 2.0f;
+        if (Wait != null)
+        {
+            StopCoroutine(Wait);
+            Wait = null;
+        }
+
+        myNavi.SetDestination(Detect.Enemy[0].transform.position);
+    }
+
     //배틀상황일때
     public void BattleState()
     {
         //적이 사라지면 패트롤로 전환
         if (Detect.Enemy.Count == 0)
         {
-            
             ChangeState(S_State.Patrol);
         }
 
@@ -374,6 +395,8 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         if (myAnim.GetBool("IsHit"))
         {
             HitTime = 0.5f;
+            myNavi.isStopped = true;
+            myAnim.SetBool("IsRun", false);
             if (AttackDelay != null)
             {
                 StopCoroutine(AttackDelay);
@@ -390,18 +413,22 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
         if (HitTime < 0.1f && Detect.Enemy.Count != 0)
         {
-            //거리가 2.0f보다 크다면
-            if (Vector3.Distance(this.transform.position, Detect.Enemy[0].transform.position) > 2.0f)
+           
+            //거리가 1.5f보다 크다면
+            if (myNavi.remainingDistance > 1.5f)
             {
-                Dir = Detect.Enemy[0].transform.position - this.transform.position;
-                this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(Dir), Time.deltaTime * 20.0f);
-                Move = true;
+                myNavi.SetDestination(Detect.Enemy[0].transform.position);
+                myNavi.isStopped = false;
+                //Dir = Detect.Enemy[0].transform.position - this.transform.position;
+                //this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(Dir), Time.deltaTime * 20.0f);
+                //Move = true;
                 myAnim.SetBool("IsRun", true);
             }
-            //거리가 2.0f보다 작다면
+            //거리가 1.5f보다 작다면
             else
             {
-                Move = false;
+                //Move = false;
+                myNavi.isStopped = true;
                 myAnim.SetBool("IsRun", false);
                 if (AttackDelay == null)
                 {
@@ -420,6 +447,9 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         yield return new WaitForSeconds(time);
 
         AttackDelay = null;
+
+        if(Detect.Enemy.Count != 0 && myState != S_State.Death)
+        myNavi.SetDestination(Detect.Enemy[0].transform.position);
     }
 
     //때렸을때
@@ -434,9 +464,12 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 if (myCol[i].GetComponent<BattleSystem>() != null)
                     if (!myCol[i].GetComponent<BattleSystem>().OnDamage(index, Random.Range(myStat.ATK - 5, myStat.ATK + 5), this.transform))
                     {
+                        
                         ChangeState(S_State.Stun);
-
+                        
                     }
+                    else
+                        myCol[i].GetComponent<BattleSystem>()?.DamageSound(0);
             }
         }
         myCol = null;
@@ -445,15 +478,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     public void LookRotation(Transform tr)
     {
         this.transform.LookAt(tr.transform.position);
-    }
-
-    public void notifytoSoliders()
-    {
-        Collider[] col = Physics.OverlapSphere(this.transform.position, 5.0f, 1 << LayerMask.NameToLayer("Monster"));
-        for (int i = 0; i < col.Length; i++)
-        {
-            col[i].GetComponent<Soldier>().LookRotation(this.transform);
-        }
     }
 
     public void OnAssa(int index)
@@ -468,7 +492,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             case 1:
                 myAnim.SetTrigger("OneShot");
                 DamageRoutine(myStat.HP, 0);
-                notifytoSoliders();
                 break;
         }
     }
@@ -479,12 +502,29 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         IsAssaDeath = true;
     }
 
+    IEnumerator MoveAttackDelay()
+    {
+        myNavi.isStopped = true;
+
+        yield return null;
+
+        if (Detect.Enemy.Count != 0 && myState != S_State.Death)
+        {
+            myNavi.isStopped = false;
+            myNavi.SetDestination(Detect.Enemy[0].transform.position);
+        }
+            
+    }
+
 
     //데미지 입었을때의 로직
     public bool OnDamage(int index,float damage,Transform tr)
     {
         if (myState != S_State.Death)
         {
+            GameObject myeffect = ObjectPool.Instance.Effects[2].Get();
+            myeffect.transform.position = this.transform.position + new Vector3(0, 1.0f, -0.5f);
+
             if (myState == S_State.Patrol)
             {
                 this.transform.LookAt(tr);
@@ -503,9 +543,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 DamageRoutine((int)((damage - myStat.DEF) * 0.5f), 1);
                 return false;
             }
-
-            //주먹으로 쳤을때 소리 넣기
-            myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
 
             switch (index)
             {
@@ -526,12 +563,29 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                     DamageRoutine(myStat.HP, 0);
                     return true;
             }
-
+           
             DamageRoutine((int)(damage - myStat.DEF), 0);
 
             return true;
         }
         return true;
+    }
+
+    public void DamageSound(int SoundIndex)
+    {
+        if (myState == S_State.Death) return;
+
+        switch (SoundIndex)
+        {
+            //칼맞았을때
+            case 0:
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
+                break;
+            case 1:
+                //주먹으로 맞았을때
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[25]);
+                break;
+        }
     }
 
     //데미지 텍스트 오브젝트풀, 데미지 세팅과정
@@ -567,10 +621,10 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
 
     private void OnDisable()
     {
+        myNavi.enabled = false;
         HpCanvas.gameObject.SetActive(true);
         myStat.InitStat(myData.SoldierName, myData.MaxHP, myData.HP, myData.ATK, myData.DEF, myData.Speed, myData.AttackDelay, myData.EXP);
         IsAssaDeath = false;
-        ChangeState(S_State.Patrol);
         SetHp();
        
     }

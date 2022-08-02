@@ -57,6 +57,8 @@ public class BossKing : MonoBehaviour, BattleSystem
     public GameObject FireShieldEffect;
     private GameObject SpecialFire;
     public GameObject RecoveryEffect;
+    public GameObject SparkSphere;
+    BossKing Boss;
 
     [Header("[체력 UI]")]
     public Slider HP_Slider;
@@ -68,8 +70,10 @@ public class BossKing : MonoBehaviour, BattleSystem
     private void Awake()
     {
         stat.InitStat(KingData.SoldierName, KingData.MaxHP, KingData.HP, KingData.ATK, KingData.DEF, KingData.Speed, KingData.AttackDelay, KingData.EXP);
-        //stat.HP *= 0.2f;
+       // stat.HP *= 0.2f;
         SetHp();
+        Boss = this.GetComponent<BossKing>();
+
     }
 
 
@@ -86,10 +90,18 @@ public class BossKing : MonoBehaviour, BattleSystem
             case KingState.Battle_Far:
                 break;
             case KingState.Death:
+                myAnim.SetTrigger("Death");
+                StartCoroutine(DelayGameOver());
                 break;
         }
 
     }
+    IEnumerator DelayGameOver()
+    {
+        yield return new WaitForSeconds(2.0f);
+        SceneLoader.Instance.Loading_LoadScene(4);
+    }
+
 
     void StateProcess()
     {
@@ -111,8 +123,6 @@ public class BossKing : MonoBehaviour, BattleSystem
                 LookRot();
                 break;
 
-            case KingState.Death:
-                break;
         }
 
     }
@@ -120,6 +130,12 @@ public class BossKing : MonoBehaviour, BattleSystem
     private void Update()
     {
         StateProcess();
+    }
+
+    public void CameraShake(int index)
+    {
+        Detect.knight.CameraShake(index);
+
     }
 
     void Battle_Near()
@@ -175,14 +191,28 @@ public class BossKing : MonoBehaviour, BattleSystem
             BattleRoutine = StartCoroutine(FarRoutine());
     }
 
+    
+
     IEnumerator FarRoutine()
     {
         IsSkill = true;
         if (stat.HP / stat.MaxHP > 0.5f)
         {
-            //파이어볼
-            myAnim.SetTrigger("FireBall");
-            yield return new WaitForSeconds(7.0f);
+            Rand = Random.Range(1, 11);
+            if (Rand < 6)
+            {
+                myAnim.SetTrigger("FireBall");
+                yield return new WaitForSeconds(6.0f);
+            }
+            else
+            {
+                myAnim.SetTrigger("Special");
+                yield return new WaitForSeconds(1.0f);
+                ShotSpecial();
+                yield return new WaitForSeconds(1.0f);
+                myAnim.SetBool("IsSpecial", false);
+                yield return new WaitForSeconds(5.0f);
+            }
         }
         else
         {
@@ -193,24 +223,68 @@ public class BossKing : MonoBehaviour, BattleSystem
                 //회복
                 myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[12]);
                 myAnim.SetTrigger("Heal");
-                yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(2.5f);
             }
             else if (Rand > 1 && 5 >= Rand)
             {
-                myAnim.SetTrigger("FireBall");
-                yield return new WaitForSeconds(7.0f);
+                myAnim.SetTrigger("Spark");
+                CameraShake(0);
+                yield return new WaitForSeconds(3.0f);
+                myAnim.SetBool("IsSpark", false);
+                CameraShake(1);
+
+                yield return new WaitForSeconds(3.0f);
             }
             else
             {
+                Rand = Random.Range(2, 5);
                 myAnim.SetTrigger("Special");
-                yield return new WaitForSeconds(1.5f);
+                yield return new WaitForSeconds(1.0f);
+                for(int j=0;j<Rand;j++)
+                { 
+                    ShotSpecial();
+                    yield return new WaitForSeconds(1.0f);
+                }
                 myAnim.SetBool("IsSpecial", false);
                 yield return new WaitForSeconds(5.0f);
             }
-
+            
         }
         BattleRoutine = null;
     }
+
+
+    GameObject SparkGround;
+    Spark spark;
+
+    public void SetSpark()
+    {
+        IsSkill = true;
+        SparkSphere.gameObject.SetActive(true);
+        SparkGround = ObjectPool.Instance.Effects[6].Get();
+        SparkGround.transform.position = Detect.Enemy[0].transform.position;
+        SparkRoutine();
+        for (int i = 0; i < 9; i++)
+        {
+            SparkGround = ObjectPool.Instance.Effects[6].Get();
+            SparkGround.transform.position = MonsterSpawnManager.Instance.GetKingMovePos();
+            SparkRoutine();
+        }
+    }
+
+    public void SparkRoutine()
+    {
+        spark = SparkGround.GetComponent<Spark>();
+        spark.boss = Boss;
+        spark.SetAirSpark();
+    }
+
+    public void EndSpark()
+    {
+        SparkSphere.gameObject.SetActive(false);
+        IsSkill = false;
+    }
+
 
     public void DoRecovery()
     {
@@ -230,15 +304,15 @@ public class BossKing : MonoBehaviour, BattleSystem
         FireShieldEffect.SetActive(true);
     }
 
+    FireSkill fireSkill;
+
     public void ShotSpecial()
     {
         SpecialFire = ObjectPool.Instance.Effects[3].Get();
-        FireSkill temp = SpecialFire.GetComponent<FireSkill>();
-        temp.Damage = stat.ATK;
-        temp.King = this.transform;
-        SpecialFire.transform.position = Detect.Enemy[0].transform.position + new Vector3(0, 5.0f, 0.0f);
-        
+        fireSkill = SpecialFire.GetComponent<FireSkill>();
+        fireSkill.boss = Boss;
 
+        SpecialFire.transform.position = Detect.Enemy[0].transform.position + new Vector3(0, 5.5f, 0.0f);
     }
 
 
@@ -279,6 +353,7 @@ public class BossKing : MonoBehaviour, BattleSystem
         {
             if(Coll[i].GetComponent<BattleSystem>() != null)
             {
+                Coll[i].GetComponent<BattleSystem>()?.DamageSound(1);
                 Coll[i].GetComponent<BattleSystem>().OnDamage(2, stat.ATK, this.transform);
                 Coll[i].GetComponent<Rigidbody>().AddForce(this.transform.forward * 5.0f, ForceMode.Impulse);
             }
@@ -302,10 +377,12 @@ public class BossKing : MonoBehaviour, BattleSystem
 
         if (Mystate != KingState.Death)
         {
-            //주먹으로 쳤을때 소리 넣기
-            myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
+            GameObject myeffect = ObjectPool.Instance.Effects[2].Get();
+            myeffect.transform.position = this.transform.position + new Vector3(0, 1.0f, -0.5f);
 
-            if (!IsSkill && !myAnim.GetBool("IsMove") && !myAnim.GetBool("IsFireBall")) 
+
+
+            if (!IsSkill && !myAnim.GetBool("IsMove") && !myAnim.GetBool("IsFireBall") && !myAnim.GetBool("IsSpark")) 
             { 
                 switch (index)
                 {
@@ -330,6 +407,22 @@ public class BossKing : MonoBehaviour, BattleSystem
         return true;
     }
 
+    public void DamageSound(int SoundIndex)
+    {
+        if (Mystate == KingState.Death) return;
+
+        switch (SoundIndex)
+        {
+            //칼맞았을때
+            case 0:
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
+                break;
+            case 1:
+                //주먹으로 맞았을때
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[25]);
+                break;
+        }
+    }
 
     //맞았을때 색변화
     IEnumerator HitColor(Material mat)
@@ -346,6 +439,11 @@ public class BossKing : MonoBehaviour, BattleSystem
         GameObject obj1 = ObjectPool.Instance.ObjectManager[3].Get();
         obj1.GetComponent<DamageText>()?.SetText(this.transform, DamageText.ToString(), index);
         stat.HP -= DamageText;
+        if (stat.HP <= 0.0f)
+        {
+            stat.HP = 0.0f;
+            ChangeState(KingState.Death);
+        }
         SetHp(true);
     }
 }

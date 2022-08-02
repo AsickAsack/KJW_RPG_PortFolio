@@ -5,11 +5,13 @@ using UnityEngine;
 public class KingDetect : MonoBehaviour
 {
     public List<GameObject> Enemy = new List<GameObject>();
+    public Knight knight;
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            knight = other.GetComponent<Knight>();
             Enemy.Add(other.gameObject);
 
         }
@@ -22,7 +24,6 @@ public class KingDetect : MonoBehaviour
             Enemy.Remove(other.gameObject);
 
         }
-        //µµ¸Á°¡°Ù³Ä´Â ¸Þ¼¼Áö ¶ç¿ì±â
     }
 
 }

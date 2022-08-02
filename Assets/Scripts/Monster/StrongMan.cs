@@ -20,7 +20,7 @@ public class StrongMan : Soldier
         UIManager.Instance.SetExp();
         if(GameData.Instance.playerdata.Quest)
         QuestManager.instance.SetRequireMent(this.myData);
-        MonsterSpawnManager.Instance.ReservationSpawn(2);
+        MonsterSpawnManager.Instance.ReservationSpawn(2,patrolIndex);
         StartCoroutine(DeathAfter(2.0f, 2));
     }
 }

@@ -36,6 +36,7 @@ public class Fireball : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            other.GetComponent<BattleSystem>()?.DamageSound(1);
             other.GetComponent<BattleSystem>()?.OnDamage(1, Damage, king);
             ObjectPool.Instance.Effects[1].Release(this.gameObject);
         }

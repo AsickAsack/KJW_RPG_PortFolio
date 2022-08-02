@@ -9,13 +9,11 @@ public class MonsterSpawnManager : MonoBehaviour
     public Transform SpawnMap;
     public Vector2 PatrolMapSize;
     public Vector2 SpawnMapsize;
-    public Vector3 PatrolArea;
-    public Vector3 SpawnArea;
     public Transform KingMovePos;
     public Vector2 KingMapSize;
-    public Vector3 KingMoveArea;
-    int[] MaxCount = new int[3];
     public Transform Player;
+    public Transform[] PatrolPoint;
+
 
     private void Awake()
     {
@@ -27,65 +25,69 @@ public class MonsterSpawnManager : MonoBehaviour
 
     private void Start()
     {
-        for(int i = 0; i < 2; i++)
+        int index = 0;
+        
+        for(int i = 0; i < 3; i++)
             for(int j=0; j < 3; j++)
-                SpawnMonster(j);
-
+                SpawnMonster(j,index++);
+        
     }
 
-    public void ReservationSpawn(int index)
+    public void ReservationSpawn(int index, int patrolindex)
     {
-        MaxCount[index]--;
-        StartCoroutine(ReSpawn(index));
+        StartCoroutine(ReSpawn(index,patrolindex));
     }
 
-    IEnumerator ReSpawn(int index)
+    IEnumerator ReSpawn(int index, int patrolindex)
     {
         yield return new WaitForSeconds(10.0f);
-        SpawnMonster(index);
+        SpawnMonster(index, patrolindex);
     }
 
-    public void SpawnMonster(int index)
+    Soldier soldier;
+
+    public void SpawnMonster(int index,int patrolindex)
     {
 
-        if (MaxCount[index] < 3)
-        {
-            GameObject monster = ObjectPool.Instance.GetMonster(index);
-            monster.transform.position = GetSpawnVector();
-
-            MaxCount[index]++;
-        }
-        else
-            return;
+        GameObject monster = ObjectPool.Instance.GetMonster(index);
+        soldier = monster.GetComponent<Soldier>();
+        soldier.patrolIndex = patrolindex;
+        soldier.myNavi.Warp(PatrolPoint[patrolindex].position);
+        soldier.myNavi.enabled = true;
+        soldier.ChangeState(Soldier.S_State.Patrol);
     }
 
     public Vector3 GetSpawnVector()
     {
-        SpawnArea = new Vector3(Random.Range(SpawnMap.position.x - SpawnMapsize.x, SpawnMap.position.x + SpawnMapsize.x), 1.0f
-           , Random.Range(SpawnMap.position.z - SpawnMapsize.y, SpawnMap.position.z + SpawnMapsize.y));
-
-        return SpawnArea;
+        return new Vector3(Random.Range(SpawnMap.position.x - SpawnMapsize.x, SpawnMap.position.x + SpawnMapsize.x), 1.0f
+           , Random.Range(SpawnMap.position.z - SpawnMapsize.y, SpawnMap.position.z + SpawnMapsize.y)); ;
     }
 
-
-    public Vector3 GetPatrolVector(Transform tr)
+    public Vector3 GetPatrolDir(int patrolIndex,Transform tr)
     {
-
-       PatrolArea = new Vector3(Random.Range(SpawnMap.position.x - PatrolMapSize.x, SpawnMap.position.x + PatrolMapSize.x), tr.transform.position.y
-           , Random.Range(SpawnMap.position.z - PatrolMapSize.y, SpawnMap.position.z + PatrolMapSize.y));
-    
-
-        return PatrolArea;
+        if (patrolIndex < 2)
+        {
+            return new Vector3(Random.Range(PatrolPoint[patrolIndex].position.x - 10.0f, PatrolPoint[patrolIndex].position.x + 10.0f), 1.0f,
+                tr.transform.position.z);
+        }
+        else
+        {
+            return new Vector3(Random.Range(PatrolPoint[patrolIndex].position.x - 3.0f, PatrolPoint[patrolIndex].position.x + 3.0f), 1.0f,
+                Random.Range(PatrolPoint[patrolIndex].position.z - 3.0f, PatrolPoint[patrolIndex].position.z + 3.0f));
+        }
+        
     }
+
+    public Vector3 GetStandDir(int patrolIndex)
+    {
+        return PatrolPoint[patrolIndex].position;
+    }
+
 
     public Vector3 GetKingMovePos()
     {
-
-        KingMoveArea = new Vector3(Random.Range(KingMovePos.position.x - KingMapSize.x, KingMovePos.position.x + KingMapSize.x), KingMovePos.position.y
+        return new Vector3(Random.Range(KingMovePos.position.x - KingMapSize.x, KingMovePos.position.x + KingMapSize.x), KingMovePos.position.y
             , Random.Range(KingMovePos.position.z - KingMapSize.y, KingMovePos.position.z + KingMapSize.y));
-
-
-        return KingMoveArea;
     }
 
 

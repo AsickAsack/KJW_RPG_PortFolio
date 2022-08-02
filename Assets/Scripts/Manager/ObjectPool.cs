@@ -10,7 +10,7 @@ public class ObjectPool : MonoBehaviour
 
     public ObjectPool<GameObject>[] ObjectManager = new ObjectPool<GameObject>[4];
     public ObjectPool<GameObject> Drop;
-    public ObjectPool<GameObject>[] Effects = new ObjectPool<GameObject>[4];
+    public ObjectPool<GameObject>[] Effects = new ObjectPool<GameObject>[8];
     public ItemData[] itemDatas;
     public GameObject DropItem;
     public GameObject SwordMan;
@@ -21,6 +21,10 @@ public class ObjectPool : MonoBehaviour
     public GameObject FireBall;
     public GameObject HitEffect;
     public GameObject FireSpecial;
+    public GameObject P_Common;
+    public GameObject P_Fire;
+    public GameObject SparkGround;
+    public GameObject SparkAir;
 
     public Transform[] folder;
     int ItemRand;
@@ -39,6 +43,10 @@ public class ObjectPool : MonoBehaviour
         InitEffect(1, FireBall, 6, 5);
         InitEffect(2, HitEffect, 7, 10);
         InitEffect(3, FireSpecial, 8, 3);
+        InitEffect(4, P_Common, 9, 3);
+        InitEffect(5, P_Fire, 10, 3);
+        InitEffect(6, SparkGround, 11, 10);
+        InitEffect(7, SparkAir, 12, 10);
 
     }
 

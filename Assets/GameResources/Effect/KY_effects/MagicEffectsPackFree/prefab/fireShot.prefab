@@ -8559,14 +8559,14 @@ ParticleSystem:
   CollisionModule:
     enabled: 0
     serializedVersion: 4
-    type: 1
+    type: 0
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 0
     m_Planes:
-    - {fileID: 400004}
+    - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
@@ -8738,7 +8738,7 @@ ParticleSystem:
       serializedVersion: 2
       m_Bits: 64
     maxCollisionShapes: 1
-    quality: 1
+    quality: 0
     voxelSize: 11
     collisionMessages: 1
     collidesWithDynamic: 1

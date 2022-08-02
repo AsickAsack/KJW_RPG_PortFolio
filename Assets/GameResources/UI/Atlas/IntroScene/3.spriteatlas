@@ -1,0 +1,139 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 3
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 21300000, guid: 7b3876a2b72c44540a4bbd5aaba9e506, type: 3}
+    - {fileID: 21300000, guid: edc5bf32a29464c35b57ee1cb741e720, type: 3}
+    - {fileID: 21300000, guid: 394899dbf2938874ca7d1025f7598406, type: 3}
+    - {fileID: 21300000, guid: 8eb6f08de052f46099ca676e519a7962, type: 3}
+    - {fileID: 21300000, guid: d66d6d0d5090f4936962b37a7c541944, type: 3}
+    - {fileID: 21300000, guid: 3cc1771d66a97476ca2b3a668496da16, type: 3}
+    - {fileID: 21300000, guid: c32ebe486b6c64bac92da9f4dce41f00, type: 3}
+    - {fileID: 21300000, guid: 5844f874e0e124bd7ae4c2a223f85eee, type: 3}
+    - {fileID: 21300000, guid: 17b4036d45aa14d5e861d1382851039f, type: 3}
+    - {fileID: 21300000, guid: b90d2408a31f3495192ff46b3b53d122, type: 3}
+    - {fileID: 21300000, guid: 93bc98d32925843a395b860f02b94b3e, type: 3}
+    - {fileID: 21300000, guid: f9b599c249feb4a2cb2efcd166c4a46c, type: 3}
+    - {fileID: 21300000, guid: 640580c9e83884da8a6d6fd50069c4df, type: 3}
+    - {fileID: 21300000, guid: 374bfa2c41d374de7b0ab440b68a5501, type: 3}
+    - {fileID: 21300000, guid: a926d50386a154cafb5a50eaffabeb61, type: 3}
+    - {fileID: 21300000, guid: 2c2a87de09abe4a5ca8de6cbd76711e0, type: 3}
+    - {fileID: 2800000, guid: dd87025b0f14e47778e3848f933726a4, type: 3}
+    - {fileID: 21300000, guid: 8a9247940e1eb451cb1573d4d45126c1, type: 3}
+    - {fileID: 21300000, guid: 87912b15a20d5554e941e3d4e246615c, type: 3}
+    - {fileID: 21300000, guid: ba1ba6b25341e284ebc24410f32aaba2, type: 3}
+    - {fileID: 21300000, guid: a5a85590ed7602448a3b1ea734744bb6, type: 3}
+    - {fileID: 21300000, guid: 9a3705c2beb59584eb8e3c39aca0cbdd, type: 3}
+    - {fileID: 21300000, guid: aa5e772edd10145928ca3f62991c298a, type: 3}
+    - {fileID: 21300000, guid: 91fe405eeed2440cea80136394e2f7df, type: 3}
+    - {fileID: 21300000, guid: 452c82a6ddb8a4af5ac8b363531e2638, type: 3}
+    - {fileID: 21300000, guid: 1a58749f555f75e48baa41893215b26e, type: 3}
+    - {fileID: 21300000, guid: b227c6c1c35b36940b602110d9556b13, type: 3}
+    - {fileID: 21300000, guid: 5170e0068a8cf184fb119834fa7ba0f3, type: 3}
+    - {fileID: 21300000, guid: 567fdd2e557fefc478f8aaa7ae56fb11, type: 3}
+    - {fileID: 21300000, guid: 3281101b955224c4f9bfd58e8ab4c342, type: 3}
+    - {fileID: 21300000, guid: 90e99a7fde056a4418b9fe16084adb5c, type: 3}
+    - {fileID: 21300000, guid: ace8a02646afeda4880fc3cb14cad705, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: a5a85590ed7602448a3b1ea734744bb6, type: 3}
+  - {fileID: 21300000, guid: b227c6c1c35b36940b602110d9556b13, type: 3}
+  - {fileID: 21300000, guid: edc5bf32a29464c35b57ee1cb741e720, type: 3}
+  - {fileID: 21300000, guid: 7b3876a2b72c44540a4bbd5aaba9e506, type: 3}
+  - {fileID: 21300000, guid: ba1ba6b25341e284ebc24410f32aaba2, type: 3}
+  - {fileID: 21300000, guid: 9a3705c2beb59584eb8e3c39aca0cbdd, type: 3}
+  - {fileID: 21300000, guid: f9b599c249feb4a2cb2efcd166c4a46c, type: 3}
+  - {fileID: 21300000, guid: a926d50386a154cafb5a50eaffabeb61, type: 3}
+  - {fileID: 21300000, guid: 93bc98d32925843a395b860f02b94b3e, type: 3}
+  - {fileID: 21300000, guid: 5844f874e0e124bd7ae4c2a223f85eee, type: 3}
+  - {fileID: 21300000, guid: 8a9247940e1eb451cb1573d4d45126c1, type: 3}
+  - {fileID: 21300000, guid: 87912b15a20d5554e941e3d4e246615c, type: 3}
+  - {fileID: 21300000, guid: 5170e0068a8cf184fb119834fa7ba0f3, type: 3}
+  - {fileID: 21300000, guid: ace8a02646afeda4880fc3cb14cad705, type: 3}
+  - {fileID: 21300000, guid: 452c82a6ddb8a4af5ac8b363531e2638, type: 3}
+  - {fileID: 21300000, guid: b90d2408a31f3495192ff46b3b53d122, type: 3}
+  - {fileID: 21300000, guid: c32ebe486b6c64bac92da9f4dce41f00, type: 3}
+  - {fileID: 21300000, guid: 640580c9e83884da8a6d6fd50069c4df, type: 3}
+  - {fileID: 21300000, guid: 3281101b955224c4f9bfd58e8ab4c342, type: 3}
+  - {fileID: 21300000, guid: dd87025b0f14e47778e3848f933726a4, type: 3}
+  - {fileID: 21300000, guid: 394899dbf2938874ca7d1025f7598406, type: 3}
+  - {fileID: 21300000, guid: 374bfa2c41d374de7b0ab440b68a5501, type: 3}
+  - {fileID: 21300000, guid: d66d6d0d5090f4936962b37a7c541944, type: 3}
+  - {fileID: 21300000, guid: 3cc1771d66a97476ca2b3a668496da16, type: 3}
+  - {fileID: 21300000, guid: 17b4036d45aa14d5e861d1382851039f, type: 3}
+  - {fileID: 21300000, guid: 8eb6f08de052f46099ca676e519a7962, type: 3}
+  - {fileID: 21300000, guid: aa5e772edd10145928ca3f62991c298a, type: 3}
+  - {fileID: 21300000, guid: 567fdd2e557fefc478f8aaa7ae56fb11, type: 3}
+  - {fileID: 21300000, guid: 91fe405eeed2440cea80136394e2f7df, type: 3}
+  - {fileID: 21300000, guid: 2c2a87de09abe4a5ca8de6cbd76711e0, type: 3}
+  - {fileID: 21300000, guid: 90e99a7fde056a4418b9fe16084adb5c, type: 3}
+  - {fileID: 21300000, guid: 1a58749f555f75e48baa41893215b26e, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - 40
+  - Iron Helmet
+  - Joystick_Skill02_Frame_Light
+  - Red Potion 3
+  - 36
+  - 17
+  - Icon_ColorIcon_Map01
+  - minimap_enarmy
+  - minimap_frame_dark
+  - Slider12_Frame
+  - Btn_IconButton_Circle_359_White1
+  - 16
+  - Iron Boot
+  - Blue Potion 3
+  - Icon_WhiteIcon_Exit
+  - Slider12_Fill_Blue
+  - Slider23_Fill_Orange
+  - minimap_me_up_dark
+  - Rope
+  - minimap_me_down_dark
+  - Golden Coin
+  - IconGroup_MenuIcon01_Home
+  - Icon_WhiteIcon_User_0
+  - Slider23_Frame
+  - Slider12_Fill_Red
+  - Icon_WhiteIcon_Setting_l
+  - IconGroup_MenuIcon02_Board
+  - Iron Armor
+  - ChatFrmae01_White
+  - Icon_ColorIcon_Boss
+  - Golden Sword
+  - Bread
+  m_RenderDataMap: {}
+  m_Tag: 3
+  m_IsVariant: 0

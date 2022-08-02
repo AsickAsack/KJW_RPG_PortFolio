@@ -5,6 +5,7 @@ using UnityEngine;
 public interface BattleSystem
 {
     public bool OnDamage(int index,float Damage,Transform tr);
+    public void DamageSound(int SoundIndex);
 }
 
 public class Player : MonoBehaviour

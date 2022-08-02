@@ -49,6 +49,7 @@ public class UIManager : MonoBehaviour
     [Header("[종료 기능]")]
 
     public GameObject ExitPopup;
+    public GameObject GameOver;
 
     [Header("[아이템]")]
     public Sprite[] ItemIcon;
@@ -58,7 +59,6 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log(GameData.Instance.playerdata.Helmet);
         Instance = this;
         GameData.Instance.NotAction += Notify;
 
@@ -90,6 +90,16 @@ public class UIManager : MonoBehaviour
         ButtonFunc[1] += func2;
         ButtonFunc[2] += func3;
         ButtonFunc[3] += func4;
+    }
+
+    public void OpenGameOver()
+    {
+        GameOver.SetActive(true);
+    }
+
+    public void GoMain()
+    {
+        SceneLoader.Instance.Loading_LoadScene(0);
     }
 
     #region 스텟창 기능들
@@ -261,6 +271,7 @@ public class UIManager : MonoBehaviour
             yield return null;
         }
 
+        tr.GetComponent<Knight>().IsSkill = false;
         WarpImage.gameObject.SetActive(false);
         WarpNotouch.SetActive(false);
         WarpEffect.SetActive(false);

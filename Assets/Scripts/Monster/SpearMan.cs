@@ -18,7 +18,7 @@ public class SpearMan : Soldier
         GameData.Instance.SetNotify(myData.EXP + "의 경험치를 획득했습니다.");
         GameData.Instance.playerdata.CurEXP += myData.EXP;
         UIManager.Instance.SetExp();
-        MonsterSpawnManager.Instance.ReservationSpawn(1);
+        MonsterSpawnManager.Instance.ReservationSpawn(1,patrolIndex);
         StartCoroutine(DeathAfter(2.0f,1));
     }
 

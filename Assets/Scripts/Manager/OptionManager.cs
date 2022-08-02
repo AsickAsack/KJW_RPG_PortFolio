@@ -10,19 +10,20 @@ public class OptionManager : MonoBehaviour
     public Text SaveDetail;
     public GameObject SavePopup;
     public GameObject NoTouchPanel;
+    public GameObject KingPopup;
 
     public Slider[] AudioSlider;
     public Text[] SliderV_Text;
    
 
-    private void Awake()
-    {
-        GameData.Instance.playerdata.FirstTime = System.DateTime.Now;
-    }
-
-
     public void SaveBtn()
     {
+        if(GameData.Instance.playerdata.KingFight)
+        { 
+            KingPopup.SetActive(true);
+            return;
+        }
+
         if (File.Exists(Application.dataPath + "/GameData.json"))
         {
             SavePopup.SetActive(true);

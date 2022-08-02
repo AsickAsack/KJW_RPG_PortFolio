@@ -9,7 +9,7 @@ public class Knight : Player, BattleSystem
     
     public enum State
     {
-        Relax,Battle,Ladder,Fly, Assasination
+        Relax,Battle,Ladder,Fly, Assasination,Death
     }
 
     [Header("[조이스틱 움직임]")]
@@ -56,6 +56,7 @@ public class Knight : Player, BattleSystem
     NoiseSettings mynoisedef;
     public GameObject[] SkillEffect;
     Coroutine DefenceSkill = null;
+    public bool IsSkill = false;
 
     private void Awake()
     {
@@ -65,6 +66,7 @@ public class Knight : Player, BattleSystem
         UIManager.Instance.PickUp += Pickup;
         UIManager.Instance.PotionConsume += PotionConsume;
         SoundManager.Instance.mainEffectSource = myAudio;
+        mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
     #region 유한상태기계
@@ -98,11 +100,24 @@ public class Knight : Player, BattleSystem
                 break;
             case State.Assasination:
                 break;
+            case State.Death:
+                SwordTrail.SetActive(false);
+                SetWeight(0);
+                myAnim.SetTrigger("Death");
+                StartCoroutine(DelayGameOver());
+                break;
 
                 
         }
 
     }
+
+    IEnumerator DelayGameOver()
+    {
+        yield return new WaitForSeconds(2.0f);
+        UIManager.Instance.OpenGameOver();
+    }
+
 
     //상태마다의 업데이트
     void StateProcess()
@@ -143,6 +158,7 @@ public class Knight : Player, BattleSystem
             myAnim.SetBool("IsHang", false);
             Hanglider.SetActive(false);
             myRigid.drag = 0;
+            JumpPos = this.transform.position;
             ChangeState(State.Relax);
 
         }
@@ -188,7 +204,7 @@ public class Knight : Player, BattleSystem
         #endregion
 
 
-        #region 업데이트, 이동관련
+   #region 업데이트, 이동관련
 
         private void Update()
     {
@@ -536,6 +552,9 @@ public class Knight : Player, BattleSystem
 
     public void SpecialAttack()
     {
+        if (IsSkill) return;
+
+        SkillCheck(1);
         myAnim.SetTrigger("Special");
         StartCoroutine(SpecialCool());
     }
@@ -543,13 +562,15 @@ public class Knight : Player, BattleSystem
     IEnumerator SpecialCool()
     {
         yield return new WaitForSeconds(1.5f);
-
+        SkillCheck(0);
         myAnim.SetBool("IsSpecial", false);
     }
 
 
     public void SilentModeBtn()
     {
+        if (IsSkill) return;
+
         if (SilentMode)
         {
             SilentMode = false;
@@ -566,6 +587,8 @@ public class Knight : Player, BattleSystem
     //포션 흡입
     public void PotionConsume()
     {
+        if (IsSkill) return;
+
         myAnim.SetTrigger("Activate");
         Potion[0].Play();
         Potion[1].Play();
@@ -573,6 +596,9 @@ public class Knight : Player, BattleSystem
 
     public void WarpToHome()
     {
+        if (IsSkill) return;
+
+        SkillCheck(1);
         SoundManager.Instance.PlayEffect1Shot(18);
         myAnim.SetTrigger("Activate");
         UIManager.Instance.WarpUI(this.transform);
@@ -587,13 +613,17 @@ public class Knight : Player, BattleSystem
     //점프버튼
     public void JumpButton()
     {
-        if(!myAnim.GetBool("IsHang"))
+        if (IsSkill) return;
+
+        if (!myAnim.GetBool("IsHang"))
         myAnim.SetTrigger("Jump");
     }
 
     //공격버튼
     public void AttackButton()
     {
+        if (IsSkill) return;
+
         if (!myAnim.GetBool("IsHang"))
         { 
             switch (myState)
@@ -613,6 +643,9 @@ public class Knight : Player, BattleSystem
     //실드 버튼
     public void BlockBtn()
     {
+        if (IsSkill) return;
+
+        
         if (!myAnim.GetBool("IsHang")&& !myAnim.GetBool("IsHang"))
         {
             IsBlock = !IsBlock;
@@ -624,6 +657,8 @@ public class Knight : Player, BattleSystem
     //오디오 나중에 다른거 넣기!!
     public void WPChange_Btn()
     {
+        if (IsSkill) return;
+
         if (!myAnim.GetBool("IsChange") && !myAnim.GetBool("IsHang"))
         {
             switch (myState)
@@ -647,29 +682,56 @@ public class Knight : Player, BattleSystem
 
     public void skillbtn()
     {
-        //if(DefenceSkill == null)
+        if (IsSkill) return;
+
+        SkillCheck(1);
         SoundManager.Instance.PlayEffect1Shot(17);
         myAnim.SetTrigger("Charge");
         SkillEffect[0].SetActive(true);
-        mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        
         mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = mynoisedef;
         DefenceSkill = StartCoroutine(DefenceUp());
         
     }
 
+    public void SkillCheck(int index)
+    {
+        if (index == 0)
+            IsSkill = false;
+        else
+            IsSkill = true;
+    }
+
+
+    public void CameraShake(int index)
+    {
+        switch(index)
+        {
+            case 0:
+                mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = mynoisedef;
+                break;
+            case 1:
+                mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = null;
+                break;
+
+        }
+    }
+
+
     IEnumerator DefenceUp()
     {
         yield return new WaitForSeconds(2.0f);
-        mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = null ;
+        mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = null;
         myAnim.SetBool("IsCharge", false);
         SkillEffect[0].SetActive(false);
         SkillEffect[1].SetActive(true);
         GameData.Instance.playerdata.DEF += 10;
-
+        SkillCheck(0);
         yield return new WaitForSeconds(60.0f);
         GameData.Instance.playerdata.DEF -= 10;
 
         SkillEffect[1].SetActive(false);
+       
         DefenceSkill = null;
     }
  
@@ -684,20 +746,15 @@ public class Knight : Player, BattleSystem
         myCol = Physics.OverlapSphere(AttackSpot.position, 2.0f, 1 << LayerMask.NameToLayer("Monster"));
         if (myCol != null)
         {
-            
-            
             for (int i = 0; i < myCol.Length; i++)
-            {   
+            {
+                myCol[i].GetComponent<BattleSystem>()?.DamageSound(0);
                 myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(GameData.Instance.playerdata.ATK - 5, GameData.Instance.playerdata.ATK + 5), this.transform);
                 myAnim.SetBool("Block", false);
-                GameObject myeffect = ObjectPool.Instance.Effects[2].Get();
-                myeffect.transform.position = myCol[i].transform.position + new Vector3(0, 1.0f, -0.5f);
             }
         }
         myCol = null;
     }
-
-    //맨손으로 죽일때도
 
 
     //오른쪽 펀치 공격할때
@@ -708,7 +765,9 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
+                myCol[i].GetComponent<BattleSystem>()?.DamageSound(1);
                 myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(20,30), this.transform);
+
             }
         }
         myCol = null;
@@ -722,6 +781,7 @@ public class Knight : Player, BattleSystem
         {
             for (int i = 0; i < myCol.Length; i++)
             {
+                myCol[i].GetComponent<BattleSystem>()?.DamageSound(1);
                 myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(20,30), this.transform);
             }
         }
@@ -731,6 +791,8 @@ public class Knight : Player, BattleSystem
     //맞았을때
     public bool OnDamage(int index, float damage,Transform tr)
     {
+        if (myState == State.Death) return true;
+
         Uianim.SetTrigger("HPhit");
         StartCoroutine(HitColor(myRenderer.material));
 
@@ -758,15 +820,14 @@ public class Knight : Player, BattleSystem
             DamageRoutine((int)((damage - GameData.Instance.playerdata.DEF) * 0.5f), 1);
 
             //일정 확률로 리턴을 하여 스턴시킴
-            if (rand < 9 && !myAnim.GetBool("IsRelax"))
+            if (rand < 3 && !myAnim.GetBool("IsRelax"))
             {
                 return false;
             }
         }
         else
         {
-            myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
-            if (myState != State.Assasination)
+            if (myState != State.Assasination && !myAnim.GetBool("IsChange") && !myAnim.GetBool("IsCharge") && !myAnim.GetBool("IsSpecial"))
             {
                 switch (index)
                 {
@@ -791,6 +852,26 @@ public class Knight : Player, BattleSystem
         return true;
     }
 
+    public void DamageSound(int SoundIndex)
+    {
+        if (myState == State.Death) return;
+
+        switch (SoundIndex)
+        {
+            case 0:
+                GameObject commonEffect = ObjectPool.Instance.Effects[4].Get();
+                commonEffect.transform.position = this.transform.position + new Vector3(0, 1.0f, -0.5f);
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[4]);
+                break;
+            case 1:
+                //불 맞았을때
+                GameObject FireEffect = ObjectPool.Instance.Effects[5].Get();
+                FireEffect.transform.position = this.transform.position + new Vector3(0, 1.0f, -0.5f);
+                myAudio.PlayOneShot(SoundManager.Instance.myEffectClip[26]);
+                break;
+        }
+    }
+
     //데미지 받는 함수 
     public void DamageRoutine(float Damage, int index)
     {
@@ -798,6 +879,11 @@ public class Knight : Player, BattleSystem
         GameObject obj = ObjectPool.Instance.ObjectManager[3].Get();
         obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), index);
         GameData.Instance.playerdata.CurHP -= DamageT;
+        if(GameData.Instance.playerdata.CurHP <= 0.0f)
+        {
+            GameData.Instance.playerdata.CurHP = 0.0f;
+            ChangeState(State.Death);
+        }
         UIManager.Instance.SetHP();
     }
 

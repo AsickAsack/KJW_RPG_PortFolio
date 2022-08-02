@@ -4,30 +4,35 @@ using UnityEngine;
 
 public class FireSkill : MonoBehaviour
 {
-    public float Damage;
-    public Transform King;
-
+    public BossKing boss;
+    public Collider[] myCol;
 
     void RealeseThis()
     {
         ObjectPool.Instance.Effects[3].Release(this.gameObject);
     }
 
-    
-
-
     private void OnParticleCollision(GameObject other)
     {
-        Debug.Log(other.gameObject);
-
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Debug.Log("플레이어에맞음");
-            other.GetComponent<BattleSystem>().OnDamage(1, Damage, King);
+            other.GetComponent<BattleSystem>()?.DamageSound(1);
+            other.GetComponent<BattleSystem>()?.OnDamage(1, Random.Range(boss.stat.ATK - 5.0f, boss.stat.ATK + 5.0f), boss.transform);
+            
             Invoke("RealeseThis", 2.0f);
         }
         else
+        {
+            myCol = Physics.OverlapSphere(this.transform.position, 4.0f, 1 << LayerMask.NameToLayer("Player"));
+            for(int i = 0; i < myCol.Length; i++)
+            {
+                myCol[i].GetComponent<BattleSystem>()?.DamageSound(1);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(1, Random.Range(boss.stat.ATK - 5.0f, boss.stat.ATK + 5.0f), boss.transform);
+            }
             Invoke("RealeseThis", 2.0f);
+        }
+
+
     }
 
 }
