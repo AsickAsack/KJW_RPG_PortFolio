@@ -7,9 +7,10 @@ public enum ItemType
     Equip,Use,Etc,Gold
 }
 
-
 public abstract class ItemData : ScriptableObject
 {
+
+
     public abstract void UseItem(int ItemCode);
 
     public int ItemCode;

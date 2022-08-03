@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPointerUpHandler,IDragHandler,IBeginDragHandler,IEndDragHandler
 {
     public InventoryManager ivManager;
-    public Item EquipItem;
+    public Item EquipItem = null;
     public Image Icon;
     public int ItemCode;
     public Image DragImgae;
@@ -15,8 +15,14 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
 
     private void Awake()
     {
+        //EquipItem = null;
+
+        EquipItem = GameData.Instance.EquipCheck(ItemCode);
+    }
+
+    private void Start()
+    {
         CheckEquip();
-        
     }
 
     public void TakeOff()
@@ -24,23 +30,34 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
         if(EquipItem != null)
         {
             SoundManager.Instance.PlayEffect1Shot(13);
-
             switch (EquipItem.itemData.ItemCode)
             {
+                //투구
                 case 2:
-                    GameData.Instance.playerdata.Helmet = null;
+                    {
+                            GameData.Instance.playerdata.DEF -= (int)EquipItem.itemData.value;
+                            GameData.Instance.playerdata.MaxHP -= (int)EquipItem.itemData.value * 5;
+                            UIManager.Instance.SetHP();
+                    }
                     break;
+                //신발
                 case 3:
-                    GameData.Instance.playerdata.Shoes = null;
+                    {
+                            GameData.Instance.playerdata.MoveSpeed -= (int)EquipItem.itemData.value;
+                            GameData.Instance.playerdata.StatSpeed -= (int)EquipItem.itemData.value;
+                    }
                     break;
+                //무기
                 case 4:
-                    GameData.Instance.playerdata.Weapon = null;
-                    knight.CheckWeapon();
-                    break;
+                    {
+                            GameData.Instance.playerdata.ATK -= (int)EquipItem.itemData.value;
 
+                    }
+                    break;
             }
             EquipItem.IsEquip = false;
             EquipItem = null;
+            knight.CheckWeapon();
             Icon.gameObject.SetActive(false);
             ivManager.Changebutton((int)ivManager.slotState);
             UIManager.Instance.SetStatPopup();
@@ -49,50 +66,54 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
     }
 
 
-
+    //장착했을때
     public void OnDrop(PointerEventData eventData)
     {
         
         if (ivManager.CurItem != null)
         {
-            SoundManager.Instance.PlayEffect1Shot(13);
-            EquipItem = ivManager.CurItem.itemdata;
 
-            if (EquipItem.itemData.ItemCode == ItemCode)
+            if (ivManager.CurItem.itemdata.itemData.ItemCode == ItemCode)
             {
+                if (EquipItem != null)
+                    TakeOff();
+                else
+                    SoundManager.Instance.PlayEffect1Shot(13);
 
+                EquipItem = ivManager.CurItem.itemdata;
+                EquipItem.IsEquip = true;
                 Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
                 Icon.gameObject.SetActive(true);
 
-                switch(ItemCode)
+                switch (ItemCode)
                 {
                     //투구
                     case 2:
-                        if(GameData.Instance.playerdata.Helmet != null)
-                            GameData.Instance.playerdata.Helmet.IsEquip = false;
-                        GameData.Instance.playerdata.Helmet = EquipItem;
-                        GameData.Instance.playerdata.Helmet.IsEquip = true;
+                        {
+                            GameData.Instance.playerdata.DEF += (int)EquipItem.itemData.value;
+                            GameData.Instance.playerdata.MaxHP += (int)EquipItem.itemData.value * 5;
+                            UIManager.Instance.SetHP();
+                        }
                         break;
 
                         //신발
                     case 3:
-                        if (GameData.Instance.playerdata.Shoes != null)
-                            GameData.Instance.playerdata.Shoes.IsEquip = false;
-                        GameData.Instance.playerdata.Shoes = EquipItem;
-                        GameData.Instance.playerdata.Shoes.IsEquip = true;
+                        {
+                            GameData.Instance.playerdata.MoveSpeed += (int)EquipItem.itemData.value;
+                            GameData.Instance.playerdata.StatSpeed += (int)EquipItem.itemData.value;
+                        }
                         break;
                         //무기
                     case 4:
-                        if (GameData.Instance.playerdata.Weapon != null)
-                            GameData.Instance.playerdata.Weapon.IsEquip = false;
-                        GameData.Instance.playerdata.Weapon = EquipItem;
-                        GameData.Instance.playerdata.Weapon.IsEquip = true;
-                        knight.CheckWeapon();
+                        {
+                            GameData.Instance.playerdata.ATK += (int)EquipItem.itemData.value;
+                            knight.CheckWeapon();
+                        }
                         break;
                 }
-
-
-                    ivManager.Changebutton((int)ivManager.slotState);
+               
+                
+                ivManager.Changebutton((int)ivManager.slotState);
                 UIManager.Instance.SetStatPopup();
 
             }
@@ -104,35 +125,14 @@ public class EquipSlot : MonoBehaviour, IDropHandler, IPointerDownHandler,IPoint
   
     public void CheckEquip()
     {
-        switch (ItemCode)
-        {
-            case 2:
-                if (GameData.Instance.playerdata.Helmet != null)
-                {
-                    EquipItem = GameData.Instance.playerdata.Helmet;
-                    Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode]; 
-                    Icon.gameObject.SetActive(true);
-                }
-                break;
-            case 3:
-                if (GameData.Instance.playerdata.Shoes != null)
-                {
-                    EquipItem = GameData.Instance.playerdata.Shoes;
-                    Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
-                    Icon.gameObject.SetActive(true);
-                }
-                break;
-            case 4:
-                if (GameData.Instance.playerdata.Weapon != null)
-                {
-                    EquipItem = GameData.Instance.playerdata.Weapon;
-                    Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
-                    Icon.gameObject.SetActive(true);
-                }
-                break;
+        knight.CheckWeapon();
 
-        }
-    }
+        if (EquipItem == null) return;
+
+        Icon.sprite = UIManager.Instance.ItemIcon[EquipItem.itemData.ItemCode];
+        Icon.gameObject.SetActive(true);
+ 
+}
 
     public void OnPointerDown(PointerEventData eventData)
     {

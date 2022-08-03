@@ -7,6 +7,7 @@ public class DropItemSlotManager : MonoBehaviour
     public DropItem Dropitem;
     public DropItemSlot[] dropItemSlots;
     public GameObject DropItemPanel;
+    public Canvas DropItemCanvas;
     private string Not;
 
 
@@ -68,11 +69,15 @@ public class DropItemSlotManager : MonoBehaviour
                     temp.ItemCount++;
             }
 
+            GameData.Instance.ReQuick?.Invoke();
             UIManager.Instance.PickUp?.Invoke();
             Not = Dropitem.itemData[i].myType == ItemType.Gold ? Dropitem.itemData[i].value.ToString() + " ∞ÒµÂ∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ." : Dropitem.itemData[i].ItemName + " 1∞≥∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ.";
             GameData.Instance.SetNotify(Not);
 
         }
+
+
+        DropItemCanvas.enabled = false;
         SoundManager.Instance.PlayEffect1Shot(16);
         Dropitem.itemData.Clear();
     }
@@ -110,6 +115,7 @@ public class DropItemSlotManager : MonoBehaviour
                     temp.ItemCount++;
             }
 
+            GameData.Instance.ReQuick?.Invoke();
             UIManager.Instance.PickUp?.Invoke();
             SoundManager.Instance.PlayEffect1Shot(16);
             Not = Dropitem.itemData[index].myType == ItemType.Gold ? Dropitem.itemData[index].value.ToString() + " ∞ÒµÂ∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ." : Dropitem.itemData[index].ItemName + "1∞≥∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ.";

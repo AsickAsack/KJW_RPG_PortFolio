@@ -1,20 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
+
 
 [System.Serializable]
 public class Item
 {
-    public ItemData itemData;
+    
+    public UseItemData itemData;
     public int ItemCount;
     public int UID;
     public bool IsEquip;
+    public int QuickIndex;
+
+    public Item()
+    {
+
+    }
+
 
     //장비용 생성자
-    public Item(ItemData itemdata)
+    public Item(UseItemData itemdata)
     {
         this.itemData = itemdata;
         this.ItemCount = 1;
+        this.QuickIndex = 0;
         if (itemData.myType == ItemType.Equip)
         {
             while(true)
@@ -31,10 +42,11 @@ public class Item
     }
 
     //소비템용 생성자
-    public Item(ItemData itemdata, int count)
+    public Item(UseItemData itemdata, int count)
     {
         this.itemData = itemdata;
         this.ItemCount = count;
+        this.QuickIndex=0;
         UID = 0;
 
     }

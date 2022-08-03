@@ -24,7 +24,7 @@ public class OptionManager : MonoBehaviour
             return;
         }
 
-        if (File.Exists(Application.dataPath + "/GameData.json"))
+        if (File.Exists(Application.persistentDataPath + "/GameData.json"))
         {
             SavePopup.SetActive(true);
             NoTouchPanel.SetActive(true);
@@ -45,13 +45,18 @@ public class OptionManager : MonoBehaviour
         NoTouchPanel.SetActive(false);
     }
 
+    
 
+    public void ExitOption()
+    {
+        Time.timeScale = 1;
+    }
 
     public void OpenOption()
     {
-        
+        Time.timeScale = 0;
 
-        if (File.Exists(Application.dataPath+"/GameData.json"))
+        if (File.Exists(Application.persistentDataPath + "/GameData.json"))
         {
             GameData.Instance.CheckDataLoad();
             PlayTime.gameObject.SetActive(true);

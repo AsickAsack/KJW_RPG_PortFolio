@@ -53,6 +53,7 @@ public class SellSlot : MonoBehaviour ,IPointerClickHandler
                 {
                     GameData.Instance.playerdata.myItems.Remove(CurItem);
                 }
+                GameData.Instance.ReQuick?.Invoke();
                 Sell_Manager.OpenShop();
                 NoTouchPanel.SetActive(false);
                 SellPopup.SetActive(false);

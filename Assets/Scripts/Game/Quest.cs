@@ -20,7 +20,7 @@ public class Quest : ScriptableObject
     public string Questdescription;
     public SoldierData soldierDatas;
     public int MonsterRequirement;
-    public ItemData Reward;
+    public UseItemData Reward;
     
     
     

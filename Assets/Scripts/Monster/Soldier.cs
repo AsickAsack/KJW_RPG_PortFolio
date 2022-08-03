@@ -90,7 +90,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     protected Coroutine AttackDelay;
     protected Coroutine StunCo;
     public float HitTime = 0.0f;
-    public Button Killbtn;
     protected bool IsAssaDeath = false;
     public NavMeshAgent myNavi;
     public int patrolIndex = 0;
@@ -198,6 +197,13 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 break;
 
             case S_State.Assasination:
+                myNavi.isStopped = true;
+                if (Wait != null)
+                {
+                    StopCoroutine(Wait);
+                    Wait = null;
+                }
+                
                 break;
 
             case S_State.Death:
@@ -206,6 +212,11 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 {
                     StopCoroutine(Wait);
                     Wait = null;
+                }
+                if (AttackDelay != null)
+                {
+                    StopCoroutine(AttackDelay);
+                    AttackDelay = null;
                 }
                 Death();
                 NotifyToPlayer();
@@ -230,7 +241,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     {
         yield return new WaitForSeconds(time);
 
-        while (this.transform.position.y > -10.0f)
+        while (this.transform.position.y > -2.0f)
         {
             this.transform.position += Vector3.down * Time.deltaTime * 0.5f;
             yield return null;
@@ -342,8 +353,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     //스턴 걸렸을때
     protected IEnumerator Stun(float time)
     {
-        Killbtn.gameObject.SetActive(true);
-        Killbtn.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 0.1f, 0));
 
         myAnim.SetTrigger("Stun");
         myAnim.SetBool("IsStun", true);
@@ -365,20 +374,19 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             }
         }
 
-        Killbtn.gameObject.SetActive(false);
     }
 
     public void ChangeBattle()
     {
         myAnim.SetBool("IsRun", true);
-        myAnim.SetBool("IsWalk", false);
+       
         myNavi.speed = 2.0f;
         if (Wait != null)
         {
             StopCoroutine(Wait);
             Wait = null;
         }
-
+        myAnim.SetBool("IsWalk", false);
         myNavi.SetDestination(Detect.Enemy[0].transform.position);
     }
 
@@ -391,12 +399,14 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             ChangeState(S_State.Patrol);
         }
 
+        Debug.Log(myNavi.remainingDistance);
+        Debug.DrawLine(this.transform.position, new Vector3(myNavi.destination.x, myNavi.destination.y, myNavi.destination.z),Color.red);
+
         //맞으면 힛타임 늘어남
         if (myAnim.GetBool("IsHit"))
         {
             HitTime = 0.5f;
             myNavi.isStopped = true;
-            myAnim.SetBool("IsRun", false);
             if (AttackDelay != null)
             {
                 StopCoroutine(AttackDelay);
@@ -410,7 +420,6 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
         }
 
         //힛타임이 없어지면 공격 루틴
-
         if (HitTime < 0.1f && Detect.Enemy.Count != 0)
         {
            
@@ -419,15 +428,11 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             {
                 myNavi.SetDestination(Detect.Enemy[0].transform.position);
                 myNavi.isStopped = false;
-                //Dir = Detect.Enemy[0].transform.position - this.transform.position;
-                //this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(Dir), Time.deltaTime * 20.0f);
-                //Move = true;
                 myAnim.SetBool("IsRun", true);
             }
             //거리가 1.5f보다 작다면
             else
             {
-                //Move = false;
                 myNavi.isStopped = true;
                 myAnim.SetBool("IsRun", false);
                 if (AttackDelay == null)
@@ -443,7 +448,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     IEnumerator AtkDelay(float time)
     {
         myAnim.SetTrigger("Attack");
-
+        myAnim.SetBool("IsWalk", false);
         yield return new WaitForSeconds(time);
 
         AttackDelay = null;

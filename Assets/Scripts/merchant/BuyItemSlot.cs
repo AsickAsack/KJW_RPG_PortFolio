@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 {
-    public ItemData itemdata;
+    public UseItemData itemdata;
     public Image Icon;
     public Text ItemName;
     public Text ItemPrice;
@@ -21,7 +21,7 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
     public GameObject ErrorPopup;
     public Text ErrorMessage;
     public GameObject NotouchPanel;
-    static ItemData CurItemdata;
+    static UseItemData CurItemdata;
 
     public Merchant_Manager Buy_Manager;
 
@@ -96,6 +96,8 @@ public class BuyItemSlot : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 
 
                     }
+
+                    GameData.Instance.ReQuick?.Invoke();
                     NotouchPanel.gameObject.SetActive(false);
                     BuyPopup.SetActive(false);
                     Buy_Manager.OpenShop();

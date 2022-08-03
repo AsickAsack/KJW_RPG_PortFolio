@@ -6,10 +6,10 @@ using Cinemachine;
 
 public class Knight : Player, BattleSystem
 {
-    
+
     public enum State
     {
-        Relax,Battle,Ladder,Fly, Assasination,Death
+        Relax, Battle, Ladder, Fly, Assasination, Death
     }
 
     [Header("[조이스틱 움직임]")]
@@ -57,17 +57,19 @@ public class Knight : Player, BattleSystem
     public GameObject[] SkillEffect;
     Coroutine DefenceSkill = null;
     public bool IsSkill = false;
+    public EquipSlot myEquip;
 
     private void Awake()
     {
-        CheckWeapon();
         mynoisedef = Resources.Load("First_Noise") as NoiseSettings;
         UIManager.Instance.GetButtonFunc(JumpButton, BlockBtn, WPChange_Btn, AttackButton);
         UIManager.Instance.PickUp += Pickup;
         UIManager.Instance.PotionConsume += PotionConsume;
         SoundManager.Instance.mainEffectSource = myAudio;
         mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        LoadPos(GameData.Instance.playerdata.SPos);
     }
+
 
     #region 유한상태기계
 
@@ -77,7 +79,7 @@ public class Knight : Player, BattleSystem
         if (myState == s) return;
         myState = s;
 
-        switch(myState)
+        switch (myState)
         {
             case State.Relax:
                 myRigid.useGravity = true;
@@ -89,7 +91,7 @@ public class Knight : Player, BattleSystem
             case State.Battle:
                 myAnim.SetBool("IsBattle", true);
                 myAnim.SetBool("IsRelax", false);
-  
+
                 break;
             case State.Ladder:
                 myRigid.useGravity = false;
@@ -107,7 +109,7 @@ public class Knight : Player, BattleSystem
                 StartCoroutine(DelayGameOver());
                 break;
 
-                
+
         }
 
     }
@@ -122,7 +124,7 @@ public class Knight : Player, BattleSystem
     //상태마다의 업데이트
     void StateProcess()
     {
-       
+
         switch (myState)
         {
             case State.Relax:
@@ -139,7 +141,7 @@ public class Knight : Player, BattleSystem
             case State.Fly:
                 KnighteRotate();
                 HangCheck();
-                    break;
+                break;
             case State.Assasination:
                 break;
         }
@@ -167,10 +169,10 @@ public class Knight : Player, BattleSystem
     public void HangBtn()
     {
         //버튼 끄기
-        
+
         StartCoroutine(ChangeHangMonde());
 
-        
+
     }
 
     IEnumerator ChangeHangMonde()
@@ -183,7 +185,7 @@ public class Knight : Player, BattleSystem
             yield return new WaitForSeconds(1.0f);
         }
 
-        
+
         ChangeState(State.Fly);
         Hanglider.SetActive(true);
         this.transform.position = this.transform.position + new Vector3(0, 0, 5.0f);
@@ -201,12 +203,12 @@ public class Knight : Player, BattleSystem
     }
 
 
-        #endregion
+    #endregion
 
 
-   #region 업데이트, 이동관련
+    #region 업데이트, 이동관련
 
-        private void Update()
+    private void Update()
     {
         StateProcess();
     }
@@ -218,7 +220,7 @@ public class Knight : Player, BattleSystem
         switch (myState)
         {
             case State.Relax:
-                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch")&&!myAnim.GetBool("IsChange")&& !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge") && !myAnim.GetBool("IsKnock"))
+                if (myJoystic.MoveOn && !myAnim.GetBool("IsAttack") && !myAnim.GetBool("IsPunch") && !myAnim.GetBool("IsChange") && !myAnim.GetBool("Block") && !myAnim.GetBool("IsLadder") && !myAnim.GetBool("IsCharge") && !myAnim.GetBool("IsKnock"))
                 {
                     myAnim.SetBool("IsRWalk", true);
                     myRigid.MovePosition(this.transform.position + myDirecTion * Time.deltaTime * GameData.Instance.playerdata.MoveSpeed);
@@ -240,8 +242,8 @@ public class Knight : Player, BattleSystem
 
             case State.Ladder:
                 {
-                    
-                    if (myJoystic.MoveOn &&!myAnim.GetBool("LadderChange")) 
+
+                    if (myJoystic.MoveOn && !myAnim.GetBool("LadderChange"))
                     {
                         if (myJoystic.Dir.z > 0 && myAnim.GetBool("IsLadder"))
                         {
@@ -252,19 +254,19 @@ public class Knight : Player, BattleSystem
                         else if (myJoystic.Dir.z < 0 && myAnim.GetBool("IsLadder"))
                         {
                             myAnim.SetInteger("LadderIndex", 2);
-                            if(ladderMove)
-                            myRigid.MovePosition(this.transform.position + Vector3.down * Time.deltaTime * 1.0f);
+                            if (ladderMove)
+                                myRigid.MovePosition(this.transform.position + Vector3.down * Time.deltaTime * 1.0f);
                         }
                     }
                     else
                     {
-                        if(myAnim.GetBool("IsLadder"))
-                        { 
+                        if (myAnim.GetBool("IsLadder"))
+                        {
                             myAnim.SetInteger("LadderIndex", 0);
                             myJoystic.Dir = Vector3.zero;
                         }
                     }
-                    
+
                 }
                 break;
 
@@ -290,7 +292,7 @@ public class Knight : Player, BattleSystem
         }
     }
 
-#endregion
+    #endregion
 
     #region 사다리 관련
 
@@ -373,13 +375,13 @@ public class Knight : Player, BattleSystem
 
     public void CheckWeapon()
     {
-        if(AttackSword!=null)
+        if (AttackSword != null)
         {
             AttackSword.SetActive(false);
             RelaxSword.SetActive(false);
         }
 
-        if (GameData.Instance.playerdata.Weapon == null)
+        if (myEquip.EquipItem == null)
         {
             AttackSword = Swords[0];
             RelaxSword = BackSwords[0];
@@ -414,7 +416,7 @@ public class Knight : Player, BattleSystem
     #region 점프 관련
 
     Vector3 JumpPos;
-    float JumpDistance;
+    public float JumpDistance;
 
     public void AirCheck()
     {
@@ -425,10 +427,10 @@ public class Knight : Player, BattleSystem
                 JumpPos = this.transform.position;
                 myAnim.SetTrigger("Fall");
             }
-            
+
         }
         else
-        { 
+        {
             if (myAnim.GetBool("IsJump"))
             {
                 myAnim.SetBool("IsJump", false);
@@ -447,7 +449,7 @@ public class Knight : Player, BattleSystem
             DamageRoutine((int)(JumpDistance * 5.0f), 0);
             StartCoroutine(HitColor(myRenderer.material));
         }
-        
+
     }
 
     //애니메이션 타이밍에 맞춰 점프함
@@ -475,12 +477,12 @@ public class Knight : Player, BattleSystem
     //암살 기능
     public void Assasinationing()
     {
-        if(myState == State.Relax)
-        { 
+        if (myState == State.Relax)
+        {
             ChangeState(State.Assasination);
             myAnim.SetTrigger("Assasination");
         }
-        else if(myState == State.Battle)
+        else if (myState == State.Battle)
         {
             ChangeState(State.Assasination);
             myAnim.SetTrigger("Assasination2");
@@ -494,15 +496,15 @@ public class Knight : Player, BattleSystem
 
     IEnumerator AssasinMove(int index)
     {
-        switch(index)
+        switch (index)
         {
             case 0:
-                while(true)
+                while (true)
                 {
                     myRigid.MovePosition(this.transform.position + (Detect.NearEnemy.transform.position - this.transform.position).normalized * Time.deltaTime * 1.0f);
                     yield return null;
                 }
-                
+
             case 1:
                 while (true)
                 {
@@ -513,7 +515,7 @@ public class Knight : Player, BattleSystem
                 while (true)
                 {
                     MyChar.transform.rotation = Quaternion.Slerp(MyChar.transform.rotation, Detect.NearEnemy.transform.rotation, Time.deltaTime * 3.0f);
-                    this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Detect.NearEnemy.transform.position.x, Detect.NearEnemy.transform.position.y, Detect.NearEnemy.transform.position.z+0.2f), Time.deltaTime * 3.0f);
+                    this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(Detect.NearEnemy.transform.position.x, Detect.NearEnemy.transform.position.y, Detect.NearEnemy.transform.position.z + 0.2f), Time.deltaTime * 3.0f);
                     yield return null;
                 }
 
@@ -536,7 +538,7 @@ public class Knight : Player, BattleSystem
         CapColl.isTrigger = true;
         myRigid.useGravity = false;
         Assamove(2);
-       
+
     }
 
     public void EndAssa()
@@ -546,7 +548,7 @@ public class Knight : Player, BattleSystem
         ChangeState(State.Relax);
 
     }
-#endregion
+    #endregion
 
     #region 버튼 함수 모음
 
@@ -616,7 +618,7 @@ public class Knight : Player, BattleSystem
         if (IsSkill) return;
 
         if (!myAnim.GetBool("IsHang"))
-        myAnim.SetTrigger("Jump");
+            myAnim.SetTrigger("Jump");
     }
 
     //공격버튼
@@ -625,15 +627,15 @@ public class Knight : Player, BattleSystem
         if (IsSkill) return;
 
         if (!myAnim.GetBool("IsHang"))
-        { 
+        {
             switch (myState)
             {
                 case State.Relax:
-                
+
                     myAnim.SetTrigger("Punch");
                     break;
                 case State.Battle:
-                
+
                     myAnim.SetTrigger("Attack");
                     break;
             }
@@ -645,8 +647,8 @@ public class Knight : Player, BattleSystem
     {
         if (IsSkill) return;
 
-        
-        if (!myAnim.GetBool("IsHang")&& !myAnim.GetBool("IsHang"))
+
+        if (!myAnim.GetBool("IsHang") && !myAnim.GetBool("IsHang"))
         {
             IsBlock = !IsBlock;
             myAnim.SetBool("Block", IsBlock);
@@ -688,10 +690,10 @@ public class Knight : Player, BattleSystem
         SoundManager.Instance.PlayEffect1Shot(17);
         myAnim.SetTrigger("Charge");
         SkillEffect[0].SetActive(true);
-        
+
         mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = mynoisedef;
         DefenceSkill = StartCoroutine(DefenceUp());
-        
+
     }
 
     public void SkillCheck(int index)
@@ -705,7 +707,7 @@ public class Knight : Player, BattleSystem
 
     public void CameraShake(int index)
     {
-        switch(index)
+        switch (index)
         {
             case 0:
                 mycamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_NoiseProfile = mynoisedef;
@@ -731,10 +733,10 @@ public class Knight : Player, BattleSystem
         GameData.Instance.playerdata.DEF -= 10;
 
         SkillEffect[1].SetActive(false);
-       
+
         DefenceSkill = null;
     }
- 
+
     #endregion
 
     #region 배틀 관련
@@ -766,7 +768,7 @@ public class Knight : Player, BattleSystem
             for (int i = 0; i < myCol.Length; i++)
             {
                 myCol[i].GetComponent<BattleSystem>()?.DamageSound(1);
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(20,30), this.transform);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(0, Random.Range(20, 30), this.transform);
 
             }
         }
@@ -782,14 +784,14 @@ public class Knight : Player, BattleSystem
             for (int i = 0; i < myCol.Length; i++)
             {
                 myCol[i].GetComponent<BattleSystem>()?.DamageSound(1);
-                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(20,30), this.transform);
+                myCol[i].GetComponent<BattleSystem>()?.OnDamage(index, Random.Range(20, 30), this.transform);
             }
         }
         myCol = null;
     }
 
     //맞았을때
-    public bool OnDamage(int index, float damage,Transform tr)
+    public bool OnDamage(int index, float damage, Transform tr)
     {
         if (myState == State.Death) return true;
 
@@ -813,14 +815,14 @@ public class Knight : Player, BattleSystem
                     myAnim.SetTrigger("BlockHitL");
                     break;
 
-              
+
 
             }
 
             DamageRoutine((int)((damage - GameData.Instance.playerdata.DEF) * 0.5f), 1);
 
             //일정 확률로 리턴을 하여 스턴시킴
-            if (rand < 3 && !myAnim.GetBool("IsRelax"))
+            if (rand < 4 && !myAnim.GetBool("IsRelax"))
             {
                 return false;
             }
@@ -879,7 +881,7 @@ public class Knight : Player, BattleSystem
         GameObject obj = ObjectPool.Instance.ObjectManager[3].Get();
         obj.GetComponent<DamageText>()?.SetTextP(this.transform, DamageT.ToString(), index);
         GameData.Instance.playerdata.CurHP -= DamageT;
-        if(GameData.Instance.playerdata.CurHP <= 0.0f)
+        if (GameData.Instance.playerdata.CurHP <= 0.0f)
         {
             GameData.Instance.playerdata.CurHP = 0.0f;
             ChangeState(State.Death);
@@ -887,20 +889,30 @@ public class Knight : Player, BattleSystem
         UIManager.Instance.SetHP();
     }
 
-    
+
 
     IEnumerator HitColor(Material mat)
     {
-        mat.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        mat.color = Color.white;
+
+            mat.color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            mat.color = Color.white;
+       
     }
 
     public void SetSwordtrail(int index)
     {
 
-        SwordTrail.SetActive(0==index);
+        SwordTrail.SetActive(0 == index);
     }
 
     #endregion
+    public void LoadPos(bool check)
+    {
+        if (check)
+            this.transform.position = UIManager.Instance.SecondPos.position;
+        else
+            this.transform.position = UIManager.Instance.WarpPos.position;
+    }
+
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 [CreateAssetMenu(menuName = "아이템 데이터",fileName = "ItemData",order = int.MinValue +1)]
 public class UseItemData : ItemData
 {

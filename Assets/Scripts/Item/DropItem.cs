@@ -5,9 +5,10 @@ using UnityEngine.EventSystems;
 
 public class DropItem : MonoBehaviour 
 {
-    public List<ItemData> itemData;
+    public List<UseItemData> itemData;
     public Rigidbody myRigid;
     public GameObject CheckBtn;
+    public Canvas DropItemCanvas;
     float disApearTime;
 
   
@@ -27,6 +28,7 @@ public class DropItem : MonoBehaviour
         if (disApearTime >= 30.0f || itemData.Count == 0)
         {
             disApearTime = 0.0f;
+            DropItemCanvas.enabled = false;
             ObjectPool.Instance.Drop.Release(this.gameObject);
         }
 
@@ -37,7 +39,7 @@ public class DropItem : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            disApearTime = 0.0f;
+            DropItemCanvas.enabled = true;
             CheckBtn.SetActive(true);
         }
 
@@ -48,11 +50,15 @@ public class DropItem : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            DropItemCanvas.enabled = false;
             CheckBtn.SetActive(false);
         }
     }
 
- 
+    private void OnDisable()
+    {
+        DropItemCanvas.enabled = true;
+    }
 
 
     /*

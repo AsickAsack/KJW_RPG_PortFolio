@@ -53,7 +53,7 @@ public class IntroManager : MonoBehaviour
 
     public void LoadBtn()
     {
-        if (File.Exists(Application.dataPath + "/GameData.json"))
+        if (File.Exists(Application.persistentDataPath + "/GameData.json"))
         {
             SoundManager.Instance.DeleteEffectSource(AudioSource);
             GameData.Instance.Load();
@@ -71,7 +71,7 @@ public class IntroManager : MonoBehaviour
     {
         SavePopup.SetActive(true);
 
-        if (File.Exists(Application.dataPath + "/GameData.json"))
+        if (File.Exists(Application.persistentDataPath + "/GameData.json"))
         {
             GameData.Instance.CheckDataLoad();
             PlayTime.gameObject.SetActive(true);

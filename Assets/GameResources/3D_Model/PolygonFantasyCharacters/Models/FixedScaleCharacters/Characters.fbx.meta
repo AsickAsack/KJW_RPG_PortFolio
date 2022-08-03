@@ -1,229 +1,650 @@
 fileFormatVersion: 2
 guid: c9a34c70f1c0d00409f41fcfbb2a6871
-timeCreated: 1545013924
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: Ankle_L
-    100002: Ankle_R
-    100004: Ball_L
-    100006: Ball_R
-    100008: Character_Female_Druid
-    100010: Character_Female_Gypsy
-    100012: Character_Female_Peasant_01
-    100014: Character_Female_Peasant_02
-    100016: Character_Female_Queen
-    100018: Character_Female_Witch
-    100020: Character_Male_Baird
-    100022: Character_Male_King
-    100024: Character_Male_Peasant_01
-    100026: Character_Male_Rouge_01
-    100028: Character_Male_Sorcerer
-    100030: Character_Male_Wizard
-    100032: //RootNode
-    100034: Clavicle_L
-    100036: Clavicle_R
-    100038: Elbow_L
-    100040: Elbow_R
-    100042: Eyebrows
-    100044: Eyes
-    100046: Finger_01
-    100048: Finger_01 1
-    100050: Finger_02
-    100052: Finger_02 1
-    100054: Finger_03
-    100056: Finger_03 1
-    100058: Finger_04
-    100060: Finger_04 1
-    100062: Hand_L
-    100064: Hand_R
-    100066: Head
-    100068: Hips
-    100070: IndexFinger_01
-    100072: IndexFinger_01 1
-    100074: IndexFinger_02
-    100076: IndexFinger_02 1
-    100078: IndexFinger_03
-    100080: IndexFinger_03 1
-    100082: IndexFinger_04
-    100084: IndexFinger_04 1
-    100086: Item_CoinBag
-    100088: Item_Dagger
-    100090: Item_Pouch
-    100092: Item_Sword
-    100094: Item_SwordHolder
-    100096: Item_SwordSheath
-    100098: Item_WarriorSholderArmor
-    100100: Item_WarriorSholderArmor 1
-    100102: Item_WaterBladder_01
-    100104: Item_WaterCanteen
-    100106: LowerLeg_L
-    100108: LowerLeg_R
-    100110: Neck
-    100112: Root
-    100114: Shoulder_L
-    100116: Shoulder_R
-    100118: SM_Prop_SpellBook_03
-    100120: SM_Prop_Vials
-    100122: Spine_01
-    100124: Spine_02
-    100126: Spine_03
-    100128: Thumb_01
-    100130: Thumb_01 1
-    100132: Thumb_02
-    100134: Thumb_02 1
-    100136: Thumb_03
-    100138: Thumb_03 1
-    100140: Toes_L
-    100142: Toes_R
-    100144: UpperLeg_L
-    100146: UpperLeg_R
-    400000: Ankle_L
-    400002: Ankle_R
-    400004: Ball_L
-    400006: Ball_R
-    400008: Character_Female_Druid
-    400010: Character_Female_Gypsy
-    400012: Character_Female_Peasant_01
-    400014: Character_Female_Peasant_02
-    400016: Character_Female_Queen
-    400018: Character_Female_Witch
-    400020: Character_Male_Baird
-    400022: Character_Male_King
-    400024: Character_Male_Peasant_01
-    400026: Character_Male_Rouge_01
-    400028: Character_Male_Sorcerer
-    400030: Character_Male_Wizard
-    400032: //RootNode
-    400034: Clavicle_L
-    400036: Clavicle_R
-    400038: Elbow_L
-    400040: Elbow_R
-    400042: Eyebrows
-    400044: Eyes
-    400046: Finger_01
-    400048: Finger_01 1
-    400050: Finger_02
-    400052: Finger_02 1
-    400054: Finger_03
-    400056: Finger_03 1
-    400058: Finger_04
-    400060: Finger_04 1
-    400062: Hand_L
-    400064: Hand_R
-    400066: Head
-    400068: Hips
-    400070: IndexFinger_01
-    400072: IndexFinger_01 1
-    400074: IndexFinger_02
-    400076: IndexFinger_02 1
-    400078: IndexFinger_03
-    400080: IndexFinger_03 1
-    400082: IndexFinger_04
-    400084: IndexFinger_04 1
-    400086: Item_CoinBag
-    400088: Item_Dagger
-    400090: Item_Pouch
-    400092: Item_Sword
-    400094: Item_SwordHolder
-    400096: Item_SwordSheath
-    400098: Item_WarriorSholderArmor
-    400100: Item_WarriorSholderArmor 1
-    400102: Item_WaterBladder_01
-    400104: Item_WaterCanteen
-    400106: LowerLeg_L
-    400108: LowerLeg_R
-    400110: Neck
-    400112: Root
-    400114: Shoulder_L
-    400116: Shoulder_R
-    400118: SM_Prop_SpellBook_03
-    400120: SM_Prop_Vials
-    400122: Spine_01
-    400124: Spine_02
-    400126: Spine_03
-    400128: Thumb_01
-    400130: Thumb_01 1
-    400132: Thumb_02
-    400134: Thumb_02 1
-    400136: Thumb_03
-    400138: Thumb_03 1
-    400140: Toes_L
-    400142: Toes_R
-    400144: UpperLeg_L
-    400146: UpperLeg_R
-    2300000: Item_CoinBag
-    2300002: Item_Dagger
-    2300004: Item_Pouch
-    2300006: Item_Sword
-    2300008: Item_SwordHolder
-    2300010: Item_SwordSheath
-    2300012: Item_WarriorSholderArmor
-    2300014: Item_WarriorSholderArmor 1
-    2300016: Item_WaterBladder_01
-    2300018: Item_WaterCanteen
-    2300020: SM_Prop_SpellBook_03
-    2300022: SM_Prop_Vials
-    3300000: Item_CoinBag
-    3300002: Item_Dagger
-    3300004: Item_Pouch
-    3300006: Item_Sword
-    3300008: Item_SwordHolder
-    3300010: Item_SwordSheath
-    3300012: Item_WarriorSholderArmor
-    3300014: Item_WarriorSholderArmor 1
-    3300016: Item_WaterBladder_01
-    3300018: Item_WaterCanteen
-    3300020: SM_Prop_SpellBook_03
-    3300022: SM_Prop_Vials
-    4300000: Item_WarriorSholderArmor
-    4300002: Item_WarriorSholderArmor
-    4300004: Item_Sword
-    4300006: Item_SwordHolder
-    4300008: Item_WaterCanteen
-    4300010: Item_WaterBladder_01
-    4300012: SM_Prop_SpellBook_03
-    4300014: Item_Pouch
-    4300016: SM_Prop_Vials
-    4300018: Item_SwordSheath
-    4300020: Item_Dagger
-    4300022: Item_CoinBag
-    4300024: Character_Female_Witch
-    4300026: Character_Female_Queen
-    4300028: Character_Female_Druid
-    4300030: Character_Female_Gypsy
-    4300032: Character_Female_Peasant_01
-    4300034: Character_Female_Peasant_02
-    4300036: Character_Male_Baird
-    4300038: Character_Male_Sorcerer
-    4300040: Character_Male_King
-    4300042: Character_Male_Peasant_01
-    4300044: Character_Male_Rouge_01
-    4300046: Character_Male_Wizard
-    7400000: Take 001
-    9500000: //RootNode
-    13700000: Character_Female_Druid
-    13700002: Character_Female_Gypsy
-    13700004: Character_Female_Peasant_01
-    13700006: Character_Female_Peasant_02
-    13700008: Character_Female_Queen
-    13700010: Character_Female_Witch
-    13700012: Character_Male_Baird
-    13700014: Character_Male_King
-    13700016: Character_Male_Peasant_01
-    13700018: Character_Male_Rouge_01
-    13700020: Character_Male_Sorcerer
-    13700022: Character_Male_Wizard
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Ankle_L
+  - first:
+      1: 100002
+    second: Ankle_R
+  - first:
+      1: 100004
+    second: Ball_L
+  - first:
+      1: 100006
+    second: Ball_R
+  - first:
+      1: 100008
+    second: Character_Female_Druid
+  - first:
+      1: 100010
+    second: Character_Female_Gypsy
+  - first:
+      1: 100012
+    second: Character_Female_Peasant_01
+  - first:
+      1: 100014
+    second: Character_Female_Peasant_02
+  - first:
+      1: 100016
+    second: Character_Female_Queen
+  - first:
+      1: 100018
+    second: Character_Female_Witch
+  - first:
+      1: 100020
+    second: Character_Male_Baird
+  - first:
+      1: 100022
+    second: Character_Male_King
+  - first:
+      1: 100024
+    second: Character_Male_Peasant_01
+  - first:
+      1: 100026
+    second: Character_Male_Rouge_01
+  - first:
+      1: 100028
+    second: Character_Male_Sorcerer
+  - first:
+      1: 100030
+    second: Character_Male_Wizard
+  - first:
+      1: 100032
+    second: //RootNode
+  - first:
+      1: 100034
+    second: Clavicle_L
+  - first:
+      1: 100036
+    second: Clavicle_R
+  - first:
+      1: 100038
+    second: Elbow_L
+  - first:
+      1: 100040
+    second: Elbow_R
+  - first:
+      1: 100042
+    second: Eyebrows
+  - first:
+      1: 100044
+    second: Eyes
+  - first:
+      1: 100046
+    second: Finger_01
+  - first:
+      1: 100048
+    second: Finger_01 1
+  - first:
+      1: 100050
+    second: Finger_02
+  - first:
+      1: 100052
+    second: Finger_02 1
+  - first:
+      1: 100054
+    second: Finger_03
+  - first:
+      1: 100056
+    second: Finger_03 1
+  - first:
+      1: 100058
+    second: Finger_04
+  - first:
+      1: 100060
+    second: Finger_04 1
+  - first:
+      1: 100062
+    second: Hand_L
+  - first:
+      1: 100064
+    second: Hand_R
+  - first:
+      1: 100066
+    second: Head
+  - first:
+      1: 100068
+    second: Hips
+  - first:
+      1: 100070
+    second: IndexFinger_01
+  - first:
+      1: 100072
+    second: IndexFinger_01 1
+  - first:
+      1: 100074
+    second: IndexFinger_02
+  - first:
+      1: 100076
+    second: IndexFinger_02 1
+  - first:
+      1: 100078
+    second: IndexFinger_03
+  - first:
+      1: 100080
+    second: IndexFinger_03 1
+  - first:
+      1: 100082
+    second: IndexFinger_04
+  - first:
+      1: 100084
+    second: IndexFinger_04 1
+  - first:
+      1: 100086
+    second: Item_CoinBag
+  - first:
+      1: 100088
+    second: Item_Dagger
+  - first:
+      1: 100090
+    second: Item_Pouch
+  - first:
+      1: 100092
+    second: Item_Sword
+  - first:
+      1: 100094
+    second: Item_SwordHolder
+  - first:
+      1: 100096
+    second: Item_SwordSheath
+  - first:
+      1: 100098
+    second: Item_WarriorSholderArmor
+  - first:
+      1: 100100
+    second: Item_WarriorSholderArmor 1
+  - first:
+      1: 100102
+    second: Item_WaterBladder_01
+  - first:
+      1: 100104
+    second: Item_WaterCanteen
+  - first:
+      1: 100106
+    second: LowerLeg_L
+  - first:
+      1: 100108
+    second: LowerLeg_R
+  - first:
+      1: 100110
+    second: Neck
+  - first:
+      1: 100112
+    second: Root
+  - first:
+      1: 100114
+    second: Shoulder_L
+  - first:
+      1: 100116
+    second: Shoulder_R
+  - first:
+      1: 100118
+    second: SM_Prop_SpellBook_03
+  - first:
+      1: 100120
+    second: SM_Prop_Vials
+  - first:
+      1: 100122
+    second: Spine_01
+  - first:
+      1: 100124
+    second: Spine_02
+  - first:
+      1: 100126
+    second: Spine_03
+  - first:
+      1: 100128
+    second: Thumb_01
+  - first:
+      1: 100130
+    second: Thumb_01 1
+  - first:
+      1: 100132
+    second: Thumb_02
+  - first:
+      1: 100134
+    second: Thumb_02 1
+  - first:
+      1: 100136
+    second: Thumb_03
+  - first:
+      1: 100138
+    second: Thumb_03 1
+  - first:
+      1: 100140
+    second: Toes_L
+  - first:
+      1: 100142
+    second: Toes_R
+  - first:
+      1: 100144
+    second: UpperLeg_L
+  - first:
+      1: 100146
+    second: UpperLeg_R
+  - first:
+      4: 400000
+    second: Ankle_L
+  - first:
+      4: 400002
+    second: Ankle_R
+  - first:
+      4: 400004
+    second: Ball_L
+  - first:
+      4: 400006
+    second: Ball_R
+  - first:
+      4: 400008
+    second: Character_Female_Druid
+  - first:
+      4: 400010
+    second: Character_Female_Gypsy
+  - first:
+      4: 400012
+    second: Character_Female_Peasant_01
+  - first:
+      4: 400014
+    second: Character_Female_Peasant_02
+  - first:
+      4: 400016
+    second: Character_Female_Queen
+  - first:
+      4: 400018
+    second: Character_Female_Witch
+  - first:
+      4: 400020
+    second: Character_Male_Baird
+  - first:
+      4: 400022
+    second: Character_Male_King
+  - first:
+      4: 400024
+    second: Character_Male_Peasant_01
+  - first:
+      4: 400026
+    second: Character_Male_Rouge_01
+  - first:
+      4: 400028
+    second: Character_Male_Sorcerer
+  - first:
+      4: 400030
+    second: Character_Male_Wizard
+  - first:
+      4: 400032
+    second: //RootNode
+  - first:
+      4: 400034
+    second: Clavicle_L
+  - first:
+      4: 400036
+    second: Clavicle_R
+  - first:
+      4: 400038
+    second: Elbow_L
+  - first:
+      4: 400040
+    second: Elbow_R
+  - first:
+      4: 400042
+    second: Eyebrows
+  - first:
+      4: 400044
+    second: Eyes
+  - first:
+      4: 400046
+    second: Finger_01
+  - first:
+      4: 400048
+    second: Finger_01 1
+  - first:
+      4: 400050
+    second: Finger_02
+  - first:
+      4: 400052
+    second: Finger_02 1
+  - first:
+      4: 400054
+    second: Finger_03
+  - first:
+      4: 400056
+    second: Finger_03 1
+  - first:
+      4: 400058
+    second: Finger_04
+  - first:
+      4: 400060
+    second: Finger_04 1
+  - first:
+      4: 400062
+    second: Hand_L
+  - first:
+      4: 400064
+    second: Hand_R
+  - first:
+      4: 400066
+    second: Head
+  - first:
+      4: 400068
+    second: Hips
+  - first:
+      4: 400070
+    second: IndexFinger_01
+  - first:
+      4: 400072
+    second: IndexFinger_01 1
+  - first:
+      4: 400074
+    second: IndexFinger_02
+  - first:
+      4: 400076
+    second: IndexFinger_02 1
+  - first:
+      4: 400078
+    second: IndexFinger_03
+  - first:
+      4: 400080
+    second: IndexFinger_03 1
+  - first:
+      4: 400082
+    second: IndexFinger_04
+  - first:
+      4: 400084
+    second: IndexFinger_04 1
+  - first:
+      4: 400086
+    second: Item_CoinBag
+  - first:
+      4: 400088
+    second: Item_Dagger
+  - first:
+      4: 400090
+    second: Item_Pouch
+  - first:
+      4: 400092
+    second: Item_Sword
+  - first:
+      4: 400094
+    second: Item_SwordHolder
+  - first:
+      4: 400096
+    second: Item_SwordSheath
+  - first:
+      4: 400098
+    second: Item_WarriorSholderArmor
+  - first:
+      4: 400100
+    second: Item_WarriorSholderArmor 1
+  - first:
+      4: 400102
+    second: Item_WaterBladder_01
+  - first:
+      4: 400104
+    second: Item_WaterCanteen
+  - first:
+      4: 400106
+    second: LowerLeg_L
+  - first:
+      4: 400108
+    second: LowerLeg_R
+  - first:
+      4: 400110
+    second: Neck
+  - first:
+      4: 400112
+    second: Root
+  - first:
+      4: 400114
+    second: Shoulder_L
+  - first:
+      4: 400116
+    second: Shoulder_R
+  - first:
+      4: 400118
+    second: SM_Prop_SpellBook_03
+  - first:
+      4: 400120
+    second: SM_Prop_Vials
+  - first:
+      4: 400122
+    second: Spine_01
+  - first:
+      4: 400124
+    second: Spine_02
+  - first:
+      4: 400126
+    second: Spine_03
+  - first:
+      4: 400128
+    second: Thumb_01
+  - first:
+      4: 400130
+    second: Thumb_01 1
+  - first:
+      4: 400132
+    second: Thumb_02
+  - first:
+      4: 400134
+    second: Thumb_02 1
+  - first:
+      4: 400136
+    second: Thumb_03
+  - first:
+      4: 400138
+    second: Thumb_03 1
+  - first:
+      4: 400140
+    second: Toes_L
+  - first:
+      4: 400142
+    second: Toes_R
+  - first:
+      4: 400144
+    second: UpperLeg_L
+  - first:
+      4: 400146
+    second: UpperLeg_R
+  - first:
+      23: 2300000
+    second: Item_CoinBag
+  - first:
+      23: 2300002
+    second: Item_Dagger
+  - first:
+      23: 2300004
+    second: Item_Pouch
+  - first:
+      23: 2300006
+    second: Item_Sword
+  - first:
+      23: 2300008
+    second: Item_SwordHolder
+  - first:
+      23: 2300010
+    second: Item_SwordSheath
+  - first:
+      23: 2300012
+    second: Item_WarriorSholderArmor
+  - first:
+      23: 2300014
+    second: Item_WarriorSholderArmor 1
+  - first:
+      23: 2300016
+    second: Item_WaterBladder_01
+  - first:
+      23: 2300018
+    second: Item_WaterCanteen
+  - first:
+      23: 2300020
+    second: SM_Prop_SpellBook_03
+  - first:
+      23: 2300022
+    second: SM_Prop_Vials
+  - first:
+      33: 3300000
+    second: Item_CoinBag
+  - first:
+      33: 3300002
+    second: Item_Dagger
+  - first:
+      33: 3300004
+    second: Item_Pouch
+  - first:
+      33: 3300006
+    second: Item_Sword
+  - first:
+      33: 3300008
+    second: Item_SwordHolder
+  - first:
+      33: 3300010
+    second: Item_SwordSheath
+  - first:
+      33: 3300012
+    second: Item_WarriorSholderArmor
+  - first:
+      33: 3300014
+    second: Item_WarriorSholderArmor 1
+  - first:
+      33: 3300016
+    second: Item_WaterBladder_01
+  - first:
+      33: 3300018
+    second: Item_WaterCanteen
+  - first:
+      33: 3300020
+    second: SM_Prop_SpellBook_03
+  - first:
+      33: 3300022
+    second: SM_Prop_Vials
+  - first:
+      43: 4300000
+    second: Item_WarriorSholderArmor
+  - first:
+      43: 4300002
+    second: Item_WarriorSholderArmor
+  - first:
+      43: 4300004
+    second: Item_Sword
+  - first:
+      43: 4300006
+    second: Item_SwordHolder
+  - first:
+      43: 4300008
+    second: Item_WaterCanteen
+  - first:
+      43: 4300010
+    second: Item_WaterBladder_01
+  - first:
+      43: 4300012
+    second: SM_Prop_SpellBook_03
+  - first:
+      43: 4300014
+    second: Item_Pouch
+  - first:
+      43: 4300016
+    second: SM_Prop_Vials
+  - first:
+      43: 4300018
+    second: Item_SwordSheath
+  - first:
+      43: 4300020
+    second: Item_Dagger
+  - first:
+      43: 4300022
+    second: Item_CoinBag
+  - first:
+      43: 4300024
+    second: Character_Female_Witch
+  - first:
+      43: 4300026
+    second: Character_Female_Queen
+  - first:
+      43: 4300028
+    second: Character_Female_Druid
+  - first:
+      43: 4300030
+    second: Character_Female_Gypsy
+  - first:
+      43: 4300032
+    second: Character_Female_Peasant_01
+  - first:
+      43: 4300034
+    second: Character_Female_Peasant_02
+  - first:
+      43: 4300036
+    second: Character_Male_Baird
+  - first:
+      43: 4300038
+    second: Character_Male_Sorcerer
+  - first:
+      43: 4300040
+    second: Character_Male_King
+  - first:
+      43: 4300042
+    second: Character_Male_Peasant_01
+  - first:
+      43: 4300044
+    second: Character_Male_Rouge_01
+  - first:
+      43: 4300046
+    second: Character_Male_Wizard
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Character_Female_Druid
+  - first:
+      137: 13700002
+    second: Character_Female_Gypsy
+  - first:
+      137: 13700004
+    second: Character_Female_Peasant_01
+  - first:
+      137: 13700006
+    second: Character_Female_Peasant_02
+  - first:
+      137: 13700008
+    second: Character_Female_Queen
+  - first:
+      137: 13700010
+    second: Character_Female_Witch
+  - first:
+      137: 13700012
+    second: Character_Male_Baird
+  - first:
+      137: 13700014
+    second: Character_Male_King
+  - first:
+      137: 13700016
+    second: Character_Male_Peasant_01
+  - first:
+      137: 13700018
+    second: Character_Male_Rouge_01
+  - first:
+      137: 13700020
+    second: Character_Male_Sorcerer
+  - first:
+      137: 13700022
+    second: Character_Male_Wizard
+  externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -231,12 +652,15 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 0
   meshes:
@@ -244,26 +668,47 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
     importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
-    optimizeMeshForGPU: 0
     keepQuads: 0
     weldVertices: 0
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: 0
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 5
     normalImportMode: 1
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 0
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human:
     - boneName: Hips
       humanName: Hips
@@ -963,14 +1408,18 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

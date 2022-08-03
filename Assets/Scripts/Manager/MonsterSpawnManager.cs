@@ -65,15 +65,15 @@ public class MonsterSpawnManager : MonoBehaviour
 
     public Vector3 GetPatrolDir(int patrolIndex,Transform tr)
     {
-        if (patrolIndex < 2)
+        if (patrolIndex <= 2)
         {
-            return new Vector3(Random.Range(PatrolPoint[patrolIndex].position.x - 10.0f, PatrolPoint[patrolIndex].position.x + 10.0f), 1.0f,
+            return new Vector3(Random.Range(PatrolPoint[patrolIndex].position.x - 4.0f, PatrolPoint[patrolIndex].position.x + 4.0f), 1.0f,
                 tr.transform.position.z);
         }
         else
         {
-            return new Vector3(Random.Range(PatrolPoint[patrolIndex].position.x - 3.0f, PatrolPoint[patrolIndex].position.x + 3.0f), 1.0f,
-                Random.Range(PatrolPoint[patrolIndex].position.z - 3.0f, PatrolPoint[patrolIndex].position.z + 3.0f));
+            return new Vector3(Random.Range(PatrolPoint[patrolIndex].position.x - 2.5f, PatrolPoint[patrolIndex].position.x + 2.5f), 1.0f,
+                Random.Range(PatrolPoint[patrolIndex].position.z - 2.5f, PatrolPoint[patrolIndex].position.z + 2.5f));
         }
         
     }

@@ -11,7 +11,6 @@ public class Merchant_Manager : MonoBehaviour
     private void Awake()
     {
         sellslot = this.GetComponentsInChildren<SellSlot>();
-        GameData.Instance.playerdata.money += 500000;
     }
 
     public void OpenShop()

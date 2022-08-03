@@ -11,7 +11,7 @@ public class ObjectPool : MonoBehaviour
     public ObjectPool<GameObject>[] ObjectManager = new ObjectPool<GameObject>[4];
     public ObjectPool<GameObject> Drop;
     public ObjectPool<GameObject>[] Effects = new ObjectPool<GameObject>[8];
-    public ItemData[] itemDatas;
+    public UseItemData[] itemDatas;
     public GameObject DropItem;
     public GameObject SwordMan;
     public GameObject SpearMan;

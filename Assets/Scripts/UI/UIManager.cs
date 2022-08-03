@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     public Text MPText;
     public Text EXPText;
     public Text LevelText;
+    
 
     [Header("[스텟 창 기능]")]
 
@@ -45,6 +46,7 @@ public class UIManager : MonoBehaviour
     public GameObject WarpEffect;
     GameObject WarpDoor;
     public Vector3 OrgPos = Vector3.zero;
+    public Transform SecondPos;
 
     [Header("[종료 기능]")]
 
@@ -53,7 +55,7 @@ public class UIManager : MonoBehaviour
 
     [Header("[아이템]")]
     public Sprite[] ItemIcon;
-
+    
 
 
 
@@ -110,11 +112,7 @@ public class UIManager : MonoBehaviour
         StatLeveltx.text = GameData.Instance.playerdata.Level.ToString() + " LEVEL";
         StatATKtx.text = GameData.Instance.playerdata.ATK.ToString();
         StatDeftx.text = GameData.Instance.playerdata.DEF.ToString();
-        if (GameData.Instance.playerdata.Shoes != null)
-            StatSpeedTx.text = (GameData.Instance.playerdata.StatSpeed+ GameData.Instance.playerdata.Shoes.itemData.value).ToString();
-        else
-            StatSpeedTx.text = GameData.Instance.playerdata.StatSpeed.ToString();
-
+        StatSpeedTx.text = GameData.Instance.playerdata.StatSpeed.ToString();
         StatPointTx.text = GameData.Instance.playerdata.StatPoint.ToString();
 
         if (GameData.Instance.playerdata.StatPoint > 0)

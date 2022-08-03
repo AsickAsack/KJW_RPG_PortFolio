@@ -699,6 +699,7 @@ MonoBehaviour:
   itemData: []
   myRigid: {fileID: 8116908020944677435}
   CheckBtn: {fileID: 1528551160967046465}
+  DropItemCanvas: {fileID: 3728428695095837197}
 --- !u!136 &8213385871906012937
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1109,6 +1110,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: DropItemSlotManager, Assembly-CSharp
         m_MethodName: ExitPopUp
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3728428695095837197}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2159,6 +2172,7 @@ MonoBehaviour:
   - {fileID: 2221976242370052241}
   - {fileID: 1203246197585150088}
   DropItemPanel: {fileID: 5570502157360317461}
+  DropItemCanvas: {fileID: 3728428695095837197}
 --- !u!1 &8900943405059793526
 GameObject:
   m_ObjectHideFlags: 0

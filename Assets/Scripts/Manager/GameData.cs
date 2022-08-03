@@ -40,6 +40,7 @@ public class GameData : MonoBehaviour
     public PlayerData playerdata2 = new PlayerData();
     public Queue<string> EventString = new Queue<string>();
     public UnityAction NotAction;
+    public UnityAction ReQuick;
     private Coroutine Notify;
     TimeSpan CirPlayTime = new TimeSpan();
     public bool IsPlay = false;
@@ -71,15 +72,15 @@ public class GameData : MonoBehaviour
         SetSavePos();
         SetSaveTime();
         string data = JsonConvert.SerializeObject(playerdata);
-        File.WriteAllText(Application.dataPath +"/GameData.json", data);
-        Debug.Log(playerdata.PlayTime);
+        File.WriteAllText(Application.persistentDataPath +"/GameData.json", data);
     }
 
     public void SetSavePos()
     {
-        playerdata.SavePos[0] = MonsterSpawnManager.Instance.Player.position.x;
-        playerdata.SavePos[1] = MonsterSpawnManager.Instance.Player.position.y;
-        playerdata.SavePos[2] = MonsterSpawnManager.Instance.Player.position.z;
+        if (MonsterSpawnManager.Instance.Player.position.z > 45.0f)
+            playerdata.SPos = true;
+        else
+            playerdata.SPos = false;
     }
 
     public void SetSaveTime()
@@ -90,15 +91,48 @@ public class GameData : MonoBehaviour
 
     public void Load()
     {
-        string data = File.ReadAllText(Application.dataPath + "/GameData.json");
+        string data = File.ReadAllText(Application.persistentDataPath + "/GameData.json");
         playerdata = JsonConvert.DeserializeObject<PlayerData>(data);
     }
 
     public void CheckDataLoad()
     {
-        string data = File.ReadAllText(Application.dataPath + "/GameData.json");
+        string data = File.ReadAllText(Application.persistentDataPath + "/GameData.json");
         playerdata2 = JsonConvert.DeserializeObject<PlayerData>(data);
     }
+
+    public Item EquipCheck(int ItemCode)
+    {
+
+        for(int i = 0; i < playerdata.myItems.Count; i++)
+        {
+            if(playerdata.myItems[i].itemData.ItemCode == ItemCode)
+            {
+
+                if (playerdata.myItems[i].IsEquip)
+                    return playerdata.myItems[i];
+            }
+        }
+
+        return null; 
+
+    }
+
+
+    public Item QuickCheck(int index)
+    {
+
+        for (int i = 0; i < playerdata.myItems.Count; i++)
+        {
+            if (playerdata.myItems[i].QuickIndex == index)
+            {
+                    return playerdata.myItems[i];
+            }
+        }
+        return null;
+    }
+
+
 
 
     [System.Serializable]
@@ -108,15 +142,11 @@ public class GameData : MonoBehaviour
         {
             Normal = 0, Hard, Insane
         }
-
+        public bool SPos = false;
         public Difficulty difficulty = Difficulty.Normal;
         public List<Item> myItems = new List<Item>();
-        public Item Helmet = null;
-        public Item Weapon = null;
-        public Item Shoes = null;
-        public Item[] QuickSlot = new Item[2];
 
-        public float[] SavePos = new float[3];
+        
         public DateTime FirstTime;
         public string PlayTime;
         public bool KingFight = false;
@@ -129,21 +159,15 @@ public class GameData : MonoBehaviour
             get => _Level;
             set
             {
-
-                if (value != _Level)
-                {
-                    StatPoint += 3;
-                    SkillPoint += 3;
-                    MaxHP += 50;
-                    CurHP = MaxHP;
-                    MaxMP += 50;
-                    CurMP = MaxMP;          
-                }
-
                 _Level = value;
 
                 if (GameData.Instance.IsPlay)
                 {
+                    StatPoint += 3;
+                    MaxHP += 50;
+                    CurHP = MaxHP;
+                    MaxMP += 50;
+                    CurMP = MaxMP;
                     MaxEXP = Level * 100;
                     UIManager.Instance.SetAll();
                     GameData.Instance.EventString.Enqueue("레벨 " + Level + "이 되었습니다!");
@@ -153,15 +177,11 @@ public class GameData : MonoBehaviour
 
         }
         public int StatPoint = 0;
-        public int SkillPoint = 1;
         public int _ATK = 50;
         public int ATK
         {
             get
             {
-                if (Weapon != null)
-                    return _ATK + (int)Weapon.itemData.value;
-                else
                     return _ATK;
             }
 
@@ -173,9 +193,6 @@ public class GameData : MonoBehaviour
         {
             get
             {
-                if (Helmet != null)
-                    return _DEF + (int)Helmet.itemData.value;
-                else
                     return _DEF;
             }
 
@@ -186,9 +203,6 @@ public class GameData : MonoBehaviour
         {
             get
             {
-                if (Shoes != null)
-                    return _MoveSpeed + (int)Shoes.itemData.value;
-                else
                     return _MoveSpeed;
             }
 
@@ -214,10 +228,7 @@ public class GameData : MonoBehaviour
         {
             get
             {
-                if (Helmet != null)
-                    return _MaxHP + (int)Helmet.itemData.value + 50;
-                else
-                    return _MaxHP;
+                return _MaxHP;
             }
             set => _MaxHP = value;
         }

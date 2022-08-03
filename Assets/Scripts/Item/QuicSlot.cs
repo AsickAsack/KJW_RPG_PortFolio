@@ -14,25 +14,21 @@ public class QuicSlot : MonoBehaviour, IPointerClickHandler
 
     private void Awake()
     {
-        CheckLoadQuick();
+        SetQuickSlot(GameData.Instance.QuickCheck(index));
+        GameData.Instance.ReQuick += RePrintQuickSlot;
     }
 
-    public void CheckLoadQuick()
-    {
-        if(GameData.Instance.playerdata.QuickSlot[index] != null)
-        {
-            SetQuickSlot(GameData.Instance.playerdata.QuickSlot[index]);
-        }
-    }
-
+ 
     public void SetQuickSlot(Item item)
     {
+        if (item == null) return;
+
         SlotItem = item;
         Icon.sprite = UIManager.Instance.ItemIcon[SlotItem.itemData.ItemCode];
         ItemCounttx.text = SlotItem.ItemCount.ToString();
         Icon.gameObject.SetActive(true);
         ItemCounttx.gameObject.SetActive(true);
-        GameData.Instance.playerdata.QuickSlot[index] = item;
+        SlotItem.QuickIndex = index;
     }
 
 
