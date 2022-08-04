@@ -68,6 +68,7 @@ public class UIManager : MonoBehaviour
         SetMp();
         SetExp();
         SetLevel();
+
     }
 
     private void Update()

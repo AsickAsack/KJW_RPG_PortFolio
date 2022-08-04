@@ -185,7 +185,9 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
                 break;
             case S_State.Stun:
 
-                //Move = false;
+                GameObject obj1 = ObjectPool.Instance.ObjectManager[3].Get();
+                obj1.GetComponent<DamageText>()?.SetText(this.transform, "Stun!", 0);
+
                 if (StunCo == null)
                     StunCo = StartCoroutine(Stun(3.0f));
                 else
@@ -399,14 +401,14 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             ChangeState(S_State.Patrol);
         }
 
-        Debug.Log(myNavi.remainingDistance);
-        Debug.DrawLine(this.transform.position, new Vector3(myNavi.destination.x, myNavi.destination.y, myNavi.destination.z),Color.red);
-
         //맞으면 힛타임 늘어남
         if (myAnim.GetBool("IsHit"))
         {
             HitTime = 0.5f;
+            myAnim.ResetTrigger("Attack");
             myNavi.isStopped = true;
+            myAnim.SetBool("IsRun", false);
+            myAnim.SetBool("IsWalk", false);
             if (AttackDelay != null)
             {
                 StopCoroutine(AttackDelay);
@@ -435,6 +437,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
             {
                 myNavi.isStopped = true;
                 myAnim.SetBool("IsRun", false);
+                myAnim.SetBool("IsWalk", false);
                 if (AttackDelay == null)
                 {
                     AttackDelay = StartCoroutine(AtkDelay(myStat.AttackDelay));
@@ -596,7 +599,7 @@ public abstract class Soldier : MonoBehaviour, BattleSystem
     //데미지 텍스트 오브젝트풀, 데미지 세팅과정
     public void DamageRoutine(float damage,int index)
     {
-        DamageT = damage;
+        DamageT = damage < 0 ? 0 : damage;
         GameObject obj1 = ObjectPool.Instance.ObjectManager[3].Get();
         obj1.GetComponent<DamageText>()?.SetText(this.transform, DamageT.ToString(), index);
         myStat.HP -= DamageT;

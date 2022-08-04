@@ -68,6 +68,7 @@ public class Knight : Player, BattleSystem
         SoundManager.Instance.mainEffectSource = myAudio;
         mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         LoadPos(GameData.Instance.playerdata.SPos);
+        //GameData.Instance.playerdata.money = 00;
     }
 
 
@@ -300,7 +301,6 @@ public class Knight : Player, BattleSystem
     {
         if (Physics.Raycast(this.transform.position, -MyChar.transform.up, 0.05f, 1 << LayerMask.NameToLayer("Wall")))
         {
-            Debug.Log("·¹ÀÌ");
             myAnim.SetInteger("LadderIndex", 4);
             ChangeState(State.Relax);
         }

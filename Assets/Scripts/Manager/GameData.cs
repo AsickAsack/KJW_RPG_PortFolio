@@ -71,6 +71,7 @@ public class GameData : MonoBehaviour
     {
         SetSavePos();
         SetSaveTime();
+        QuestManager.instance.SetQuestProcess();
         string data = JsonConvert.SerializeObject(playerdata);
         File.WriteAllText(Application.persistentDataPath +"/GameData.json", data);
     }

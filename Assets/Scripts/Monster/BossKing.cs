@@ -435,7 +435,7 @@ public class BossKing : MonoBehaviour, BattleSystem
     //데미지 텍스트 오브젝트풀, 데미지 세팅과정
     public void DamageRoutine(float damage, int index)
     {
-        DamageText = damage;
+        DamageText = damage < 0 ? 0 : damage;
         GameObject obj1 = ObjectPool.Instance.ObjectManager[3].Get();
         obj1.GetComponent<DamageText>()?.SetText(this.transform, DamageText.ToString(), index);
         stat.HP -= DamageText;

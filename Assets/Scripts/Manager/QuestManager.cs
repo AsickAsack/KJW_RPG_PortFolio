@@ -21,7 +21,9 @@ public class QuestManager : MonoBehaviour
     {
         instance = this;
         if (PlayerPrefs.HasKey("Process"))
+        { 
             process = PlayerPrefs.GetInt("Process");
+        }
     }
 
     private void Start()
@@ -47,6 +49,12 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    public void SetQuestProcess()
+    {
+            PlayerPrefs.SetInt("Process", process);
+    }
+
+
     public void SetQuestUi(int QuestIndex)
     {
         QuestPanel.SetActive(true);
@@ -62,7 +70,6 @@ public class QuestManager : MonoBehaviour
             if(CurQuest.soldierDatas == solider)
             {
                 process++;
-                PlayerPrefs.SetInt("Process", process);
                 if (process >= CurQuest.MonsterRequirement)
                 {
                     QuestFinish = true;

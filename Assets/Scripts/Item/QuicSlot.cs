@@ -23,6 +23,9 @@ public class QuicSlot : MonoBehaviour, IPointerClickHandler
     {
         if (item == null) return;
 
+        if (SlotItem != null)
+            SlotItem.QuickIndex = 0;
+
         SlotItem = item;
         Icon.sprite = UIManager.Instance.ItemIcon[SlotItem.itemData.ItemCode];
         ItemCounttx.text = SlotItem.ItemCount.ToString();

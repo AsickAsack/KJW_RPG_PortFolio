@@ -20,7 +20,6 @@ public class LadderBottom : MonoBehaviour
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Debug.Log(other.transform);
             if (other.gameObject.GetComponent<Knight>() != null)
                 player = other.gameObject.GetComponent<Knight>();
 

@@ -14,6 +14,7 @@ public class CineBridge : MonoBehaviour
     public GameObject NoTouchPanel;
     float OrgVolume;
     Knight knight;
+    public GameObject PreventRun;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -53,7 +54,9 @@ public class CineBridge : MonoBehaviour
         GameData.Instance.playerdata.KingFight = true;
         KingHPbar.SetActive(true);
         King.Mystate = BossKing.KingState.Battle_Far;
-        this.GetComponent<BoxCollider>().enabled = false;
+        PreventRun.gameObject.SetActive(true);
+        this.gameObject.SetActive(false);
+        
 
     }
 

@@ -151,7 +151,7 @@ public class ObjectPool : MonoBehaviour
     {
         GameObject DropItem = Drop.Get();
         DropItem temp = DropItem.GetComponent<DropItem>();
-        DropItem.transform.position = tr.transform.position + new Vector3(-0.5f, 0.0f, 0.0f);
+        DropItem.transform.position = tr.transform.position + new Vector3(-0.5f, 0.1f, 0.0f);
 
         temp.itemData.Clear();
         ItemRand = Random.Range(1, 101);

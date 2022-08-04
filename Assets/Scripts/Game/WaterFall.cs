@@ -17,7 +17,14 @@ public class WaterFall : MonoBehaviour
             {
                 GameData.Instance.playerdata.CurHP -= 10.0f;
                 UIManager.Instance.SetHP();
-                if(player.transform.position.z > 45.0f)
+
+                if (GameData.Instance.playerdata.KingFight)
+                {
+                    player.transform.position = MonsterSpawnManager.Instance.KingMovePos.position;
+                    return;
+                }
+
+                if (player.transform.position.z > 45.0f)
                     player.LoadPos(true);
                 else
                     player.LoadPos(false);
