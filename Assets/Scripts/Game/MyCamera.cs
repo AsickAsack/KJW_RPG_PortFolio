@@ -12,13 +12,13 @@ public class MyCamera : MonoBehaviour
 
     private void Awake()
     {
-        ZoomDist = -this.transform.localPosition.z;
+        ZoomDist = -this.transform.localPosition.z+2.0f;
     }
 
     //카메라가 벽에 걸리면 카메라 위치를 벽 앞으로 바꿔줌
     void Update()
     {
-        ZoomDist = Mathf.Clamp(ZoomDist, 5, 5);
+        ZoomDist = Mathf.Clamp(ZoomDist, 4, 4);
         myCam.transform.localPosition = new Vector3(0.0f, 0.0f, -ZoomDist);
 
         ray.origin = this.transform.position;
@@ -26,6 +26,7 @@ public class MyCamera : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, ZoomDist+ Virtualradius, CameraMask))
         {
+            Debug.Log(hit.transform);
             myCam.transform.position = hit.point - ray.direction * Virtualradius;
 
         }

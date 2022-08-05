@@ -67,7 +67,7 @@ public class Knight : Player, BattleSystem
         UIManager.Instance.PotionConsume += PotionConsume;
         SoundManager.Instance.mainEffectSource = myAudio;
         mycamera.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        LoadPos(GameData.Instance.playerdata.SPos);
+        //LoadPos(GameData.Instance.playerdata.SPos);
         //GameData.Instance.playerdata.money = 00;
     }
 
