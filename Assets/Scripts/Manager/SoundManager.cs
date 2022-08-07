@@ -37,10 +37,6 @@ public class SoundManager : MonoBehaviour
 
     #endregion
 
-    private void Start()
-    {
-        //SelectBGM();
-    }
 
     #region BGM 사운드 기능
 
